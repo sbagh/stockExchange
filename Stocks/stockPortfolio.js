@@ -9,7 +9,7 @@ class Portfolio {
    //returns a promise which gets the price of a given ticker from the stockList.json file
    stockPrice(ticker) {
       return new Promise((resolve, reject) => {
-         fs.readFile("./stockList.json", "utf-8", (err, data) => {
+         fs.readFile("./Stocks/stockList.json", "utf-8", (err, data) => {
             if (err) reject(err);
             else {
                const stockPrices = JSON.parse(data);
@@ -22,42 +22,38 @@ class Portfolio {
    }
 
    buyStock(ticker, shares, buyPrice) {
-      //to do: check if buyPrice is within stock price range
-      if (buyPrice !== this.stockPrice(ticker)) `wrong buyPrice`;
-
       //check if user has enough cash to purchase the shares, if so buy them by removing cash and adding shares to the stocksOwned object
       let totalCost = shares * buyPrice;
-      if (totalCost > cash)
+      if (totalCost > this.cash)
          `you do not suffecient funds to purchase ${shares} shares of ${ticker}`;
       else {
          this.cash -= totalCost;
-         this.stocksOwned[ticker] += shares;
+         this.stocksOwned[ticker] = shares;
+         return `${shares} of ${ticker} bought for ${totalCost}, you now have ${this.cash}$ cash in your account`;
       }
    }
 
    sellStock(ticker, shares, sellPrice) {
       //check if user has enough shares of that ticket to sell
-      if (this.stocksOwned[ticker] - shares < 0)
-         `you do not have ${shares} shares to sell`;
-
-      //check if sellPriceis  within stock price range
-      if (sellPrice !== this.stockPrice(ticker)) `wrong sellPrice`;
-
-      let totalSale = shares * sellPrice;
-      this.cash += totalCost;
-      this.stocksOwned[ticker] -= shares;
-
-      return `${shares} of ${ticker} sold for ${totalSale}, you now have ${this.cash} in your account`;
+      if (this.stocksOwned[ticker] < shares)
+         return `you do not have ${shares} shares of ${ticker} to sell`;
+      else {
+         let totalSale = shares * sellPrice;
+         this.cash += totalSale;
+         this.stocksOwned[ticker] -= shares;
+         return `${shares} of ${ticker} sold for ${totalSale}, you now have ${this.cash}$ cash in your account`;
+      }
    }
 
-   currentValue() {
+   async currentValue() {
       let stocksValue = 0;
 
       for (let ticker in this.stocksOwned) {
-         stocksValue += this.stockPrice(ticker);
+         stocksValue +=
+            this.stocksOwned[ticker] * (await this.stockPrice(ticker));
       }
 
-      return `you have ${this.cash} in cash and ${stocksValue} in shares`;
+      return `you have ${this.cash}$ in cash and ${stocksValue}$ in shares`;
    }
 }
 
