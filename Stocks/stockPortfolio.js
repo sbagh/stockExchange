@@ -40,7 +40,7 @@ class Portfolio {
       if (this.stocksOwned[ticker] - shares < 0)
          `you do not have ${shares} shares to sell`;
 
-      //check if sellPriceis  within stock price range 
+      //check if sellPriceis  within stock price range
       if (sellPrice !== this.stockPrice(ticker)) `wrong sellPrice`;
 
       let totalSale = shares * sellPrice;
@@ -49,4 +49,18 @@ class Portfolio {
 
       return `${shares} of ${ticker} sold for ${totalSale}, you now have ${this.cash} in your account`;
    }
+
+   currentValue() {
+      let stocksValue = 0;
+
+      for (let ticker in this.stocksOwned) {
+         stocksValue += this.stockPrice(ticker);
+      }
+
+      return `you have ${this.cash} in cash and ${stocksValue} in shares`;
+   }
 }
+
+module.exports = {
+   Portfolio,
+};
