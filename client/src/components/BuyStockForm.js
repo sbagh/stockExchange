@@ -3,7 +3,7 @@ import React from "react";
 const BuyStockForm = ({ buyOrderDetails, handleChange, startBuyOrder }) => {
    return (
       <div>
-         <h2>Buy a stock</h2>
+         <h4>Buy a stock</h4>
          <form>
             <label>
                Ticker:

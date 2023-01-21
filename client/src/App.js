@@ -30,7 +30,7 @@ const App = () => {
    return (
       <div>
          {userPortfolio && <UserPortfolio userPortfolio={userPortfolio} />}
-         {stockData && <StockMarket stockData={stockData} />}
+         {stockData && <StockMarket stockData={stockData} userPortfolio={userPortfolio} />}
       </div>
    );
 };

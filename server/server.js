@@ -2,6 +2,7 @@ const express = require("express");
 const {
    getUserPortfolio,
    getStockData,
+   updateUserPortfolioFile,
 } = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
@@ -22,6 +23,12 @@ app.get("/stockData", async (req, res) => {
    const stockData = await getStockData(req.query.ticker);
    res.send(stockData);
 });
+
+// update userPortfolio through startBuyOrder axios call from ui
+// app.put("/updateUserProfile", async(req,res) => {
+//    const updatedData = req.body
+//    const result = await updateUserPortfolioFile(updateData)
+// })
 
 
 
