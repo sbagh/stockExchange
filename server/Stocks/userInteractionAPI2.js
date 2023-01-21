@@ -21,27 +21,27 @@ class Portfolio {
       });
    }
 
-   buyStock(ticker, shares, buyPrice) {
-      //check if user has enough cash to purchase the shares, if so buy them by removing cash and adding shares to the stocksOwned object
-      let totalCost = shares * buyPrice;
+   buyStock(ticker, quantity, buyPrice) {
+      //check if user has enough cash to purchase that quantity of shares, if so buy them by removing cash and adding quantity to the stocksOwned object
+      let totalCost = quantity * buyPrice;
       if (totalCost > this.cash)
-         `you do not suffecient funds to purchase ${shares} shares of ${ticker}`;
+         `you do not suffecient funds to purchase ${quantity} shares of ${ticker}`;
       else {
          this.cash -= totalCost;
-         this.stocksOwned[ticker] = shares;
-         return `${shares} of ${ticker} bought for ${totalCost}, you now have ${this.cash}$ cash in your account`;
+         this.stocksOwned[ticker] = quantity;
+         return `${quantity} shares of ${ticker} bought for ${totalCost}, you now have ${this.cash}$ cash in your account`;
       }
    }
 
-   sellStock(ticker, shares, sellPrice) {
-      //check if user has enough shares of that ticket to sell
-      if (this.stocksOwned[ticker] < shares)
-         return `you do not have ${shares} shares of ${ticker} to sell`;
+   sellStock(ticker, quantity, sellPrice) {
+      //check if user has enough quantity of that ticket to sell
+      if (this.stocksOwned[ticker] < quantity)
+         return `you do not have ${quantity} shares of ${ticker} to sell`;
       else {
-         let totalSale = shares * sellPrice;
+         let totalSale = quantity * sellPrice;
          this.cash += totalSale;
-         this.stocksOwned[ticker] -= shares;
-         return `${shares} of ${ticker} sold for ${totalSale}, you now have ${this.cash}$ cash in your account`;
+         this.stocksOwned[ticker] -= quantity;
+         return `${quantity} shares of ${ticker} sold for ${totalSale}, you now have ${this.cash}$ cash in your account`;
       }
    }
 
@@ -53,7 +53,7 @@ class Portfolio {
             this.stocksOwned[ticker] * (await this.stockPrice(ticker));
       }
 
-      return `you have ${this.cash}$ in cash and ${stocksValue}$ in shares`;
+      return `you have ${this.cash}$ in cash and ${stocksValue}$ in stocks`;
    }
 }
 

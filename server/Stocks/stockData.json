@@ -1,0 +1,39 @@
+{
+   "stocks": [
+      {
+         "symbol": "TSLA",
+         "price": 10,
+         "company": "Tesla",
+         "volume": 0,
+         "last_update": "2022-12-20T14:20:00Z"
+      },
+      {
+         "symbol": "AMD",
+         "price": 10,
+         "company": "AMD",
+         "volume": 0,
+         "last_update": "2022-12-20T14:25:00Z"
+      },
+      {
+         "symbol": "APPL",
+         "price": 10,
+         "company": "Apple",
+         "volume": 0,
+         "last_update": "2022-12-20T14:30:00Z"
+      },
+      {
+         "symbol": "GME",
+         "price": 10,
+         "company": "Gamestop",
+         "volume": 0,
+         "last_update": "2022-12-20T14:35:00Z"
+      },
+      {
+         "symbol": "BOIL",
+         "price": 10,
+         "company": "Nat gas",
+         "volume": 0,
+         "last_update": "2022-12-20T14:40:00Z"
+      }
+   ]
+}

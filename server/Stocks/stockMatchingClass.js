@@ -16,6 +16,7 @@ class stockMatchingSystem {
       this.sellOrders.push(order);
    }
 
+
    matchOrders() {
       //first sort buy and sell orders in descending order to get highest value of each
       this.buyOrders.sort((a, b) => b.price - a.price);
@@ -23,6 +24,7 @@ class stockMatchingSystem {
 
       let matchedOrders = [];
 
+      //loop through the buyOrder and sortOrder arrays, if buyOrder price>sellOrder price, executre a trade, else increment the sell order
       let i = 0,
          j = 0;
       while (i < this.buyOrders.length && j < this.sellOrders.length) {

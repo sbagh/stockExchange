@@ -1,4 +1,4 @@
-const { Portfolio } = require(`./Stocks/stockPortfolio`);
+const { Portfolio } = require(`./Stocks/userInteractionAPI2`);
 const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
 
 // const myPortfolio = new Portfolio(10000, { TSLA: 200, AMD: 100 });

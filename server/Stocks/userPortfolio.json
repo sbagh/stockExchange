@@ -1,0 +1,26 @@
+{
+   "user1": {
+      "Stocks": [
+         { "name": "TSLA", "quantity": 10 },
+         { "name": "AMD", "quantity": 5 },
+         { "name": "GME", "quantity": 10 }
+      ],
+      "cash": 100
+   },
+   "user2": {
+      "Stocks": [
+         { "name": "TSLA", "quantity": 100 },
+         { "name": "AMD", "quantity": 50 },
+         { "name": "GME", "quantity": 100 }
+      ],
+      "cash": 20000
+   },
+   "user3": {
+      "Stocks": [
+         { "name": "TSLA", "quantity": 100 },
+         { "name": "AMD", "quantity": 50 },
+         { "name": "GME", "quantity": 100 }
+      ],
+      "cash": 1000000
+   }
+}
