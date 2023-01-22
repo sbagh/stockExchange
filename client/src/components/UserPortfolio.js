@@ -1,9 +1,10 @@
 import React from "react";
 
-const UserPortfolio = ({ userPortfolio }) => {
+const UserPortfolio = ({ userPortfolio, user }) => {
    return (
       <div>
          <h2> User Portfolio</h2>
+         <h4>{user}</h4>
          {userPortfolio.Stocks.map((stock) => (
             <div key={stock.name}>
                {stock.name} : {stock.quantity} shares

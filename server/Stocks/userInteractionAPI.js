@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { resolve } = require("path");
 
 const userPortfolioLink = "./Stocks/data/userPortfolio.json";
 const stockDataLink = "./Stocks/data/stockData.json";
@@ -41,17 +42,30 @@ function getStockData(ticker) {
    });
 }
 
-// function updateUserPortfolioFile(userPortfolio) {
-//    return new Promise((resoleve,reject)=> {
+function updateUserPortfolioJSON(user, updatedUserPortfolio) {
+   return new Promise((resolve, reject) => {
+      fs.readFile(userPortfolioLink, "utf-8", (err, data) => {
+         if (err) throw err;
+         let usersPortfolios = JSON.parse(data);
+         usersPortfolios[user] = updatedUserPortfolio;
 
-//       const stock =
-
-//       fs.()
-//    }
-
-// }
+         //update the data:
+         fs.writeFile(
+            userPortfolioLink,
+            JSON.stringify(usersPortfolios),
+            (err, data) => {
+               if (err) reject(err);
+               else {
+                  resolve(data);
+               }
+            }
+         );
+      });
+   });
+}
 
 module.exports = {
    getUserPortfolio,
    getStockData,
+   updateUserPortfolioJSON,
 };

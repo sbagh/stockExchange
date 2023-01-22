@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import BuyStockForm from "./BuyStockForm";
 import axios from "axios";
 
-const StockMarket = ({ stockData, userPortfolio }) => {
+const StockMarket = ({ stockData, userPortfolio, user }) => {
    //state and related functions for buying a stock
    const [buyOrderDetails, setBuyOrderDetails] = useState({
       ticker: "",
@@ -41,15 +41,18 @@ const StockMarket = ({ stockData, userPortfolio }) => {
       userPortfolio.cash -=
          parseInt(buyOrderDetails.price) * parseInt(buyOrderDetails.quantity);
 
-      console.log(userPortfolio);
+      console.log(userPortfolio, user);
 
       // 5- now we have updated the parameteres of userPortfolio, we will send it to back-end and update the userPortfolio.json file
-      // try {
-      //    await axios.put("http://localhost:5555/updateUserPortfolio", userPortfolio);
-      //    console.log('userPortfolio updated successfuly');
-      // } catch(err) {
-      //    console.log('error, did not update: ', err);
-      // }
+      try {
+         await axios.put("http://localhost:5555/updateUserPortfolio", {
+            user,
+            userPortfolio,
+         });
+         console.log("userPortfolio updated successfuly");
+      } catch (err) {
+         console.log("error, did not update: ", err);
+      }
    };
 
    return (
