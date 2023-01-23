@@ -22,11 +22,11 @@ const StockMarket = ({
 
    const startBuyOrder = async () => {
       console.log(
-         `Order set for ${buyOrderDetails.quantity} shares of ${buyOrderDetails.ticker} at ${buyOrderDetails.price}`
+         `Order by ${user.name} set for ${buyOrderDetails.quantity} shares of ${buyOrderDetails.ticker} at ${buyOrderDetails.price}`
       );
 
       //Update user's portfolio (add new stocks bought and remove cost from user's cash)
-      //1- find users portfolio (already used here)
+      //1- find users portfolio (user already selected in App.js and SelectUser.js)
       //2- find index of the stock ticker being bought inside the userPortfolio.stocks object
       const stockIndex = userPortfolio.Stocks.findIndex(
          (stock) => stock.name === buyOrderDetails.ticker
@@ -45,8 +45,6 @@ const StockMarket = ({
       //4- now reduce cash the user had by price bought * qty bought
       userPortfolio.cash -=
          parseInt(buyOrderDetails.price) * parseInt(buyOrderDetails.quantity);
-
-      console.log(userPortfolio, user);
 
       // 5- now we have updated the parameteres of userPortfolio, we will send it to back-end and update the userPortfolio.json file
       try {

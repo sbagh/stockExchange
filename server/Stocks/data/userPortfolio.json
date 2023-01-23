@@ -1,1 +1,26 @@
-{"user1":{"Stocks":[{"name":"TSLA","quantity":180},{"name":"AMD","quantity":5},{"name":"GME","quantity":10}],"cash":7900},"user2":{"Stocks":[{"name":"TSLA","quantity":100},{"name":"AMD","quantity":50},{"name":"GME","quantity":100}],"cash":20000}}
+{
+   "user1": {
+      "Stocks": [
+         { "name": "TSLA", "quantity": 60 },
+         { "name": "AMD", "quantity": 5 },
+         { "name": "GME", "quantity": 10 }
+      ],
+      "cash": 7400
+   },
+   "user2": {
+      "Stocks": [
+         { "name": "TSLA", "quantity": 100 },
+         { "name": "AMD", "quantity": 150 },
+         { "name": "GME", "quantity": 100 }
+      ],
+      "cash": 19000
+   },
+   "user3": {
+      "Stocks": [
+         { "name": "TSLA", "quantity": 300 },
+         { "name": "AMD", "quantity": 500 },
+         { "name": "GME", "quantity": 100 }
+      ],
+      "cash": 100000
+   }
+}

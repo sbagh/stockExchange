@@ -40,7 +40,6 @@ app.post("/stockBuyOrder", (req, res) => {
       user,
       buyOrderDetails: { ticker, quantity, price },
    } = req.body;
-   // console.log(user, buyOrderDetails);
    stockExchange.addBuyOrder(user, ticker, quantity, price);
    console.log(stockExchange.buyOrders);
    res.send("done");

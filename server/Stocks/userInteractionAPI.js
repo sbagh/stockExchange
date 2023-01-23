@@ -42,13 +42,12 @@ function getStockData(ticker) {
    });
 }
 
-
 function updateUserPortfolioJSON(user, updatedUserPortfolio) {
    return new Promise((resolve, reject) => {
       fs.readFile(userPortfolioLink, "utf-8", (err, data) => {
          if (err) throw err;
          let usersPortfolios = JSON.parse(data);
-         usersPortfolios[user] = updatedUserPortfolio;
+         usersPortfolios[user.name] = updatedUserPortfolio;
 
          //update the data:
          fs.writeFile(
@@ -64,7 +63,6 @@ function updateUserPortfolioJSON(user, updatedUserPortfolio) {
       });
    });
 }
-
 
 module.exports = {
    getUserPortfolio,
