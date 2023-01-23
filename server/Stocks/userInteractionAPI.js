@@ -42,6 +42,7 @@ function getStockData(ticker) {
    });
 }
 
+// when user buys a stock, update their portofolio json file
 function updateUserPortfolioJSON(user, updatedUserPortfolio) {
    return new Promise((resolve, reject) => {
       fs.readFile(userPortfolioLink, "utf-8", (err, data) => {
@@ -49,7 +50,7 @@ function updateUserPortfolioJSON(user, updatedUserPortfolio) {
          let usersPortfolios = JSON.parse(data);
          usersPortfolios[user.name] = updatedUserPortfolio;
 
-         //update the data:
+         //update the changed data:
          fs.writeFile(
             userPortfolioLink,
             JSON.stringify(usersPortfolios),

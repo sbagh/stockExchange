@@ -11,10 +11,10 @@ const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const stockExchange = new stockMatchingSystem();
-
 const PORT = 5555;
+
+//initialize a stock exchange (from stockMatchingSystem class)
+const stockExchange = new stockMatchingSystem();
 
 // respond to userPortfolio fetch request from ui (get a user's portfolio)
 app.get("/userPortfolio", async (req, res) => {
@@ -28,13 +28,14 @@ app.get("/stockData", async (req, res) => {
    res.send(stockData);
 });
 
-// update userPortfolio through startBuyOrder axios call from ui
+// update userPortfolio through sendBuyOrder's updateUserPortfolio axios put from ui
 app.put("/updateUserPortfolio", async (req, res) => {
    const { user, userPortfolio } = req.body;
    const result = await updateUserPortfolioJSON(user, userPortfolio);
    res.send(result);
 });
 
+// receive buy orders from sendBuyOrder's stockBuyOrder axios post and send them to the stock exchange (an initializaation of the stockMatching class)
 app.post("/stockBuyOrder", (req, res) => {
    const {
       user,

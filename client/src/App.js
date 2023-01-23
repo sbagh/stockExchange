@@ -4,7 +4,7 @@ import StockMarket from "./components/StockMarket";
 import SelectUser from "./components/SelectUser";
 
 const App = () => {
-   //state for selecting user, passed as props to SelectUser component
+   //state for selecting users, passed as props to SelectUser component
    const [user, setUser] = useState({ id: 1, name: "user1" });
    const users = [
       { id: 1, name: "user1" },
@@ -21,7 +21,7 @@ const App = () => {
             setUserPortfolio(data);
          })
          .catch((err) => console.log(err));
-   }, [user]);
+   }, [user, ]);
 
    //state and useEffect for rendering and fetching data about a stock
    const [stockData, setStockData] = useState(null);

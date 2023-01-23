@@ -1,15 +1,6 @@
 import React from "react";
 
-const BuyStockForm = ({
-   buyOrderDetails,
-   handleChange,
-   startBuyOrder,
-   sendBuyOrder,
-}) => {
-   const handleSubmit = () => {
-      startBuyOrder();
-      sendBuyOrder();
-   };
+const BuyStockForm = ({ buyOrderDetails, handleChange, handleSubmit }) => {
    return (
       <div>
          <h4>Buy a stock</h4>

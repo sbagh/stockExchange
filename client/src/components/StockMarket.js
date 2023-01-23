@@ -20,13 +20,14 @@ const StockMarket = ({
       setBuyOrderDetails({ ...buyOrderDetails, [name]: value });
    };
 
-   const startBuyOrder = async () => {
+   const sendBuyOrder = async () => {
       console.log(
          `Order by ${user.name} set for ${buyOrderDetails.quantity} shares of ${buyOrderDetails.ticker} at ${buyOrderDetails.price}`
       );
 
-      //Update user's portfolio (add new stocks bought and remove cost from user's cash)
-      //1- find users portfolio (user already selected in App.js and SelectUser.js)
+      //Update user's portfolio (add new stocks bought and remove cost from user's cash):
+      
+      //1- find users portfolio (user is already selected in App.js and SelectUser.js)
       //2- find index of the stock ticker being bought inside the userPortfolio.stocks object
       const stockIndex = userPortfolio.Stocks.findIndex(
          (stock) => stock.name === buyOrderDetails.ticker
@@ -56,9 +57,7 @@ const StockMarket = ({
       } catch (err) {
          console.log("error, did not update: ", err);
       }
-   };
 
-   const sendBuyOrder = async () => {
       try {
          await axios.post("http://localhost:5555/stockBuyOrder", {
             user,
@@ -80,9 +79,8 @@ const StockMarket = ({
          <BuyStockForm
             buyOrderDetails={buyOrderDetails}
             handleChange={handleChange}
-            startBuyOrder={startBuyOrder}
+            handleSubmit={sendBuyOrder}
             refreshUserPortfolio={refreshUserPortfolio}
-            sendBuyOrder={sendBuyOrder}
          />
       </div>
    );
