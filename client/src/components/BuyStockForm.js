@@ -1,6 +1,15 @@
 import React from "react";
 
-const BuyStockForm = ({ buyOrderDetails, handleChange, startBuyOrder }) => {
+const BuyStockForm = ({
+   buyOrderDetails,
+   handleChange,
+   startBuyOrder,
+   sendBuyOrder,
+}) => {
+   const handleSubmit = () => {
+      startBuyOrder();
+      sendBuyOrder();
+   };
    return (
       <div>
          <h4>Buy a stock</h4>
@@ -35,7 +44,7 @@ const BuyStockForm = ({ buyOrderDetails, handleChange, startBuyOrder }) => {
                />
             </label>
             <br />
-            <button type="button" onClick={startBuyOrder}>
+            <button type="button" onClick={handleSubmit}>
                Submit
             </button>
          </form>

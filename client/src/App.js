@@ -6,7 +6,13 @@ const App = () => {
    //state and useEffect for rendering and fetching User Portfolio:
    const [userPortfolio, setUserPortfolio] = useState(null);
    const [user, setUser] = useState("user1");
-   
+
+   //callback function, passed as props to StockMarket-startBuyOrder, when called it will re-render userPortfolio
+   function refreshUserPortfolio() {
+      console.log("refreshed user portfolio");
+      return "completed refresh";
+   }
+
    useEffect(() => {
       fetch(`http://localhost:5555/userPortfolio?user=${user}`)
          .then((res) => res.json())
@@ -39,6 +45,7 @@ const App = () => {
                stockData={stockData}
                userPortfolio={userPortfolio}
                user={user}
+               refreshUserPortfolio={refreshUserPortfolio}
             />
          )}
       </div>

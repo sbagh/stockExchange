@@ -8,14 +8,13 @@ class stockMatchingSystem {
       (this.buyOrders = []), (this.sellOrders = []);
    }
 
-   addBuyOrder(order) {
-      this.buyOrders.push(order);
+   addBuyOrder(buyer, ticker, quantity, price) {
+      this.buyOrders.push({ buyer, ticker, quantity, price });
    }
 
-   addSellOrder(order) {
-      this.sellOrders.push(order);
+   addSellOrder(buyer, ticker, quantity, price) {
+      this.sellOrders.push({ buyer, ticker, quantity, price });
    }
-
 
    matchOrders() {
       //first sort buy and sell orders in descending order to get highest value of each
@@ -28,7 +27,10 @@ class stockMatchingSystem {
       let i = 0,
          j = 0;
       while (i < this.buyOrders.length && j < this.sellOrders.length) {
-         if (this.buyOrders[i].price >= this.sellOrders[j].price) {
+         if (
+            this.buyOrders[i].ticker === this.sellOrders[j].ticker &&
+            this.buyOrders[i].price >= this.sellOrders[j].price
+         ) {
             let tradeQuanity = Math.min(
                this.buyOrders[i].quantity,
                this.sellOrders[j].quantity
@@ -44,13 +46,18 @@ class stockMatchingSystem {
                quantity: tradeQuanity,
             });
 
-            if (this.buyOrders[i] === 0) {
+            if (this.buyOrders[i].quantity === 0) {
+               i++;
+            }
+            if (this.sellOrders[i].quantity === 0) {
+               j++;
+            }
+         } else {
+            if (this.buyOrders[i].price < this.sellOrders[j].price) {
                i++;
             } else {
                j++;
             }
-         } else {
-            j++;
          }
       }
       return matchedOrders;
@@ -58,5 +65,5 @@ class stockMatchingSystem {
 }
 
 module.exports = {
-    stockMatchingSystem
-}
+   stockMatchingSystem,
+};

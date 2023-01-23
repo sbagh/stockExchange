@@ -42,6 +42,7 @@ function getStockData(ticker) {
    });
 }
 
+
 function updateUserPortfolioJSON(user, updatedUserPortfolio) {
    return new Promise((resolve, reject) => {
       fs.readFile(userPortfolioLink, "utf-8", (err, data) => {
@@ -63,6 +64,7 @@ function updateUserPortfolioJSON(user, updatedUserPortfolio) {
       });
    });
 }
+
 
 module.exports = {
    getUserPortfolio,

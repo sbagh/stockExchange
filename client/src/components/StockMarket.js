@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import BuyStockForm from "./BuyStockForm";
 import axios from "axios";
 
-const StockMarket = ({ stockData, userPortfolio, user }) => {
+const StockMarket = ({
+   stockData,
+   userPortfolio,
+   user,
+   refreshUserPortfolio,
+}) => {
    //state and related functions for buying a stock
    const [buyOrderDetails, setBuyOrderDetails] = useState({
       ticker: "",
@@ -55,6 +60,18 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       }
    };
 
+   const sendBuyOrder = async () => {
+      try {
+         await axios.post("http://localhost:5555/stockBuyOrder", {
+            user,
+            buyOrderDetails,
+         });
+         console.log("buy order sent");
+      } catch (err) {
+         console.log("did not send", err);
+      }
+   };
+
    return (
       <div>
          <h2> Stock Market </h2>
@@ -66,6 +83,8 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
             buyOrderDetails={buyOrderDetails}
             handleChange={handleChange}
             startBuyOrder={startBuyOrder}
+            refreshUserPortfolio={refreshUserPortfolio}
+            sendBuyOrder={sendBuyOrder}
          />
       </div>
    );

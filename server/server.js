@@ -6,10 +6,13 @@ const {
 } = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
+const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const stockExchange = new stockMatchingSystem();
 
 const PORT = 5555;
 
@@ -27,9 +30,20 @@ app.get("/stockData", async (req, res) => {
 
 // update userPortfolio through startBuyOrder axios call from ui
 app.put("/updateUserPortfolio", async (req, res) => {
-   const { user, userPortfolio} = req.body
+   const { user, userPortfolio } = req.body;
    const result = await updateUserPortfolioJSON(user, userPortfolio);
    res.send(result);
+});
+
+app.post("/stockBuyOrder", (req, res) => {
+   const {
+      user,
+      buyOrderDetails: { ticker, quantity, price },
+   } = req.body;
+   // console.log(user, buyOrderDetails);
+   stockExchange.addBuyOrder(user, ticker, quantity, price);
+   console.log(stockExchange.buyOrders);
+   res.send("done");
 });
 
 app.listen(PORT, () => console.log("listening to PORT", PORT));
