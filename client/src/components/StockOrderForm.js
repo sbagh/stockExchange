@@ -1,16 +1,16 @@
 import React from "react";
 
-const BuyStockForm = ({ buyOrderDetails, handleChange, handleSubmit }) => {
+const StockOrderForm = ({ orderDetails, handleChange, handleSubmit }) => {
    return (
       <div>
-         <h4>Buy a stock</h4>
+         <h4>Place an Order</h4>
          <form>
             <label>
                Ticker:
                <input
                   type="text"
                   name="ticker"
-                  value={buyOrderDetails.ticker}
+                  value={orderDetails.ticker}
                   onChange={handleChange}
                />
             </label>
@@ -20,7 +20,7 @@ const BuyStockForm = ({ buyOrderDetails, handleChange, handleSubmit }) => {
                <input
                   type="number"
                   name="quantity"
-                  value={buyOrderDetails.quantity}
+                  value={orderDetails.quantity}
                   onChange={handleChange}
                />
             </label>
@@ -30,9 +30,17 @@ const BuyStockForm = ({ buyOrderDetails, handleChange, handleSubmit }) => {
                <input
                   type="number"
                   name="price"
-                  value={buyOrderDetails.price}
+                  value={orderDetails.price}
                   onChange={handleChange}
                />
+            </label>
+            <br />
+            <label>
+               Type:
+               <select onChange={handleChange} name="type">
+                  <option value="buy">Buy</option>
+                  <option value="sell">Sell</option>
+               </select>
             </label>
             <br />
             <button type="button" onClick={handleSubmit}>
@@ -43,4 +51,4 @@ const BuyStockForm = ({ buyOrderDetails, handleChange, handleSubmit }) => {
    );
 };
 
-export default BuyStockForm;
+export default StockOrderForm;

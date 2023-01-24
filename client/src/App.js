@@ -34,11 +34,6 @@ const App = () => {
          .catch((err) => console.log(err.message));
    }, []);
 
-   //not in use atm: callback function, passed as props to StockMarket-startBuyOrder, when called it will re-render userPortfolio
-   function refreshUserPortfolio() {
-      console.log("refreshed user portfolio");
-      return "completed refresh";
-   }
 
    return (
       <div>
@@ -51,7 +46,6 @@ const App = () => {
                stockData={stockData}
                userPortfolio={userPortfolio}
                user={user}
-               refreshUserPortfolio={refreshUserPortfolio}
             />
          )}
       </div>

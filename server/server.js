@@ -39,10 +39,21 @@ app.put("/updateUserPortfolio", async (req, res) => {
 app.post("/stockBuyOrder", (req, res) => {
    const {
       user,
-      buyOrderDetails: { ticker, quantity, price },
+      orderDetails: { ticker, quantity, price },
    } = req.body;
    stockExchange.addBuyOrder(user, ticker, quantity, price);
-   console.log(stockExchange.buyOrders);
+   console.log("buy orders: ", stockExchange.buyOrders);
+   res.send("done");
+});
+
+// receive sell orders from sendBuyOrder's stockBuyOrder axios post and send them to the stock exchange (an initializaation of the stockMatching class)
+app.post("/stockSellOrder", (req, res) => {
+   const {
+      user,
+      orderDetails: { ticker, quantity, price },
+   } = req.body;
+   stockExchange.addSellOrder(user, ticker, quantity, price);
+   console.log("sell orders: ", stockExchange.sellOrders);
    res.send("done");
 });
 

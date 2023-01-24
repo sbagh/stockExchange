@@ -12,8 +12,8 @@ class stockMatchingSystem {
       this.buyOrders.push({ buyer, ticker, quantity, price });
    }
 
-   addSellOrder(buyer, ticker, quantity, price) {
-      this.sellOrders.push({ buyer, ticker, quantity, price });
+   addSellOrder(seller, ticker, quantity, price) {
+      this.sellOrders.push({ seller, ticker, quantity, price });
    }
 
    matchOrders() {
@@ -67,4 +67,3 @@ class stockMatchingSystem {
 module.exports = {
    stockMatchingSystem,
 };
-
