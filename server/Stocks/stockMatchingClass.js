@@ -56,6 +56,7 @@ class stockMatchingSystem {
 
             if (tradeQuantity > 0) {
                matchedOrders.push({
+                  ticker: this.buyOrders[i].ticker,
                   buyer: this.buyOrders[i].buyer,
                   seller: this.sellOrders[j].seller,
                   price: this.sellOrders[j].price,

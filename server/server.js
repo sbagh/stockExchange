@@ -73,6 +73,6 @@ const matchedOrders = setInterval(async () => {
       await updateTradeHistory(orders);
       console.log("matched order: ", orders);
    }
-}, 4000);
+}, 1000);
 
 app.listen(PORT, () => console.log("listening to PORT", PORT));
