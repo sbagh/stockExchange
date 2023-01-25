@@ -40,13 +40,14 @@ const App = () => {
 
    //state and useEffect for rendering stock trade history from tradeHistory.json
    const [tradeHistoryData, setTradeHistoryData] = useState({});
-   const [tradeHistoryDataIsLoading, setTradeHistoryDataIsLoading] = useState(true)
+   const [tradeHistoryDataIsLoading, setTradeHistoryDataIsLoading] =
+      useState(true);
    useEffect(() => {
       fetch("http://localhost:5555/tradeHistory")
          .then((res) => res.json())
          .then((data) => {
             setTradeHistoryData(data);
-            setTradeHistoryDataIsLoading(false)
+            setTradeHistoryDataIsLoading(false);
             console.log(data);
          })
          .catch((err) => console.log("did not get data", err));
@@ -81,8 +82,10 @@ const App = () => {
             )}
 
             {tradeHistoryData && (
-               <TradeHistory tradeHistoryData={tradeHistoryData} 
-               tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}/>
+               <TradeHistory
+                  tradeHistoryData={tradeHistoryData}
+                  tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
+               />
             )}
          </div>
       </div>

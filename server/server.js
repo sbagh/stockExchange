@@ -5,10 +5,10 @@ const {
    updateUserPortfolioJSON,
    updateTradeHistory,
    getTradeHistory,
+   updateStockData,
 } = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
-const fs = require("fs");
 const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
 
 const app = express();
@@ -45,7 +45,7 @@ app.post("/stockBuyOrder", (req, res) => {
       orderDetails: { ticker, quantity, price },
    } = req.body;
    stockExchange.addBuyOrder(user, ticker, parseInt(quantity), parseInt(price));
-   console.log("buy orders: ", stockExchange.buyOrders);
+   // console.log("buy orders: ", stockExchange.buyOrders);
    res.send("done");
 });
 
@@ -61,7 +61,7 @@ app.post("/stockSellOrder", (req, res) => {
       parseInt(quantity),
       parseInt(price)
    );
-   console.log("sell orders: ", stockExchange.sellOrders);
+   // console.log("sell orders: ", stockExchange.sellOrders);
    res.send("done");
 });
 
@@ -69,7 +69,7 @@ app.post("/stockSellOrder", (req, res) => {
 app.get("/tradeHistory", async (req, res) => {
    const stockData = await getTradeHistory(req);
    res.send(stockData);
-   console.log(stockData);
+   // console.log(stockData);
 });
 
 //Stock Exchange functionalities:
@@ -79,6 +79,8 @@ const matchedOrders = setInterval(async () => {
    const orders = stockExchange.matchOrders();
    if (orders) {
       await updateTradeHistory(orders);
+      const stockdatanew = await updateStockData(orders);
+      console.log('stock data new :  ',stockdatanew);
       console.log("matched order: ", orders);
    }
 }, 1000);

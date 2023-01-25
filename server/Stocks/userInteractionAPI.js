@@ -91,10 +91,38 @@ function getTradeHistory() {
    });
 }
 
+function updateStockData(order) {
+   return new Promise((resolve, reject) => {
+      const { ticker, price, time } = order[0];
+      fs.readFile(stockDataLink, "utf-8", (err, data) => {
+         if (err) throw err;
+         let stocksData = JSON.parse(data);
+         let indexOfTicker = stocksData.stocks.findIndex(
+            (data) => data.ticker === ticker
+         );
+
+         stocksData.stocks[indexOfTicker].price = price;
+         stocksData.stocks[indexOfTicker].last_update = time;
+
+         fs.writeFile(
+            stockDataLink,
+            JSON.stringify(stocksData),
+            (err, data) => {
+               if (err) throw err;
+               else {
+                  resolve(data);
+               }
+            }
+         );
+      });
+   });
+}
+
 module.exports = {
    getUserPortfolio,
    getStockData,
    updateUserPortfolioJSON,
    updateTradeHistory,
    getTradeHistory,
+   updateStockData,
 };
