@@ -9,17 +9,32 @@ class stockMatchingSystem {
    }
 
    addBuyOrder(buyer, ticker, quantity, price) {
-      this.buyOrders.push({ buyer, ticker, quantity, price });
+      const time = new Date().toString();
+      this.buyOrders.push({ buyer, ticker, quantity, price, time });
    }
 
    addSellOrder(seller, ticker, quantity, price) {
-      this.sellOrders.push({ seller, ticker, quantity, price });
+      const time = new Date().toString();
+      this.sellOrders.push({ seller, ticker, quantity, price, time });
    }
 
    matchOrders() {
       //first sort buy and sell orders in descending order to get highest value of each
-      this.buyOrders.sort((a, b) => b.price - a.price);
-      this.sellOrders.sort((a, b) => b.price - a.price);
+      this.buyOrders.sort((a, b) => {
+         if (b.price === a.price) {
+            return new Date(b.time) - new Date(a.time);
+         } else {
+            return b.price - a.price;
+         }
+      });
+
+      this.sellOrders.sort((a, b) => {
+         if (b.price === a.price) {
+            return new Date(b.time) - new Date(a.time);
+         } else {
+            return b.price - a.price;
+         }
+      });
 
       let matchedOrders = [];
 
@@ -31,25 +46,27 @@ class stockMatchingSystem {
             this.buyOrders[i].ticker === this.sellOrders[j].ticker &&
             this.buyOrders[i].price >= this.sellOrders[j].price
          ) {
-            let tradeQuanity = Math.min(
+            let tradeQuantity = Math.min(
                this.buyOrders[i].quantity,
                this.sellOrders[j].quantity
             );
 
-            this.buyOrders[i].quantity -= tradeQuanity;
-            this.sellOrders[j].quantity += tradeQuanity;
+            this.buyOrders[i].quantity -= tradeQuantity;
+            this.sellOrders[j].quantity -= tradeQuantity;
 
-            matchedOrders.push({
-               buyer: this.buyOrders[i].buyer,
-               seller: this.sellOrders[j].seller,
-               price: this.sellOrders[j].price,
-               quantity: tradeQuanity,
-            });
+            if (tradeQuantity > 0) {
+               matchedOrders.push({
+                  buyer: this.buyOrders[i].buyer,
+                  seller: this.sellOrders[j].seller,
+                  price: this.sellOrders[j].price,
+                  quantity: tradeQuantity,
+                  time: new Date().toString(),
+               });
+            }
 
             if (this.buyOrders[i].quantity === 0) {
                i++;
-            }
-            if (this.sellOrders[i].quantity === 0) {
+            } else {
                j++;
             }
          } else {
@@ -60,7 +77,7 @@ class stockMatchingSystem {
             }
          }
       }
-      return matchedOrders;
+      return matchedOrders.length > 0 ? matchedOrders : null;
    }
 }
 

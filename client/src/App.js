@@ -32,7 +32,6 @@ const App = () => {
          .then((res) => res.json())
          .then((data) => {
             setStockData(data);
-            console.log(data);
             setStockDataIsLoading(false);
          })
          .catch((err) => console.log(err.message));

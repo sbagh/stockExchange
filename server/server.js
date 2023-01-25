@@ -3,9 +3,11 @@ const {
    getUserPortfolio,
    getStockData,
    updateUserPortfolioJSON,
+   updateTradeHistory,
 } = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
+const fs = require("fs");
 const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
 
 const app = express();
@@ -26,7 +28,6 @@ app.get("/userPortfolio", async (req, res) => {
 app.get("/stockData", async (req, res) => {
    const stockData = await getStockData(req);
    res.send(stockData);
-   console.log(stockData);
 });
 
 // update userPortfolio through sendBuyOrder's updateUserPortfolio axios put from ui
@@ -42,7 +43,7 @@ app.post("/stockBuyOrder", (req, res) => {
       user,
       orderDetails: { ticker, quantity, price },
    } = req.body;
-   stockExchange.addBuyOrder(user, ticker, quantity, price);
+   stockExchange.addBuyOrder(user, ticker, parseInt(quantity), parseInt(price));
    console.log("buy orders: ", stockExchange.buyOrders);
    res.send("done");
 });
@@ -53,9 +54,25 @@ app.post("/stockSellOrder", (req, res) => {
       user,
       orderDetails: { ticker, quantity, price },
    } = req.body;
-   stockExchange.addSellOrder(user, ticker, quantity, price);
+   stockExchange.addSellOrder(
+      user,
+      ticker,
+      parseInt(quantity),
+      parseInt(price)
+   );
    console.log("sell orders: ", stockExchange.sellOrders);
    res.send("done");
 });
+
+//Stock Exchange functionalities:
+//1- match buy/sell orders inside a setInterval function
+//2- then send the most recent matched order to tradeHistory.json (append the json file)
+const matchedOrders = setInterval(async () => {
+   const orders = stockExchange.matchOrders();
+   if (orders) {
+      await updateTradeHistory(orders);
+      console.log("matched order: ", orders);
+   }
+}, 4000);
 
 app.listen(PORT, () => console.log("listening to PORT", PORT));
