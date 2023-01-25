@@ -3,6 +3,7 @@ import UserPortfolio from "./components/UserPortfolio";
 import StockMarket from "./components/StockMarket";
 import SelectUser from "./components/SelectUser";
 import StockPrices from "./components/StockPrices";
+import TradeHistory from "./components/TradeHistory";
 
 const App = () => {
    //state for selecting users, passed as props to SelectUser component
@@ -37,6 +38,20 @@ const App = () => {
          .catch((err) => console.log(err.message));
    }, []);
 
+   //state and useEffect for rendering stock trade history from tradeHistory.json
+   const [tradeHistoryData, setTradeHistoryData] = useState({});
+   const [tradeHistoryDataIsLoading, setTradeHistoryDataIsLoading] = useState(true)
+   useEffect(() => {
+      fetch("http://localhost:5555/tradeHistory")
+         .then((res) => res.json())
+         .then((data) => {
+            setTradeHistoryData(data);
+            setTradeHistoryDataIsLoading(false)
+            console.log(data);
+         })
+         .catch((err) => console.log("did not get data", err));
+   }, []);
+
    return (
       <div>
          <SelectUser users={users} onChange={setUser} />
@@ -63,6 +78,11 @@ const App = () => {
                   stockData={stockData}
                   stockDataIsLoading={stockDataIsLoading}
                />
+            )}
+
+            {tradeHistoryData && (
+               <TradeHistory tradeHistoryData={tradeHistoryData} 
+               tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}/>
             )}
          </div>
       </div>

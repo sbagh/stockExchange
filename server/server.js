@@ -4,6 +4,7 @@ const {
    getStockData,
    updateUserPortfolioJSON,
    updateTradeHistory,
+   getTradeHistory,
 } = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
@@ -62,6 +63,13 @@ app.post("/stockSellOrder", (req, res) => {
    );
    console.log("sell orders: ", stockExchange.sellOrders);
    res.send("done");
+});
+
+// respond to tradeHistory fetch request from ui
+app.get("/tradeHistory", async (req, res) => {
+   const stockData = await getTradeHistory(req);
+   res.send(stockData);
+   console.log(stockData);
 });
 
 //Stock Exchange functionalities:

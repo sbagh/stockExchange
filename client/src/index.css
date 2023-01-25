@@ -27,3 +27,35 @@
    flex-basis: 100%;
    margin-top: 10px;
 }
+
+/* Styles for the trade history component */
+.trade-history {
+   flex-basis: 100%;
+   margin-top: 10px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+}
+
+/* Styles for the table inside the trade history component */
+.trade-history table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+/* Styles for the table headers inside the trade history component */
+.trade-history th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+}
+
+/* Styles for the table cells inside the trade history component */
+.trade-history td {
+   padding: 10px;
+}
+
+.trade-history tbody th {
+   font-size: 15px;
+   font-weight: 400;
+}

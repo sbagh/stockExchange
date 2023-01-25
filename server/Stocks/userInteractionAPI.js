@@ -81,9 +81,20 @@ function updateTradeHistory(order) {
    });
 }
 
+function getTradeHistory() {
+   return new Promise((resolve, reject) => {
+      fs.readFile(tradeHistoryLink, "utf-8", (err, data) => {
+         if (err) throw err;
+         let tradeHistory = JSON.parse(data);
+         resolve(tradeHistory);
+      });
+   });
+}
+
 module.exports = {
    getUserPortfolio,
    getStockData,
    updateUserPortfolioJSON,
    updateTradeHistory,
+   getTradeHistory,
 };
