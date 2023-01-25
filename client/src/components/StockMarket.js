@@ -73,7 +73,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
          console.log("did not send", err);
       }
       setOrderFeedback(
-         `Hello ${user.name}, your Buy order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} was sent`
+         `${user.name}'s buy order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
       );
    };
 
@@ -89,6 +89,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
          setOrderFeedback(
             `You do not have enough shares of ${orderDetails.ticker} to sell`
          );
+         return `You do not have enough shares of ${orderDetails.ticker} to sell`;
       } else {
          userPortfolio.Stocks[stockIndex].quantity -= orderDetails.quantity;
       }
@@ -119,23 +120,19 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
          console.log("sell did not send", err);
       }
       setOrderFeedback(
-         `Hello ${user.name}, your Sell order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} was sent`
+         `${user.name}'s sell order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
       );
    };
 
    return (
-      <div>
-         <h2> Stock Marketplace </h2>
-         <p>
-            Stock: {stockData.symbol}, Current price: {stockData.price}
-         </p>
-
+      <div className="stock-market">
          <StockOrderForm
             orderDetails={orderDetails}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
          />
 
+         <br></br>
          <div>{orderFeedback}</div>
       </div>
    );

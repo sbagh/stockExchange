@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserPortfolio from "./components/UserPortfolio";
 import StockMarket from "./components/StockMarket";
 import SelectUser from "./components/SelectUser";
+import StockPrices from "./components/StockPrices";
 
 const App = () => {
    //state for selecting users, passed as props to SelectUser component
@@ -21,33 +22,50 @@ const App = () => {
             setUserPortfolio(data);
          })
          .catch((err) => console.log(err));
-   }, [user, ]);
+   }, [user]);
 
    //state and useEffect for rendering and fetching data about a stock
-   const [stockData, setStockData] = useState(null);
+   const [stockData, setStockData] = useState({});
+   const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
    useEffect(() => {
-      fetch("http://localhost:5555/stockData?ticker=TSLA")
+      fetch("http://localhost:5555/stockData")
          .then((res) => res.json())
          .then((data) => {
             setStockData(data);
+            console.log(data);
+            setStockDataIsLoading(false);
          })
          .catch((err) => console.log(err.message));
    }, []);
 
-
    return (
       <div>
          <SelectUser users={users} onChange={setUser} />
-         {userPortfolio && (
-            <UserPortfolio userPortfolio={userPortfolio} user={user} />
-         )}
-         {stockData && (
-            <StockMarket
-               stockData={stockData}
-               userPortfolio={userPortfolio}
-               user={user}
-            />
-         )}
+
+         <div className="main-container">
+            {userPortfolio && (
+               <UserPortfolio
+                  className="user-portfolio"
+                  userPortfolio={userPortfolio}
+                  user={user}
+               />
+            )}
+
+            {stockData && (
+               <StockMarket
+                  className="stock-market"
+                  stockData={stockData}
+                  userPortfolio={userPortfolio}
+                  user={user}
+               />
+            )}
+            {stockData && (
+               <StockPrices
+                  stockData={stockData}
+                  stockDataIsLoading={stockDataIsLoading}
+               />
+            )}
+         </div>
       </div>
    );
 };

@@ -1,13 +1,29 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,500&display=swap");
+
+.main-container {
+   font-family: "Open Sans";
+   display: flex;
+   flex-wrap: wrap;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Styles for the user portfolio component */
+.user-portfolio {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-right: 10px;
+}
+
+/* Styles for the stock market component */
+.stock-market {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+}
+
+/* Styles for the stock prices component */
+.stock-prices {
+   flex-basis: 100%;
+   margin-top: 10px;
 }

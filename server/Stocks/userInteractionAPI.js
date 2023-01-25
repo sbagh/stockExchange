@@ -23,20 +23,13 @@ function getUserPortfolio(user) {
 }
 
 // Get stock data about a ticker from stockData.json
-function getStockData(ticker) {
+function getStockData() {
    return new Promise((resolve, reject) => {
       fs.readFile(stockDataLink, "utf-8", (err, data) => {
          if (err) reject(err);
          else {
             const stocksData = JSON.parse(data);
-            const stockData = stocksData.stocks.find(
-               (stock) => stock.symbol === ticker
-            );
-            if (stockData) {
-               resolve(stockData);
-            } else {
-               reject("no data found");
-            }
+            resolve(stocksData);
          }
       });
    });

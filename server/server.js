@@ -24,8 +24,9 @@ app.get("/userPortfolio", async (req, res) => {
 
 // respond to stockData fetch request from ui
 app.get("/stockData", async (req, res) => {
-   const stockData = await getStockData(req.query.ticker);
+   const stockData = await getStockData(req);
    res.send(stockData);
+   console.log(stockData);
 });
 
 // update userPortfolio through sendBuyOrder's updateUserPortfolio axios put from ui
@@ -35,7 +36,7 @@ app.put("/updateUserPortfolio", async (req, res) => {
    res.send(result);
 });
 
-// receive buy orders from sendBuyOrder's stockBuyOrder axios post and send them to the stock exchange (an initializaation of the stockMatching class)
+// receive buy orders from axios post request, and send them to the stock exchange (an initializaation of the stockMatching class)
 app.post("/stockBuyOrder", (req, res) => {
    const {
       user,
@@ -46,7 +47,7 @@ app.post("/stockBuyOrder", (req, res) => {
    res.send("done");
 });
 
-// receive sell orders from sendBuyOrder's stockBuyOrder axios post and send them to the stock exchange (an initializaation of the stockMatching class)
+// receive sell orders from axios post request, and send them to the stock exchange (an initializaation of the stockMatching class)
 app.post("/stockSellOrder", (req, res) => {
    const {
       user,

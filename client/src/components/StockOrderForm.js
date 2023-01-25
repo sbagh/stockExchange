@@ -2,7 +2,7 @@ import React from "react";
 
 const StockOrderForm = ({ orderDetails, handleChange, handleSubmit }) => {
    return (
-      <div>
+      <div className="stock-order-form">
          <h4>Place an Order</h4>
          <form>
             <label>

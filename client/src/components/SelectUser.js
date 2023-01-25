@@ -9,7 +9,7 @@ const SelectUser = ({ users, onChange }) => {
    };
 
    return (
-      <div>
+      <div className="select-user">
          <label>Select user:</label>
          <select onChange={handleChange}>
             {users.map((user) => (
