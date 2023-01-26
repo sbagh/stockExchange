@@ -1,5 +1,6 @@
 # bankingAndStocks
 Stock exchange full-stack app - practice.
+
 Project is in progress, so code and files are not fully orgranized or optimized yet. 
 
 
