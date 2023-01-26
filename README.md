@@ -4,6 +4,12 @@ Stock exchange full-stack app - practice.
 Project is in progress, so code and files are not fully orgranized or optimized yet. 
 
 
+To run project: 
+- install react and node modules.
+- start server.js. do not use nodemon as everytime the server re-sets buy/sell orders will be lost.
+- start react
+- select a user, see their portfololio, create buy/sell orders.
+- currently to re-render the portfolios, updated stock prices, and transaction history table, you must refresh page. working on re-rendering automatically.
 
 
 Current progress:
@@ -17,16 +23,6 @@ Current progress:
    - the stockMatchingClass is a class with methods to match the highest buy to the highest sell order. it creates an object with ticker, buy, seller,  time, price, and quantity.
 - Buy and Sell orders will impact the price of the stock. the new price will be the last matched order price.
 - See a trade history table of all stocks matched and their details.
-
-
-
-
-To run project: 
-- install react and node modules.
-- start server.js. do not use nodemon as everytime the server re-sets buy/sell orders will be lost.
-- start react
-- select a user, see their portfololio, create buy/sell orders.
-- currently to re-render the portfolios, updated stock prices, and transaction history table, you must refresh page. working on re-rendering automatically.
 
 
 next fixes: 
