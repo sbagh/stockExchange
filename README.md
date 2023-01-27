@@ -1,15 +1,16 @@
 # bankingAndStocks
-Stock exchange full-stack app - practice.
+Stock exchange full-stack app.
 
 Project is in progress, so code and files are not fully orgranized or optimized yet. 
 
 
 To run project: 
 - install react and node modules.
-- start server.js. do not use nodemon as everytime the server re-sets buy/sell orders will be lost.
+- start server.js. do not use nodemon as everytime the server resets buy/sell orders will be lost.
 - start react
-- select a user, see their portfololio, create buy/sell orders.
+- On the browser: select a user, see their portfololio, create buy/sell orders.
 - currently to re-render the portfolios, updated stock prices, and transaction history table, you must refresh page. working on re-rendering automatically.
+- if you wish to clear the tradeHistory.json table, make sure you leave empty square brackets in the json (like this: [])
 
 
 Current progress:
@@ -29,7 +30,7 @@ next fixes:
  - fix time values rendered to ui
  - re-render components without refresh
  
- nexte features:
+ next features:
  - create an order status for stock trades and adjust back end for that feature
  - use a database instead of using json files
  - though a button, simulate 100s of buy/sell orders and drive prices up or down to test the back-end's reaction

@@ -14,7 +14,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
    //state for returning a message when user buys/sells a stock:
    const [orderFeedback, setOrderFeedback] = useState("");
 
-   // handle user input on the form when placing an order, passed as props to the StockOrderForm.js
+   // handle user input on the form when placing a buy/sell order, passed as props to the StockOrderForm.js
    const handleChange = (event) => {
       const { name, value } = event.target;
       setOrderDetails({ ...orderDetails, [name]: value });
@@ -29,14 +29,16 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       }
    };
 
-   // function for contacting back-end when user buys a stock: updates portfolio and sends buy order to stock exchange
+   // function for calling the back-end when user buys a stock: updates portfolio and sends buy order to stock exchange
    const sendBuyOrder = async () => {
-      //Update user's portfolio (add new stocks bought and remove cost from user's cash):
+      //Update user's portfolio (add new stocks bought and subtract cost from user's cash):
+
       //1- find index of the stock ticker being bought inside the userPortfolio.stocks object
       const stockIndex = userPortfolio.Stocks.findIndex(
          (stock) => stock.name === orderDetails.ticker
       );
-      //2-  if the stock already exists(stockindex !===-1), then add the bought qty, otherwise add the ticker to the object and assign qty as value
+
+      //2-  if the stock already exists in the user's portfolio(stockindex !===-1), then add the bought qty, otherwise add the ticker to the object and assign the qty as value
       if (stockIndex !== -1) {
          userPortfolio.Stocks[stockIndex].quantity += parseInt(
             orderDetails.quantity
@@ -47,11 +49,12 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
             quantity: parseInt(orderDetails.quantity),
          });
       }
-      //3- now reduce cash the user had by price bought * qty bought
+
+      //3- now subtract the qty*price from the user's cash
       userPortfolio.cash -=
          parseInt(orderDetails.price) * parseInt(orderDetails.quantity);
 
-      //4- now we have updated the parameteres of userPortfolio, we will send it to back-end and update the userPortfolio.json file
+      //4- now we have updated the parameteres of the userPortfolio object, we will send it to back-end and update the userPortfolio.json file
       try {
          await axios.put("http://localhost:5555/updateUserPortfolio", {
             user,
@@ -72,18 +75,22 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       } catch (err) {
          console.log("did not send", err);
       }
+
+      //add a feedback message on the ui for the user
       setOrderFeedback(
          `${user.name}'s buy order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
       );
    };
 
-   // function for contacting back-end when user sells a stock: updates portfolio and sends sell order to stock exchange
+   // function for calling the back-end when user sells a stock: updates portfolio and sends sell order to stock exchange:
    const sendSellOrder = async () => {
-      //Update user's portfolio (add new stocks bought and remove cost from user's cash):
-      //1- find index of the stock ticker being bought inside the userPortfolio.stocks object
+      //Update user's portfolio (subtract stocks sold and add to user's cash):
+
+      //1- find index of the stock ticker being sold inside the userPortfolio.stocks object
       const stockIndex = userPortfolio.Stocks.findIndex(
          (stock) => stock.name === orderDetails.ticker
       );
+
       //2-  check quantity of stock user has in portfolio, if it is sell quantity is more than owned stocks, reject, otherwise subtract
       if (userPortfolio.Stocks[stockIndex].quantity < orderDetails.quantity) {
          setOrderFeedback(
@@ -94,7 +101,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
          userPortfolio.Stocks[stockIndex].quantity -= orderDetails.quantity;
       }
 
-      //3- now increase cash the user had by price sold * qty bought
+      //3- now add price*qty to the user's cash
       userPortfolio.cash +=
          parseInt(orderDetails.price) * parseInt(orderDetails.quantity);
 
@@ -119,6 +126,8 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       } catch (err) {
          console.log("sell did not send", err);
       }
+
+      //add a feedback message on the ui for the user
       setOrderFeedback(
          `${user.name}'s sell order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
       );

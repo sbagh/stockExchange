@@ -25,7 +25,7 @@ const App = () => {
          .catch((err) => console.log(err));
    }, [user]);
 
-   //state and useEffect for rendering and fetching data about a stock
+   //state and useEffect for rendering and fetching data about a stock (current price, ticker..etc)
    const [stockData, setStockData] = useState({});
    const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
    useEffect(() => {
@@ -48,7 +48,7 @@ const App = () => {
          .then((data) => {
             setTradeHistoryData(data);
             setTradeHistoryDataIsLoading(false);
-            console.log(data);
+            // console.log(data);
          })
          .catch((err) => console.log("did not get data", err));
    }, []);
@@ -68,6 +68,7 @@ const App = () => {
 
             {stockData && (
                <StockMarket
+                  key={userPortfolio}
                   className="stock-market"
                   stockData={stockData}
                   userPortfolio={userPortfolio}

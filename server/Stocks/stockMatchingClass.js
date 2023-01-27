@@ -2,7 +2,7 @@
 class stockMatchingSystem {
    //buy and sellOrders are arrays of objects containing trade info such as buyer/seller, qty, price, time, type, status..etc
    //e.g:
-   //buyOrders = [{buyerID: "11123", symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
+   //buyOrders = [{buyer: {id: 1, name: "user1"}, symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
 
    constructor() {
       (this.buyOrders = []), (this.sellOrders = []);
@@ -19,7 +19,7 @@ class stockMatchingSystem {
    }
 
    matchOrders() {
-      //first sort buy and sell orders in descending order to get highest value of each
+      //first sort buy and sell orders in descending order to get highest value of each, if prices are equal, sort by time (oldest first)
       this.buyOrders.sort((a, b) => {
          if (b.price === a.price) {
             return new Date(b.time) - new Date(a.time);
@@ -38,7 +38,7 @@ class stockMatchingSystem {
 
       let matchedOrders = [];
 
-      //loop through the buyOrder and sortOrder arrays, if buyOrder price>sellOrder price, executre a trade, else increment the sell order
+      //loop through the buyOrder and sellOrder arrays, if buyOrder price>sellOrder price, executre a trade, else increment the sell order
       let i = 0,
          j = 0;
       while (i < this.buyOrders.length && j < this.sellOrders.length) {

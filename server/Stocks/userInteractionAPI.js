@@ -81,6 +81,7 @@ function updateTradeHistory(order) {
    });
 }
 
+//Get the trade history from tradeHistory.json file, to be sent to UI through app.get('/tradeHistory') call in server.js
 function getTradeHistory() {
    return new Promise((resolve, reject) => {
       fs.readFile(tradeHistoryLink, "utf-8", (err, data) => {
@@ -91,6 +92,7 @@ function getTradeHistory() {
    });
 }
 
+//after a buy/sell order has matched, the new price is that matched price. This function will update stockData.json to new price.
 function updateStockData(order) {
    return new Promise((resolve, reject) => {
       const { ticker, price, time } = order[0];

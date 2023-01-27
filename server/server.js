@@ -16,29 +16,29 @@ app.use(cors());
 app.use(express.json());
 const PORT = 5555;
 
-//initialize a stock exchange (from stockMatchingSystem class)
+//instantiate a stock exchange (from stockMatchingSystem class)
 const stockExchange = new stockMatchingSystem();
 
-// respond to userPortfolio fetch request from ui (get a user's portfolio)
+// respond to userPortfolio fetch request from ui (component: App.js)
 app.get("/userPortfolio", async (req, res) => {
    const userData = await getUserPortfolio(req.query.user);
    res.send(userData);
 });
 
-// respond to stockData fetch request from ui
+// respond to stockData fetch request from ui (component: App.js)
 app.get("/stockData", async (req, res) => {
    const stockData = await getStockData(req);
    res.send(stockData);
 });
 
-// update userPortfolio through sendBuyOrder's updateUserPortfolio axios put from ui
+// update userPortfolio through the updateUserPortfolio axios put request from ui (component: StockMarket.js)
 app.put("/updateUserPortfolio", async (req, res) => {
    const { user, userPortfolio } = req.body;
    const result = await updateUserPortfolioJSON(user, userPortfolio);
    res.send(result);
 });
 
-// receive buy orders from axios post request, and send them to the stock exchange (an initializaation of the stockMatching class)
+// receive buy orders through the stockBuyOrder axios post request from ui (component: StockMarket.js), then send them to the stock exchange
 app.post("/stockBuyOrder", (req, res) => {
    const {
       user,
@@ -49,7 +49,7 @@ app.post("/stockBuyOrder", (req, res) => {
    res.send("done");
 });
 
-// receive sell orders from axios post request, and send them to the stock exchange (an initializaation of the stockMatching class)
+// receive sell orders through the stockBuyOrder axios post request from ui (component: StockMarket.js), then send them to the stock exchange
 app.post("/stockSellOrder", (req, res) => {
    const {
       user,
@@ -65,7 +65,7 @@ app.post("/stockSellOrder", (req, res) => {
    res.send("done");
 });
 
-// respond to tradeHistory fetch request from ui
+// respond to tradeHistory fetch request from ui (component: App.js)
 app.get("/tradeHistory", async (req, res) => {
    const stockData = await getTradeHistory(req);
    res.send(stockData);
@@ -78,10 +78,27 @@ app.get("/tradeHistory", async (req, res) => {
 const matchedOrders = setInterval(async () => {
    const orders = stockExchange.matchOrders();
    if (orders) {
+      //fixing time format first
+      let dateOptions = {
+         year: "numeric",
+         month: "short",
+         day: "numeric",
+         hour: "2-digit",
+         minute: "2-digit",
+         second: "2-digit",
+      };
+      let newTimeFormat = new Date(orders[0].time).toLocaleString(
+         "en-US",
+         dateOptions
+      );
+      orders[0].time = newTimeFormat;
+      // console.log(orders);
+
+      //updating tradeHistory.json and stockData.json:
       await updateTradeHistory(orders);
-      const stockdatanew = await updateStockData(orders);
-      console.log('stock data new :  ',stockdatanew);
-      console.log("matched order: ", orders);
+      await updateStockData(orders);
+
+      // console.log("matched order: ", orders);
    }
 }, 1000);
 

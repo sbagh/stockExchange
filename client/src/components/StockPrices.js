@@ -9,7 +9,8 @@ const StockPrices = ({ stockData, stockDataIsLoading }) => {
          ) : (
             stockData.stocks.map((stock) => (
                <div key={stock.ticker}>
-                  stock: {stock.ticker} , price: {stock.price}
+                  stock: {stock.ticker} , price: {stock.price}, last updated:{" "}
+                  {stock.last_update}
                </div>
             ))
          )}
