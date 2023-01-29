@@ -22,11 +22,15 @@ Current progress:
    - the stockMatchingClass is a class with methods to match the highest buy to the highest sell order. it creates an object with ticker, buy, seller,  time, price, and quantity.
 - Buy and Sell orders will impact the price of the stock. the new price will be the last matched order price.
 - See a trade history table of all stocks matched and their details.
+- Temporary solution to re-rending json data from back-end. used setInterval inside App.js useEffect functions.
 
  
  next steps:
- - move to a websocket based system using socket.io
+ - move to a websocket based system using socket.io 
  - create an order status for stock trades and adjust back end for that feature
  - use a database instead of using json files
  - though a button, simulate 100s of buy/sell orders and drive prices up or down to test the back-end's reaction
  
+issues:
+- attempted to move to a websocket system for easier back and forth communication, but did not work well
+- attempted to use chokidar to monitor json files for changes, then emit the change through socket.io. did not work well... ended up commenting out the code.

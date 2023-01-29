@@ -6,6 +6,7 @@ const {
    updateTradeHistory,
    getTradeHistory,
    updateStockData,
+   findUpdateJSONdata,
 } = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
@@ -13,13 +14,55 @@ const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
 
 const app = express();
 app.use(cors());
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 const PORT = 5555;
 
 //instantiate a stock exchange (from stockMatchingSystem class)
 const stockExchange = new stockMatchingSystem();
 
-// respond to userPortfolio fetch request from ui (component: App.js)
+//import and set up chokidar to read json file updates
+// const chokidar = require("chokidar");
+
+// const userPortfolioWatcher = chokidar.watch(".Stocks/data/userPortfolio.json", {
+//    ignored: /(^|[\/\\])\../, // ignore dotfiles
+//    persistent: true,
+// });
+
+// let changeListener = async (socket, path) => {
+//    const updatedData = await findUpdateJSONdata(path, userPortfolioTempHold);
+//    console.log(updatedData);
+//    socket.emit("updatedUserProfile", updatedData);
+// };
+
+
+// commenting out socket code, it is not working well
+//import and setup Socket.io
+// const http = require("http").Server(app);
+// const io = require("socket.io")(http);
+
+// io.on("connection", (socket) => {
+//    // Temporary object  to hold the JSON file in its previous state. This object will be used to compare the updated state to find changes in a user's portfolio.
+//    let userPortfolioTempHold = {};
+
+//    socket.on("getUserPortfolio", async (username) => {
+//       const userData = await getUserPortfolio(username);
+//       userPortfolioTempHold = userData;
+//       socket.emit("userPortfolio", userData);
+//    });
+
+//    if (!userPortfolioWatcher) {
+//       userPortfolioWatcher.on("change", (path) => changeListener(socket, path));
+//    }
+
+//    socket.on("disconnect", () => {
+//       userPortfolioWatcher.off("change", (path) =>
+//          changeListener(socket, path)
+//       );
+//    });
+// });
+
+// // respond to userPortfolio fetch request from ui (component: App.js)
 app.get("/userPortfolio", async (req, res) => {
    const userData = await getUserPortfolio(req.query.user);
    res.send(userData);
@@ -98,7 +141,7 @@ const matchedOrders = setInterval(async () => {
       await updateTradeHistory(orders);
       await updateStockData(orders);
 
-      // console.log("matched order: ", orders);
+      console.log("matched order: ", orders);
    }
 }, 1000);
 

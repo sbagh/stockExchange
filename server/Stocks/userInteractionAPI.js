@@ -1,3 +1,4 @@
+const e = require("express");
 const fs = require("fs");
 const { resolve } = require("path");
 
@@ -22,6 +23,35 @@ function getUserPortfolio(user) {
       });
    });
 }
+
+//find updated json data
+function findUpdateJSONdata(filepath, previousState) {
+   return new Promise((resolve, reject) => {
+      fs.read(filepath, "utf-8", (err, data) => {
+         if (err) throw err;
+         else {
+            const newState = JSON.parse(data);
+            for (const user in newState) {
+               if (
+                  !previousState.hasOwnProperty[user] ||
+                  JSON.stringify(previousState[user]) !==
+                     JSON.stringify(newState[user])
+               ) {
+                  resolve(newState[user]);
+                  break;
+               }
+            }
+         }
+      });
+   });
+}
+
+// //get any updates to a user's portfolio from UserPortfolio.json
+// function getUpdatesFromUserPortfolio() {
+//    return new Promise((resolve, reject) => {
+//       //1-
+//    });
+// }
 
 // Get stock data about a ticker from stockData.json
 function getStockData() {
@@ -127,4 +157,5 @@ module.exports = {
    updateTradeHistory,
    getTradeHistory,
    updateStockData,
+   findUpdateJSONdata,
 };
