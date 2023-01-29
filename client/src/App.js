@@ -7,11 +7,7 @@ import TradeHistory from "./components/TradeHistory";
 import io from "socket.io-client";
 
 const App = () => {
-   // initialize socket.io connection:
-   // const socket = io("http://localhost:5555", {
-   //    origin: "http://localhost:3000",
-   //    transports: ["websocket"],
-   // });
+  
 
    //state for selecting users, passed as props to SelectUser component
    const [user, setUser] = useState({ id: 1, name: "user1" });
@@ -37,25 +33,6 @@ const App = () => {
       const interval = setInterval(fetchData, 5000);
       return () => clearInterval(interval);
    }, [user]);
-
-   // commenting out socket code, it is not working well
-   // useEffect(() => {
-   //    const setupPortfolioListener = () => {
-   //       socket.emit("getUserPortfolio", user.name);
-   //       socket.on("userPortfolio", (data) => {
-   //          // console.log(data);
-   //          setUserPortfolio(data);
-   //       });
-   //       socket.on("updatedUserProfile", (data) => {
-   //          setUserPortfolio(data);
-   //       });
-   //    };
-   //    setupPortfolioListener();
-   //    return () => {
-   //       socket.off("userPortfolio");
-   //       socket.off("updatedUserProfile");
-   //    };
-   // }, [user, setUserPortfolio, socket]);
 
    //state and useEffect for rendering and fetching data about a stock (current price, ticker..etc)
    const [stockData, setStockData] = useState({});

@@ -8,14 +8,14 @@ class stockMatchingSystem {
       (this.buyOrders = []), (this.sellOrders = []);
    }
 
-   addBuyOrder(buyer, ticker, quantity, price) {
+   addBuyOrder(buyer, ticker, quantity, price, orderID) {
       const time = new Date().toString();
-      this.buyOrders.push({ buyer, ticker, quantity, price, time });
+      this.buyOrders.push({ buyer, ticker, quantity, price, orderID, time });
    }
 
-   addSellOrder(seller, ticker, quantity, price) {
+   addSellOrder(seller, ticker, quantity, price, orderID) {
       const time = new Date().toString();
-      this.sellOrders.push({ seller, ticker, quantity, price, time });
+      this.sellOrders.push({ seller, ticker, quantity, price, orderID, time });
    }
 
    matchOrders() {
@@ -61,6 +61,8 @@ class stockMatchingSystem {
                   seller: this.sellOrders[j].seller,
                   price: this.sellOrders[j].price,
                   quantity: tradeQuantity,
+                  buyID: this.buyOrders[i].orderID,
+                  sellID: this.sellOrders[i].orderID,
                   time: new Date().toString(),
                });
             }

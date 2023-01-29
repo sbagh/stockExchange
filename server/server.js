@@ -21,48 +21,8 @@ const PORT = 5555;
 //instantiate a stock exchange (from stockMatchingSystem class)
 const stockExchange = new stockMatchingSystem();
 
-//import and set up chokidar to read json file updates
-// const chokidar = require("chokidar");
 
-// const userPortfolioWatcher = chokidar.watch(".Stocks/data/userPortfolio.json", {
-//    ignored: /(^|[\/\\])\../, // ignore dotfiles
-//    persistent: true,
-// });
-
-// let changeListener = async (socket, path) => {
-//    const updatedData = await findUpdateJSONdata(path, userPortfolioTempHold);
-//    console.log(updatedData);
-//    socket.emit("updatedUserProfile", updatedData);
-// };
-
-
-// commenting out socket code, it is not working well
-//import and setup Socket.io
-// const http = require("http").Server(app);
-// const io = require("socket.io")(http);
-
-// io.on("connection", (socket) => {
-//    // Temporary object  to hold the JSON file in its previous state. This object will be used to compare the updated state to find changes in a user's portfolio.
-//    let userPortfolioTempHold = {};
-
-//    socket.on("getUserPortfolio", async (username) => {
-//       const userData = await getUserPortfolio(username);
-//       userPortfolioTempHold = userData;
-//       socket.emit("userPortfolio", userData);
-//    });
-
-//    if (!userPortfolioWatcher) {
-//       userPortfolioWatcher.on("change", (path) => changeListener(socket, path));
-//    }
-
-//    socket.on("disconnect", () => {
-//       userPortfolioWatcher.off("change", (path) =>
-//          changeListener(socket, path)
-//       );
-//    });
-// });
-
-// // respond to userPortfolio fetch request from ui (component: App.js)
+// respond to userPortfolio fetch request from ui (component: App.js)
 app.get("/userPortfolio", async (req, res) => {
    const userData = await getUserPortfolio(req.query.user);
    res.send(userData);
@@ -74,38 +34,43 @@ app.get("/stockData", async (req, res) => {
    res.send(stockData);
 });
 
-// update userPortfolio through the updateUserPortfolio axios put request from ui (component: StockMarket.js)
-app.put("/updateUserPortfolio", async (req, res) => {
-   const { user, userPortfolio } = req.body;
-   const result = await updateUserPortfolioJSON(user, userPortfolio);
-   res.send(result);
-});
-
-// receive buy orders through the stockBuyOrder axios post request from ui (component: StockMarket.js), then send them to the stock exchange
-app.post("/stockBuyOrder", (req, res) => {
+//receive a stock trade order from StockMarket.js
+app.post("/sendTradeOrder", async (req, res) => {
    const {
       user,
-      orderDetails: { ticker, quantity, price },
+      orderDetails: { orderID, ticker, quantity, price, type },
    } = req.body;
-   stockExchange.addBuyOrder(user, ticker, parseInt(quantity), parseInt(price));
-   // console.log("buy orders: ", stockExchange.buyOrders);
-   res.send("done");
-});
+   // console.log(user, orderID, ticker, quantity, price, type );
 
-// receive sell orders through the stockBuyOrder axios post request from ui (component: StockMarket.js), then send them to the stock exchange
-app.post("/stockSellOrder", (req, res) => {
-   const {
-      user,
-      orderDetails: { ticker, quantity, price },
-   } = req.body;
-   stockExchange.addSellOrder(
+   const updatedUserPortfolio = await updateUserPortfolioJSON(
       user,
       ticker,
-      parseInt(quantity),
-      parseInt(price)
+      quantity,
+      price,
+      type
    );
-   // console.log("sell orders: ", stockExchange.sellOrders);
-   res.send("done");
+   // console.log(updatedUserPortfolio);
+
+   //send orders to stockExchange
+   if (type === "buy") {
+      stockExchange.addBuyOrder(
+         user,
+         ticker,
+         parseInt(quantity),
+         parseInt(price),
+         orderID
+      );
+   } else {
+      stockExchange.addSellOrder(
+         user,
+         ticker,
+         parseInt(quantity),
+         parseInt(price),
+         orderID
+      );
+   }
+
+   res.send("test received");
 });
 
 // respond to tradeHistory fetch request from ui (component: App.js)

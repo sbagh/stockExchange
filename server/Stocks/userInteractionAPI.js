@@ -66,13 +66,65 @@ function getStockData() {
    });
 }
 
-// when user buys a stock, update their portofolio json file
-function updateUserPortfolioJSON(user, updatedUserPortfolio) {
+// old updateUserPortfolioJSON, when i was doing the portfolio changes on client:
+// function updateUserPortfolioJSONold(user, updatedUserPortfolio) {
+//    return new Promise((resolve, reject) => {
+//       fs.readFile(userPortfolioLink, "utf-8", (err, data) => {
+//          if (err) throw err;
+//          let usersPortfolios = JSON.parse(data);
+//          usersPortfolios[user.name] = updatedUserPortfolio;
+
+//          //update the changed data:
+//          fs.writeFile(
+//             userPortfolioLink,
+//             JSON.stringify(usersPortfolios),
+//             (err, data) => {
+//                if (err) reject(err);
+//                else {
+//                   resolve(data);
+//                }
+//             }
+//          );
+//       });
+//    });
+// }
+
+function updateUserPortfolioJSON(user, ticker, quantity, price, type) {
    return new Promise((resolve, reject) => {
       fs.readFile(userPortfolioLink, "utf-8", (err, data) => {
          if (err) throw err;
          let usersPortfolios = JSON.parse(data);
-         usersPortfolios[user.name] = updatedUserPortfolio;
+         let userPortfolio = usersPortfolios[user.name];
+
+         //  Find index of the stock ticker being traded inside the userPortfolio.Stocks object
+         const stockIndex = userPortfolio.Stocks.findIndex(
+            (stock) => stock.name === ticker
+         );
+
+         //update users portfolio based on buy order
+         if (type === "buy") {
+            // if the stock already exists in the user's portfolio(stockindex !===-1), then add the bought qty, otherwise add the ticker to the object and assign the qty as value
+            if (stockIndex !== -1) {
+               userPortfolio.Stocks[stockIndex].quantity += parseInt(quantity);
+            } else {
+               userPortfolio.Stocks.push({
+                  name: ticker,
+                  quantity: parseInt(quantity),
+               });
+            }
+
+            // now subtract the qty*price from the user's cash
+            userPortfolio.cash -= parseInt(price) * parseInt(quantity);
+         }
+
+         //update users portfolio based on sell order
+         else {
+            // subtract amount of stocks user has from sell order quantity
+            userPortfolio.Stocks[stockIndex].quantity -= quantity;
+
+            // now add price*qty to the user's cash
+            userPortfolio.cash += parseInt(price) * parseInt(quantity);
+         }
 
          //update the changed data:
          fs.writeFile(
@@ -81,7 +133,7 @@ function updateUserPortfolioJSON(user, updatedUserPortfolio) {
             (err, data) => {
                if (err) reject(err);
                else {
-                  resolve(data);
+                  resolve(userPortfolio);
                }
             }
          );

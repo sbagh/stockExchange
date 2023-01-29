@@ -26,11 +26,12 @@ Current progress:
 
  
  next steps:
+ - Currently refactoring code for better readability, maintenance, and DRY principle
  - move to a websocket based system using socket.io 
  - create an order status for stock trades and adjust back end for that feature
  - use a database instead of using json files
  - though a button, simulate 100s of buy/sell orders and drive prices up or down to test the back-end's reaction
  
 issues:
-- attempted to move to a websocket system for easier back and forth communication, but did not work well
+- attempted to move to a websocket system for easier back and forth communication, websocket is promising but did not work well for now, commented code out.
 - attempted to use chokidar to monitor json files for changes, then emit the change through socket.io. did not work well... ended up commenting out the code.
