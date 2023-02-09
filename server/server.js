@@ -11,6 +11,7 @@ const {
 const cors = require("cors");
 const axios = require("axios");
 const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
+const { dateFormat } = require("./utils/utils.js");
 
 const app = express();
 app.use(cors());
@@ -20,7 +21,6 @@ const PORT = 5555;
 
 //instantiate a stock exchange (from stockMatchingSystem class)
 const stockExchange = new stockMatchingSystem();
-
 
 // respond to userPortfolio fetch request from ui (component: App.js)
 app.get("/userPortfolio", async (req, res) => {
@@ -40,8 +40,11 @@ app.post("/sendTradeOrder", async (req, res) => {
       user,
       orderDetails: { orderID, ticker, quantity, price, type },
    } = req.body;
+
+   //test if order is received:
    // console.log(user, orderID, ticker, quantity, price, type );
 
+   //need to move this to occur AFTER the order is matched
    const updatedUserPortfolio = await updateUserPortfolioJSON(
       user,
       ticker,
@@ -59,6 +62,7 @@ app.post("/sendTradeOrder", async (req, res) => {
          parseInt(quantity),
          parseInt(price),
          orderID
+         // orderStatus
       );
    } else {
       stockExchange.addSellOrder(
@@ -86,19 +90,8 @@ app.get("/tradeHistory", async (req, res) => {
 const matchedOrders = setInterval(async () => {
    const orders = stockExchange.matchOrders();
    if (orders) {
-      //fixing time format first
-      let dateOptions = {
-         year: "numeric",
-         month: "short",
-         day: "numeric",
-         hour: "2-digit",
-         minute: "2-digit",
-         second: "2-digit",
-      };
-      let newTimeFormat = new Date(orders[0].time).toLocaleString(
-         "en-US",
-         dateOptions
-      );
+      //fixing time format first:
+      let newTimeFormat = dateFormat(orders[0].time);
       orders[0].time = newTimeFormat;
       // console.log(orders);
 
