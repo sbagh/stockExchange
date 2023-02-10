@@ -21,28 +21,52 @@ const PORT = 5555;
 
 const service = require("./dbQueries");
 
-// query all users from the database through .getUsers (a dbQueries function)
+//instantiate a stock exchange (from stockMatchingSystem class)
+const stockExchange = new stockMatchingSystem();
+
+// query db for all users (db table: user_portfolio)
 app.get("/getAllUsers", (req, res) => {
-   service.getUsers(req, res).then((users) => {
+   service.getAllUsers(req, res).then((users) => {
       console.log(users);
       res.send(users);
    });
 });
 
-//instantiate a stock exchange (from stockMatchingSystem class)
-const stockExchange = new stockMatchingSystem();
-
-// respond to userPortfolio fetch request from ui (component: App.js)
-app.get("/userPortfolio", async (req, res) => {
-   const userData = await getUserPortfolio(req.query.user);
-   res.send(userData);
+// query db for the user's stock holdings (db table: stock_holdings)
+app.get("/userStockHoldings", (req, res) => {
+   service.getUserStocks(req.query.user_id).then((stocks) => {
+      console.log(stocks);
+      res.send(stocks);
+   });
 });
 
-// respond to stockData fetch request from ui (component: App.js)
-app.get("/stockData", async (req, res) => {
-   const stockData = await getStockData(req);
-   res.send(stockData);
+// query db for stock prices and stock data (db table: stock_data)
+app.get("/getStockData", (req, res) => {
+   service.getStockData(req, res).then((data) => {
+      console.log(data);
+      res.send(data);
+   });
 });
+
+// query db for trade history (db table: trade_history)
+app.get("/getTradeHistory", (req, res) => {
+   service.getTradeHistory(req, res).then((data) => {
+      console.log(data);
+      res.send(data);
+   });
+});
+
+// // respond to userPortfolio fetch request from ui (component: App.js)
+// app.get("/userPortfolio", async (req, res) => {
+//    const userData = await getUserPortfolio(req.query.user);
+//    res.send(userData);
+// });
+
+// // respond to stockData fetch request from ui (component: App.js)
+// app.get("/stockData", async (req, res) => {
+//    const stockData = await getStockData(req);
+//    res.send(stockData);
+// });
 
 //receive a stock trade order from StockMarket.js
 app.post("/sendTradeOrder", async (req, res) => {
