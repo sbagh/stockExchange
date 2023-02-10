@@ -13,8 +13,8 @@ const SelectUser = ({ users, onChange }) => {
          <label>Select user:</label>
          <select onChange={handleChange}>
             {users.map((user) => (
-               <option key={user.id} value={user.id}>
-                  {user.name}
+               <option key={user.user_id} value={user.user_id}>
+                  {user.user_name}
                </option>
             ))}
          </select>

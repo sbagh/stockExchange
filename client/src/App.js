@@ -7,15 +7,25 @@ import TradeHistory from "./components/TradeHistory";
 import io from "socket.io-client";
 
 const App = () => {
-  
-
    //state for selecting users, passed as props to SelectUser component
-   const [user, setUser] = useState({ id: 1, name: "user1" });
-   const users = [
-      { id: 1, name: "user1" },
-      { id: 2, name: "user2" },
-      { id: 3, name: "user3" },
-   ];
+   const [user, setUser] = useState({ user_id: 1, name: "user1" });
+   const [users, setUsers] = useState([]);
+
+   // useEffect to fetch all the users from the DB table, user_portfolio
+   useEffect(() => {
+      fetch("http://localhost:5555/getAllUsers")
+         .then((res) => {
+            if (!res.ok) {
+               throw new Error("network response was not ok");
+            }
+            return res.json();
+         })
+         .then((data) => {
+            console.log(data);
+            setUsers(data);
+         })
+         .catch((err) => console.log(err));
+   }, []);
 
    //state and useEffect for rendering and fetching User Portfolio:
    const [userPortfolio, setUserPortfolio] = useState(null);
@@ -75,8 +85,7 @@ const App = () => {
 
    return (
       <div>
-         <SelectUser users={users} onChange={setUser} />
-
+         {users.length > 0 && <SelectUser users={users} onChange={setUser} />}
          <div className="main-container">
             {userPortfolio && (
                <UserPortfolio

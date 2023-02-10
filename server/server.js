@@ -19,6 +19,16 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 const PORT = 5555;
 
+const service = require("./dbQueries");
+
+// query all users from the database through .getUsers (a dbQueries function)
+app.get("/getAllUsers", (req, res) => {
+   service.getUsers(req, res).then((users) => {
+      console.log(users);
+      res.send(users);
+   });
+});
+
 //instantiate a stock exchange (from stockMatchingSystem class)
 const stockExchange = new stockMatchingSystem();
 
@@ -52,6 +62,7 @@ app.post("/sendTradeOrder", async (req, res) => {
       price,
       type
    );
+
    // console.log(updatedUserPortfolio);
 
    //send orders to stockExchange
