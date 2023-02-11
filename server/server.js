@@ -27,7 +27,7 @@ const stockExchange = new stockMatchingSystem();
 // query db for all users (db table: user_portfolio)
 app.get("/getAllUsers", (req, res) => {
    service.getAllUsers(req, res).then((users) => {
-      console.log(users);
+      // console.log(users);
       res.send(users);
    });
 });
@@ -35,7 +35,7 @@ app.get("/getAllUsers", (req, res) => {
 // query db for the user's stock holdings (db table: stock_holdings)
 app.get("/userStockHoldings", (req, res) => {
    service.getUserStocks(req.query.user_id).then((stocks) => {
-      console.log(stocks);
+      // console.log(stocks);
       res.send(stocks);
    });
 });
@@ -43,17 +43,25 @@ app.get("/userStockHoldings", (req, res) => {
 // query db for stock prices and stock data (db table: stock_data)
 app.get("/getStockData", (req, res) => {
    service.getStockData(req, res).then((data) => {
-      console.log(data);
+      // console.log(data);
       res.send(data);
    });
 });
 
 // query db for trade history (db table: trade_history)
-app.get("/getTradeHistory", (req, res) => {
-   service.getTradeHistory(req, res).then((data) => {
-      console.log(data);
-      res.send(data);
-   });
+// app.get("/getTradeHistory", (req, res) => {
+//    service.getTradeHistory(req, res).then((data) => {
+//       console.log(data);
+//       res.send(data);
+//    });
+// });
+
+app.post("/sendTradeOrder2", (req, res) => {
+   // console.log(req.body)
+   const orderDetails = req.body.orderDetails;
+   // console.log(orderDetails);
+   service.addTradeOrder(orderDetails);
+   console.log(orderDetails);
 });
 
 // // respond to userPortfolio fetch request from ui (component: App.js)

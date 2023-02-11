@@ -6,18 +6,20 @@ import StockPrices from "./components/StockPrices";
 import TradeHistory from "./components/TradeHistory";
 
 const App = () => {
-   //state for selecting users, passed as props to SelectUser component
+   //state for selecting a user , passed as props to SelectUser component
    const [user, setUser] = useState({
       user_id: 1,
       user_name: "user1",
       cash: "20000",
    });
+
+   // state for redering all users from the db table user_portfolio
    const [users, setUsers] = useState([]);
 
-   //state for rendering and fetching User Portfolio:
+   //state for rendering a users portfolio including stocks held and cash:
    const [userPortfolio, setUserPortfolio] = useState([{ stocks: "Loadings" }]);
 
-   //state for rendering and fetching data about a stock (current price, ticker..etc)
+   //state for rendering stock data (current price, ticker..etc)
    const [stockData, setStockData] = useState({});
    const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
 
@@ -54,12 +56,12 @@ const App = () => {
                setStockDataIsLoading={setStockDataIsLoading}
             />
 
-            <TradeHistory
+            {/* <TradeHistory
                tradeHistoryData={tradeHistoryData}
                setTradeHistoryData={setTradeHistoryData}
                tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
                setTradeHistoryDataIsLoading={setTradeHistoryDataIsLoading}
-            />
+            /> */}
          </div>
       </div>
    );

@@ -35,3 +35,37 @@ CREATE TABLE trade_history (
   sell_id UUID NOT NULL,
   matched_time TIMESTAMP NOT NULL
 );
+
+
+CREATE TABLE stock_orders (
+    trade_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES user_portfolio(user_id),
+    order_type TEXT NOT NULL,
+    ticker TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    price INTEGER NOT NULL,
+    order_time TIMESTAMP NOT NULL,
+    order_status TEXT NOT NULL
+)
+
+CREATE TABLE matched_orders (
+    matched_order_id SERIAL PRIMARY KEY,
+    buy_order_id INTEGER NOT NULL REFERENCES stock_orders(trade_id),
+    sell_order_id INTEGER NOT NULL REFERENCES stock_orders(trade_id),
+    matched_time TIMESTAMP NOT NULL
+)
+
+DROP TABLE trade_history;
+
+Drop Table stock_orders;
+
+Create TABLE stock_orders (
+    trade_id TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES user_portfolio(user_id),
+    order_type TEXT NOT NULL,
+    ticker TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    price INTEGER NOT NULL,
+    order_time TIMESTAMP NOT NULL,
+    order_status TEXT NOT NULL
+)

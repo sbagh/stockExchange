@@ -6,6 +6,7 @@ const TradeHistory = ({
    tradeHistoryDataIsLoading,
    setTradeHistoryDataIsLoading,
 }) => {
+   
    //use effect to fetch trade history from trade_history table
    useEffect(() => {
       const fetchData = () => {
