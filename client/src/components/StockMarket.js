@@ -29,22 +29,21 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
    };
 
    // handle submit of form, passed as props to StockOrderForm.js
-   const handleSubmit = () => {
-      //set the remaining body of orderDetails:
-
+   const handleSubmit = (e) => {
       console.log("order: ", orderDetails);
       sendTradeOrder();
    };
 
+   // send trade order to back end via body of an axios request
    const sendTradeOrder = async () => {
-      //complete the orderDetails then send order to back-end
+      //set the remaining body of orderDetails:
       orderDetails.orderID = uuidv4();
       orderDetails.userID = user.user_id;
       orderDetails.order_time = new Date();
       orderDetails.order_status = "Pending";
 
       try {
-         await axios.post("http://localhost:5555/sendTradeOrder2", {
+         await axios.post("http://localhost:5555/sendTradeOrder", {
             // user,
             orderDetails,
          });
@@ -52,9 +51,9 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
          console.log("buy order sent");
          console.log(orderDetails);
 
-         // setOrderFeedback(
-         //    `${user.name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-         // );
+         setOrderFeedback(
+            `${user.name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
+         );
       } catch (err) {
          console.log("did not send", err);
       }

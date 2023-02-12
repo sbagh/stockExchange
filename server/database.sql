@@ -69,3 +69,13 @@ Create TABLE stock_orders (
     order_time TIMESTAMP NOT NULL,
     order_status TEXT NOT NULL
 )
+
+Drop Table matched_orders;
+
+CREATE TABLE matched_orders (
+    matched_order_id SERIAL PRIMARY KEY,
+    buy_order_id TEXT NOT NULL REFERENCES stock_orders(trade_id),
+    sell_order_id TEXT NOT NULL REFERENCES stock_orders(trade_id),
+    matched_time TIMESTAMP NOT NULL
+);
+

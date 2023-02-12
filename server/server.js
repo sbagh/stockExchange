@@ -48,7 +48,7 @@ app.get("/getStockData", (req, res) => {
    });
 });
 
-// query db for trade history (db table: trade_history)
+// query db for trade history (db table: matched_orders)
 // app.get("/getTradeHistory", (req, res) => {
 //    service.getTradeHistory(req, res).then((data) => {
 //       console.log(data);
@@ -56,13 +56,52 @@ app.get("/getStockData", (req, res) => {
 //    });
 // });
 
-app.post("/sendTradeOrder2", (req, res) => {
+app.post("/sendTradeOrder", (req, res) => {
    // console.log(req.body)
    const orderDetails = req.body.orderDetails;
    // console.log(orderDetails);
    service.addTradeOrder(orderDetails);
-   console.log(orderDetails);
+
+   orderDetails.order_type === "buy"
+      ? stockExchange.addBuyOrder(
+           orderDetails.userID,
+           orderDetails.ticker,
+           parseInt(orderDetails.quantity),
+           parseInt(orderDetails.price),
+           orderDetails.orderID
+        )
+      : stockExchange.addSellOrder(
+           orderDetails.userID,
+           orderDetails.ticker,
+           parseInt(orderDetails.quantity),
+           parseInt(orderDetails.price),
+           orderDetails.orderID
+        );
 });
+
+//Stock Exchange functionalities:
+//1- match buy/sell orders inside a setInterval function
+//2- then send the most recent matched order to tradeHistory.json (append the json file)
+const matchedOrders = setInterval(async () => {
+   const orders = stockExchange.matchOrders();
+   if (orders) {
+      //fixing time format first:
+      // let newTimeFormat = dateFormat(orders[0].time);
+      // orders[0].time = newTimeFormat;
+
+      // console.log(orders);
+
+      //updating tradeHistory.json and stockData.json:
+      // await updateTradeHistory(orders);
+      // await updateStockData(orders);
+
+      service.updateMatchedOrders(orders[0]);
+      service.updateStockData(orders[0].price, orders[0].ticker);
+      service.updateUserPortfolio(orders[0].price, orders[0].quantity)
+
+      console.log("matched order: ", orders);
+   }
+}, 1000);
 
 // // respond to userPortfolio fetch request from ui (component: App.js)
 // app.get("/userPortfolio", async (req, res) => {
@@ -77,73 +116,54 @@ app.post("/sendTradeOrder2", (req, res) => {
 // });
 
 //receive a stock trade order from StockMarket.js
-app.post("/sendTradeOrder", async (req, res) => {
-   const {
-      user,
-      orderDetails: { orderID, ticker, quantity, price, type },
-   } = req.body;
+// app.post("/sendTradeOrder", async (req, res) => {
+//    const {
+//       user,
+//       orderDetails: { orderID, ticker, quantity, price, type },
+//    } = req.body;
 
-   //test if order is received:
-   // console.log(user, orderID, ticker, quantity, price, type );
+//    //test if order is received:
+//    // console.log(user, orderID, ticker, quantity, price, type );
 
-   //need to move this to occur AFTER the order is matched
-   const updatedUserPortfolio = await updateUserPortfolioJSON(
-      user,
-      ticker,
-      quantity,
-      price,
-      type
-   );
+//    //need to move this to occur AFTER the order is matched
+//    const updatedUserPortfolio = await updateUserPortfolioJSON(
+//       user,
+//       ticker,
+//       quantity,
+//       price,
+//       type
+//    );
 
-   // console.log(updatedUserPortfolio);
+//    // console.log(updatedUserPortfolio);
 
-   //send orders to stockExchange
-   if (type === "buy") {
-      stockExchange.addBuyOrder(
-         user,
-         ticker,
-         parseInt(quantity),
-         parseInt(price),
-         orderID
-         // orderStatus
-      );
-   } else {
-      stockExchange.addSellOrder(
-         user,
-         ticker,
-         parseInt(quantity),
-         parseInt(price),
-         orderID
-      );
-   }
+//    //send orders to stockExchange
+//    if (type === "buy") {
+//       stockExchange.addBuyOrder(
+//          user,
+//          ticker,
+//          parseInt(quantity),
+//          parseInt(price),
+//          orderID
+//          // orderStatus
+//       );
+//    } else {
+//       stockExchange.addSellOrder(
+//          user,
+//          ticker,
+//          parseInt(quantity),
+//          parseInt(price),
+//          orderID
+//       );
+//    }
 
-   res.send("test received");
-});
+//    res.send("test received");
+// });
 
 // respond to tradeHistory fetch request from ui (component: App.js)
-app.get("/tradeHistory", async (req, res) => {
-   const stockData = await getTradeHistory(req);
-   res.send(stockData);
-   // console.log(stockData);
-});
-
-//Stock Exchange functionalities:
-//1- match buy/sell orders inside a setInterval function
-//2- then send the most recent matched order to tradeHistory.json (append the json file)
-const matchedOrders = setInterval(async () => {
-   const orders = stockExchange.matchOrders();
-   if (orders) {
-      //fixing time format first:
-      let newTimeFormat = dateFormat(orders[0].time);
-      orders[0].time = newTimeFormat;
-      // console.log(orders);
-
-      //updating tradeHistory.json and stockData.json:
-      await updateTradeHistory(orders);
-      await updateStockData(orders);
-
-      console.log("matched order: ", orders);
-   }
-}, 1000);
+// app.get("/tradeHistory", async (req, res) => {
+//    const stockData = await getTradeHistory(req);
+//    res.send(stockData);
+//    // console.log(stockData);
+// });
 
 app.listen(PORT, () => console.log("listening to PORT", PORT));

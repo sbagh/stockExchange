@@ -50,13 +50,13 @@ const getStockData = async (req, res) => {
    }
 };
 
-//function to query trade_history db and get a json of trade history
+//function to query matched_orders db and get a json of trade history
 // const getTradeHistory = async (req, res) => {
 //    try {
 //       const queryString =
-//          "SELECT ticker, buy_order_id, seller_id, price, quantity, time FROM matched_orders";
+//          "SELECT ticker, buy_order_id, sell_id, price, quantity, time FROM matched_orders";
 //       const results = await pool.query(queryString);
-//       resolve(results.rows);
+//       return results.rows;
 //    } catch (error) {
 //       console.log(error);
 //       throw error;
@@ -87,10 +87,39 @@ const addTradeOrder = async (orderDetails) => {
    }
 };
 
+// after matching an order, update the matched_orders tabe
+const updateMatchedOrders = async (order) => {
+   try {
+      const queryString =
+         "INSERT INTO public.matched_orders(buy_order_id, sell_order_id, matched_time) VALUES($1,$2,$3)";
+      const queryParameters = [order.buyID, order.sellID, order.time];
+
+      await pool.query(queryString, queryParameters);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
+//after matching an order, update the stock price of the ticker
+const updateStockData = async (order_price, order_ticker) => {
+   try {
+      const queryString = "UPDATE stock_data SET price = $1 WHERE ticker = $2";
+      const queryParameters = [order_price, order_ticker];
+
+      await pool.query(queryString, queryParameters);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
 module.exports = {
    getAllUsers,
    getUserStocks,
    getStockData,
    // getTradeHistory,
    addTradeOrder,
+   updateMatchedOrders,
+   updateStockData,
 };
