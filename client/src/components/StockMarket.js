@@ -30,7 +30,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
 
    // handle submit of form, passed as props to StockOrderForm.js
    const handleSubmit = (e) => {
-      console.log("order: ", orderDetails);
+      // console.log("order: ", orderDetails);
       sendTradeOrder();
    };
 
@@ -42,14 +42,16 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       orderDetails.order_time = new Date();
       orderDetails.order_status = "Pending";
 
+      console.log("order: ", orderDetails);
+
       try {
          await axios.post("http://localhost:5555/sendTradeOrder", {
             // user,
             orderDetails,
          });
 
-         console.log("buy order sent");
-         console.log(orderDetails);
+         console.log("order sent");
+         // console.log(orderDetails);
 
          setOrderFeedback(
             `${user.name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`

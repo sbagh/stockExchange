@@ -2,6 +2,7 @@ const { query } = require("express");
 
 const Pool = require("pg").Pool;
 
+// conect to db :
 const pool = new Pool({
    user: "postgres",
    password: "password",
@@ -114,6 +115,48 @@ const updateStockData = async (order_price, order_ticker) => {
    }
 };
 
+//after matching an order, update the user_porftolio table (cash value for buyer and sell)
+const updateUserPortfolio = async (
+   buy_id,
+   sell_id,
+   order_price,
+   order_quantity
+) => {
+   // first get the total cost of the buy/sell order
+   let totalCost = order_price * order_quantity;
+
+   try {
+      // get the user id of the buyer
+      const buyUserRow = await pool.query(
+         "SELECT user_id FROM stock_orders WHERE trade_id = $1 ",
+         [buy_id]
+      );
+      const buyUserId = buyUserRow.rows[0].user_id;
+
+      // get the user id of the seller
+      const sellUserRow = await pool.query(
+         "SELECT user_id FROM stock_orders WHERE trade_id = $1",
+         [sell_id]
+      );
+      const sellUserId = sellUserRow.rows[0].user_id;
+
+      // update the buyers cash in user_portfolio
+      await pool.query(
+         "UPDATE user_portfolio SET cash = cash - $1 WHERE user_id = $2",
+         [totalCost, buyUserId]
+      );
+
+      // update the sellers cash in user_portfolio
+      await pool.query(
+         "UPDATE user_portfolio SET cash = cash + $1 WHERE user_id = $2",
+         [totalCost, sellUserId]
+      );
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
 module.exports = {
    getAllUsers,
    getUserStocks,
@@ -122,4 +165,5 @@ module.exports = {
    addTradeOrder,
    updateMatchedOrders,
    updateStockData,
+   updateUserPortfolio,
 };

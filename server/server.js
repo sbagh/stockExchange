@@ -94,12 +94,18 @@ const matchedOrders = setInterval(async () => {
       //updating tradeHistory.json and stockData.json:
       // await updateTradeHistory(orders);
       // await updateStockData(orders);
-
-      service.updateMatchedOrders(orders[0]);
-      service.updateStockData(orders[0].price, orders[0].ticker);
-      service.updateUserPortfolio(orders[0].price, orders[0].quantity)
-
-      console.log("matched order: ", orders);
+      let order = orders[0];
+      console.log(order);
+      service.updateMatchedOrders(order);
+      service.updateStockData(order.price, order.ticker);
+      service.updateUserPortfolio(
+         order.buyID,
+         order.sellID,
+         order.price,
+         order.quantity
+      );
+      
+      // service.updateStockHoldings(order.buyID, order.sellID, order.ticker, order.quantity);
    }
 }, 1000);
 

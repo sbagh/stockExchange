@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const UserPortfolio = ({ userPortfolio, setUserPortfolio, user }) => {
-   //useEffect to fetch user's stock holdings from db table, stock_holdings
+   //useEffect to fetch user's stock holdings from stock_holdings table
    useEffect(() => {
       const fetchData = () => {
          fetch(

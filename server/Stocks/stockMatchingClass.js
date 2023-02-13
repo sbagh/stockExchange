@@ -11,8 +11,6 @@ class stockMatchingSystem {
    addBuyOrder(buyer, ticker, quantity, price, orderID) {
       const time = new Date().toString();
       this.buyOrders.push({ buyer, ticker, quantity, price, orderID, time });
-
-      // return (orderStatus = "Open");
    }
 
    addSellOrder(seller, ticker, quantity, price, orderID) {
@@ -63,7 +61,7 @@ class stockMatchingSystem {
                   price: this.sellOrders[i].price,
                   time: new Date(),
                   ticker: this.sellOrders[i].ticker,
-                  quantity: this.sellOrders[i].quantity,
+                  quantity: tradeQuantity,
                });
             }
 
