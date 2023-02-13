@@ -89,13 +89,10 @@ const matchedOrders = setInterval(async () => {
       // let newTimeFormat = dateFormat(orders[0].time);
       // orders[0].time = newTimeFormat;
 
-      // console.log(orders);
-
-      //updating tradeHistory.json and stockData.json:
-      // await updateTradeHistory(orders);
-      // await updateStockData(orders);
       let order = orders[0];
       console.log(order);
+
+      // update tables after matching an order: matched_ordres, stock_data, user_portfolio, stock_holdings tables
       service.updateMatchedOrders(order);
       service.updateStockData(order.price, order.ticker);
       service.updateUserPortfolio(
@@ -104,72 +101,15 @@ const matchedOrders = setInterval(async () => {
          order.price,
          order.quantity
       );
-      
+      service.updateStockHoldings(
+         order.buyID,
+         order.sellID,
+         order.ticker,
+         order.quantity
+      );
+
       // service.updateStockHoldings(order.buyID, order.sellID, order.ticker, order.quantity);
    }
 }, 1000);
-
-// // respond to userPortfolio fetch request from ui (component: App.js)
-// app.get("/userPortfolio", async (req, res) => {
-//    const userData = await getUserPortfolio(req.query.user);
-//    res.send(userData);
-// });
-
-// // respond to stockData fetch request from ui (component: App.js)
-// app.get("/stockData", async (req, res) => {
-//    const stockData = await getStockData(req);
-//    res.send(stockData);
-// });
-
-//receive a stock trade order from StockMarket.js
-// app.post("/sendTradeOrder", async (req, res) => {
-//    const {
-//       user,
-//       orderDetails: { orderID, ticker, quantity, price, type },
-//    } = req.body;
-
-//    //test if order is received:
-//    // console.log(user, orderID, ticker, quantity, price, type );
-
-//    //need to move this to occur AFTER the order is matched
-//    const updatedUserPortfolio = await updateUserPortfolioJSON(
-//       user,
-//       ticker,
-//       quantity,
-//       price,
-//       type
-//    );
-
-//    // console.log(updatedUserPortfolio);
-
-//    //send orders to stockExchange
-//    if (type === "buy") {
-//       stockExchange.addBuyOrder(
-//          user,
-//          ticker,
-//          parseInt(quantity),
-//          parseInt(price),
-//          orderID
-//          // orderStatus
-//       );
-//    } else {
-//       stockExchange.addSellOrder(
-//          user,
-//          ticker,
-//          parseInt(quantity),
-//          parseInt(price),
-//          orderID
-//       );
-//    }
-
-//    res.send("test received");
-// });
-
-// respond to tradeHistory fetch request from ui (component: App.js)
-// app.get("/tradeHistory", async (req, res) => {
-//    const stockData = await getTradeHistory(req);
-//    res.send(stockData);
-//    // console.log(stockData);
-// });
 
 app.listen(PORT, () => console.log("listening to PORT", PORT));
