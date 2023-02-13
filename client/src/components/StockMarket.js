@@ -6,11 +6,14 @@ import { v4 as uuidv4 } from "uuid";
 const StockMarket = ({ stockData, userPortfolio, user }) => {
    //state about order details when buying/selling a stock
    const [orderDetails, setOrderDetails] = useState({
-      orderID: uuidv4(),
+      orderID: "",
+      userID: "",
+      order_type: "buy",
       ticker: "",
       quantity: "",
       price: "",
-      type: "buy",
+      order_time: "",
+      order_status: "",
    });
 
    //state for returning a message when user buys/sells a stock:
@@ -26,33 +29,33 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
    };
 
    // handle submit of form, passed as props to StockOrderForm.js
-   const handleSubmit = () => {
+   const handleSubmit = (e) => {
       // console.log("order: ", orderDetails);
       sendTradeOrder();
    };
 
+   // send trade order to back end via body of an axios request
    const sendTradeOrder = async () => {
-      //set order-status to pending as we are just sending an order from UI to backend
-      // orderDetails.orderStatus = "pending";
-      //send order to back-end
+      //set the remaining body of orderDetails:
+      orderDetails.orderID = uuidv4();
+      orderDetails.userID = user.user_id;
+      orderDetails.order_time = new Date();
+      orderDetails.order_status = "Pending";
+
+      console.log("order: ", orderDetails);
+
       try {
          await axios.post("http://localhost:5555/sendTradeOrder", {
-            user,
+            // user,
             orderDetails,
          });
 
-         console.log("buy order sent");
-         console.log(orderDetails);
+         console.log("order sent");
+         // console.log(orderDetails);
 
-         if (orderDetails.type === "buy") {
-            setOrderFeedback(
-               `${user.name}'s buy order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-            );
-         } else if (orderDetails.type === "sell") {
-            setOrderFeedback(
-               `${user.name}'s sell order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-            );
-         }
+         setOrderFeedback(
+            `${user.name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
+         );
       } catch (err) {
          console.log("did not send", err);
       }

@@ -4,88 +4,41 @@ import StockMarket from "./components/StockMarket";
 import SelectUser from "./components/SelectUser";
 import StockPrices from "./components/StockPrices";
 import TradeHistory from "./components/TradeHistory";
-import io from "socket.io-client";
 
 const App = () => {
-  
+   //state for selecting a user , passed as props to SelectUser component
+   const [user, setUser] = useState({
+      user_id: 1,
+      user_name: "user1",
+      cash: "20000",
+   });
 
-   //state for selecting users, passed as props to SelectUser component
-   const [user, setUser] = useState({ id: 1, name: "user1" });
-   const users = [
-      { id: 1, name: "user1" },
-      { id: 2, name: "user2" },
-      { id: 3, name: "user3" },
-   ];
+   // state for redering all users from the db table user_portfolio
+   const [users, setUsers] = useState([]);
 
-   //state and useEffect for rendering and fetching User Portfolio:
-   const [userPortfolio, setUserPortfolio] = useState(null);
-   useEffect(() => {
-      const fetchData = () => {
-         fetch(`http://localhost:5555/userPortfolio?user=${user.name}`)
-            .then((res) => res.json())
-            .then((data) => {
-               setUserPortfolio(data);
-            })
-            .catch((err) => console.log(err));
-      };
+   //state for rendering a users portfolio including stocks held and cash:
+   const [userPortfolio, setUserPortfolio] = useState([{ stocks: "Loadings" }]);
 
-      fetchData();
-      const interval = setInterval(fetchData, 5000);
-      return () => clearInterval(interval);
-   }, [user]);
-
-   //state and useEffect for rendering and fetching data about a stock (current price, ticker..etc)
+   //state for rendering stock data (current price, ticker..etc)
    const [stockData, setStockData] = useState({});
    const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
-   useEffect(() => {
-      const fetchData = () => {
-         fetch("http://localhost:5555/stockData")
-            .then((res) => res.json())
-            .then((data) => {
-               setStockData(data);
-               setStockDataIsLoading(false);
-            })
-            .catch((err) => console.log(err.message));
-      };
 
-      fetchData();
-      const interval = setInterval(fetchData, 5000);
-      return () => clearInterval(interval);
-   }, []);
-
-   //state and useEffect for rendering stock trade history from tradeHistory.json
+   //state for rendering stock trade history from tradeHistory.json
    const [tradeHistoryData, setTradeHistoryData] = useState({});
    const [tradeHistoryDataIsLoading, setTradeHistoryDataIsLoading] =
       useState(true);
-   useEffect(() => {
-      const fetchData = () => {
-         fetch("http://localhost:5555/tradeHistory")
-            .then((res) => res.json())
-            .then((data) => {
-               setTradeHistoryData(data);
-               setTradeHistoryDataIsLoading(false);
-               // console.log(data);
-            })
-            .catch((err) => console.log("did not get data", err));
-      };
-      fetchData();
-      const interval = setInterval(fetchData, 5000);
-      return () => clearInterval(interval);
-   }, [tradeHistoryData]);
 
    return (
       <div>
-         <SelectUser users={users} onChange={setUser} />
+         <SelectUser users={users} setUsers={setUsers} setUser={setUser} />
 
          <div className="main-container">
-            {userPortfolio && (
-               <UserPortfolio
-                  className="user-portfolio"
-                  userPortfolio={userPortfolio}
-                  user={user}
-               />
-            )}
-
+            <UserPortfolio
+               className="user-portfolio"
+               user={user}
+               userPortfolio={userPortfolio}
+               setUserPortfolio={setUserPortfolio}
+            />
             {stockData && (
                <StockMarket
                   key={userPortfolio}
@@ -95,19 +48,20 @@ const App = () => {
                   user={user}
                />
             )}
-            {stockData && (
-               <StockPrices
-                  stockData={stockData}
-                  stockDataIsLoading={stockDataIsLoading}
-               />
-            )}
 
-            {tradeHistoryData && (
-               <TradeHistory
-                  tradeHistoryData={tradeHistoryData}
-                  tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
-               />
-            )}
+            <StockPrices
+               stockData={stockData}
+               stockDataIsLoading={stockDataIsLoading}
+               setStockData={setStockData}
+               setStockDataIsLoading={setStockDataIsLoading}
+            />
+
+            {/* <TradeHistory
+               tradeHistoryData={tradeHistoryData}
+               setTradeHistoryData={setTradeHistoryData}
+               tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
+               setTradeHistoryDataIsLoading={setTradeHistoryDataIsLoading}
+            /> */}
          </div>
       </div>
    );
