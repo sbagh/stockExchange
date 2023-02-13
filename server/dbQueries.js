@@ -149,7 +149,6 @@ const updateUserPortfolio = async (
          "UPDATE user_portfolio SET cash = cash + $1 WHERE user_id = $2",
          [totalCost, sellUserId]
       );
-      
    } catch (error) {
       console.log(error);
       throw error;
@@ -170,7 +169,6 @@ const updateStockHoldings = async (buy_id, sell_id, ticker, quantity) => {
       "SELECT quantity FROM stock_holdings where (user_id = $1 and stock_ticker = $2)",
       [buyUserId, ticker]
    );
-
    const buyersOldQuantity = buyersCurrentQuantityRow.rows[0].quantity;
 
    if (!buyersOldQuantity) {
@@ -198,7 +196,6 @@ const updateStockHoldings = async (buy_id, sell_id, ticker, quantity) => {
       "SELECT quantity FROM stock_holdings where (user_id = $1 and stock_ticker = $2)",
       [buyUserId, ticker]
    );
-
    const sellersOldQuantity = buyersCurrentQuantityRow.rows[0].quantity;
    const sellersNewQuantity = sellersOldQuantity - quantity;
    await pool.query(

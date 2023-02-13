@@ -19,6 +19,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 const PORT = 5555;
 
+// require db connection and queries:
 const service = require("./dbQueries");
 
 //instantiate a stock exchange (from stockMatchingSystem class)
@@ -56,6 +57,7 @@ app.get("/getStockData", (req, res) => {
 //    });
 // });
 
+// receive trade order, add it to buy/sell order from stockMatching class, and update stock_order table from db
 app.post("/sendTradeOrder", (req, res) => {
    // console.log(req.body)
    const orderDetails = req.body.orderDetails;
@@ -80,8 +82,7 @@ app.post("/sendTradeOrder", (req, res) => {
 });
 
 //Stock Exchange functionalities:
-//1- match buy/sell orders inside a setInterval function
-//2- then send the most recent matched order to tradeHistory.json (append the json file)
+//match buy/sell orders inside a setInterval function then update db tables
 const matchedOrders = setInterval(async () => {
    const orders = stockExchange.matchOrders();
    if (orders) {
@@ -90,9 +91,9 @@ const matchedOrders = setInterval(async () => {
       // orders[0].time = newTimeFormat;
 
       let order = orders[0];
-      console.log(order);
+      // console.log(order);
 
-      // update tables after matching an order: matched_ordres, stock_data, user_portfolio, stock_holdings tables
+      // update db tables after matching an order: matched_orders, stock_data, user_portfolio, stock_holdings tables
       service.updateMatchedOrders(order);
       service.updateStockData(order.price, order.ticker);
       service.updateUserPortfolio(
@@ -107,8 +108,6 @@ const matchedOrders = setInterval(async () => {
          order.ticker,
          order.quantity
       );
-
-      // service.updateStockHoldings(order.buyID, order.sellID, order.ticker, order.quantity);
    }
 }, 1000);
 
