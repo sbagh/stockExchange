@@ -7,17 +7,13 @@ import TradeHistory from "./components/TradeHistory";
 
 const App = () => {
    //state for selecting a user , passed as props to SelectUser component
-   const [user, setUser] = useState({
-      user_id: 1,
-      user_name: "user1",
-      cash: "20000",
-   });
+   const [user, setUser] = useState({});
 
    // state for redering all users from the db table user_portfolio
    const [users, setUsers] = useState([]);
 
    //state for rendering a users portfolio including stocks held and cash:
-   const [userPortfolio, setUserPortfolio] = useState([{ stocks: "Loadings" }]);
+   const [userPortfolio, setUserPortfolio] = useState([]);
 
    //state for rendering stock data (current price, ticker..etc)
    const [stockData, setStockData] = useState({});
@@ -33,12 +29,15 @@ const App = () => {
          <SelectUser users={users} setUsers={setUsers} setUser={setUser} />
 
          <div className="main-container">
-            <UserPortfolio
-               className="user-portfolio"
-               user={user}
-               userPortfolio={userPortfolio}
-               setUserPortfolio={setUserPortfolio}
-            />
+            {user.user_id && (
+               <UserPortfolio
+                  className="user-portfolio"
+                  user={user}
+                  userPortfolio={userPortfolio}
+                  setUserPortfolio={setUserPortfolio}
+               />
+            )}
+
             {stockData && (
                <StockMarket
                   key={userPortfolio}
@@ -55,7 +54,6 @@ const App = () => {
                setStockData={setStockData}
                setStockDataIsLoading={setStockDataIsLoading}
             />
-
             {/* <TradeHistory
                tradeHistoryData={tradeHistoryData}
                setTradeHistoryData={setTradeHistoryData}

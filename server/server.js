@@ -1,13 +1,4 @@
 const express = require("express");
-const {
-   getUserPortfolio,
-   getStockData,
-   updateUserPortfolioJSON,
-   updateTradeHistory,
-   getTradeHistory,
-   updateStockData,
-   findUpdateJSONdata,
-} = require("./Stocks/userInteractionAPI");
 const cors = require("cors");
 const axios = require("axios");
 const { stockMatchingSystem } = require("./Stocks/stockMatchingClass");
@@ -91,7 +82,7 @@ const matchedOrders = setInterval(async () => {
       // orders[0].time = newTimeFormat;
 
       let order = orders[0];
-      // console.log(order);
+      console.log(order);
 
       // update db tables after matching an order: matched_orders, stock_data, user_portfolio, stock_holdings tables
       service.updateMatchedOrders(order);
@@ -102,12 +93,12 @@ const matchedOrders = setInterval(async () => {
          order.price,
          order.quantity
       );
-      service.updateStockHoldings(
-         order.buyID,
-         order.sellID,
-         order.ticker,
-         order.quantity
-      );
+      // service.updateStockHoldings(
+      //    order.buyID,
+      //    order.sellID,
+      //    order.ticker,
+      //    order.quantity
+      // );
    }
 }, 1000);
 
