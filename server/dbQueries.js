@@ -115,6 +115,20 @@ const updateStockDataTable = async (order_price, order_ticker) => {
    }
 };
 
+//update order status in stock_orders table
+const updateOrderStatusStockOrdersTable = async (buy_id, sell_id) => {
+   try {
+      const queryString =
+         "UPDATE stock_orders SET order_status =$1 WHERE trade_id = $2 OR trade_id = $3";
+      const queryParameters = ["Closed", buy_id, sell_id];
+
+      await pool.query(queryString, queryParameters);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
 //after matching an order, update the user_porftolio table (cash value for buyer and sell)
 const updateUserPortfolioTable = async (
    buy_id,
@@ -220,6 +234,7 @@ module.exports = {
    // getTradeHistory,
    addTradeOrder,
    updateMatchedOrdersTable,
+   updateOrderStatusStockOrdersTable,
    updateStockDataTable,
    updateUserPortfolioTable,
    updateStockHoldingsTable,
