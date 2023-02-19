@@ -19,9 +19,6 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
    //state for returning a message when user buys/sells a stock:
    const [orderFeedback, setOrderFeedback] = useState("");
 
-   //state for order status (a property of orderDetails)
-   // const  [orderStatus, setOrderStatus] = useState(orderDetails.orderStatus)
-
    // handle user input on the form when placing a buy/sell order, passed as props to the StockOrderForm.js
    const handleChange = (e) => {
       const { name, value } = e.target;
@@ -45,17 +42,17 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       // console.log("order: ", orderDetails);
 
       try {
-         await axios.post("http://localhost:5555/sendTradeOrder", {
-            // user,
-            orderDetails,
-         });
-
-         console.log("order sent");
-         // console.log(orderDetails);
-
-         setOrderFeedback(
-            `${user.name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-         );
+         await axios
+            .post("http://localhost:5555/sendTradeOrder", {
+               // user,
+               orderDetails,
+            })
+            .then(() => {
+               console.log("order sent");
+               setOrderFeedback(
+                  `${user.user_name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
+               );
+            });
       } catch (err) {
          console.log("did not send", err);
       }
@@ -68,9 +65,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
             handleChange={handleChange}
             handleSubmit={handleSubmit}
          />
-
-         <br></br>
-         <div>{orderFeedback}</div>
+         <>{orderFeedback}</>
          {/* <br></br> */}
          {/* <div>Order Status: {orderDetails.orderStatus}</div> */}
       </div>

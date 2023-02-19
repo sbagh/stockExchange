@@ -16,7 +16,7 @@ const UserPortfolio = ({ userPortfolio, setUserPortfolio, user }) => {
             const userStockHoldings = await response.json();
             setUserPortfolio(userStockHoldings);
             console.log(
-               "interval fetch userStockHoldings: ",
+               "interval fetching userStockHoldings: ",
                userStockHoldings
             );
          } catch (error) {
