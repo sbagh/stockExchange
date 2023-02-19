@@ -41,7 +41,7 @@ const getUserStocks = async (user_id) => {
 const getUserStockOrders = async (user_id) => {
    try {
       const queryString =
-         "SELECT (order_type, ticker, quantity, price, order_status, order_time) FROM stock_orders WHERE user_id = $1 ORDER BY order_time DESC ";
+         "SELECT (order_type, ticker, quantity, price, order_status, order_time, trade_id) FROM stock_orders WHERE user_id = $1 ORDER BY order_time DESC ";
       const queryParameter = [user_id];
       const result = await pool.query(queryString, queryParameter);
       return result.rows;
@@ -136,6 +136,20 @@ const updateOrderStatusStockOrdersTable = async (buy_id, sell_id) => {
       const queryParameters = ["Closed", buy_id, sell_id];
 
       await pool.query(queryString, queryParameters);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
+//update order status to canceled in stock_orders table after an order is canceled
+const updateOrderStatusToCanceled = async (order_id) => {
+   try {
+      const queryString =
+         "UPDATE stock_orders SET order_status = $1 where trade_id = $2";
+      const queryParameter = ["Canceled", order_id];
+
+      await pool.query(queryString, queryParameter);
    } catch (error) {
       console.log(error);
       throw error;
@@ -249,6 +263,7 @@ module.exports = {
    addTradeOrder,
    updateMatchedOrdersTable,
    updateOrderStatusStockOrdersTable,
+   updateOrderStatusToCanceled,
    updateStockDataTable,
    updateUserPortfolioTable,
    updateStockHoldingsTable,

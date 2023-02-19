@@ -82,6 +82,16 @@ app.post("/sendTradeOrder", (req, res) => {
         );
 });
 
+// remove an order from buyOrders/sellOrders array in stockExchange and update order_status to "Canceled" in stock_orders table
+app.put("/cancelTradeOrder", (req, res) => {
+   stockExchange.removeOrder(req.query.order_id, req.query.order_type);
+   service.updateOrderStatusToCanceled(req.query.order_id);
+
+   res.send("order canceled");
+   console.log(stockExchange.buyOrders);
+   console.log(stockExchange.sellOrders);
+});
+
 //Stock Exchange functionalities:
 //match buy/sell orders inside a setInterval function then update db tables
 const matchedOrders = setInterval(async () => {
