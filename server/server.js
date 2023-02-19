@@ -53,6 +53,8 @@ app.post("/sendTradeOrder", (req, res) => {
    // console.log(req.body)
    const orderDetails = req.body.orderDetails;
    // console.log(orderDetails);
+   orderDetails.order_status = "Open";
+
    service.addTradeOrder(orderDetails);
 
    orderDetails.order_type === "buy"
