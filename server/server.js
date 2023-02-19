@@ -32,6 +32,14 @@ app.get("/userStockHoldings", (req, res) => {
    });
 });
 
+//query to get a specific user's orders (db table: stock_orders)
+app.get("/getUserStockOrders", (req, res) => {
+   service.getUserStockOrders(req.query.user_id).then((orders) => {
+      // console.log(orders);
+      res.send(orders);
+   });
+});
+
 // query db for stock prices and stock data (db table: stock_data)
 app.get("/getStockData", (req, res) => {
    service.getStockData(req, res).then((data) => {
@@ -53,6 +61,8 @@ app.post("/sendTradeOrder", (req, res) => {
    // console.log(req.body)
    const orderDetails = req.body.orderDetails;
    // console.log(orderDetails);
+   orderDetails.order_status = "Open";
+
    service.addTradeOrder(orderDetails);
 
    orderDetails.order_type === "buy"
@@ -72,6 +82,20 @@ app.post("/sendTradeOrder", (req, res) => {
         );
 });
 
+// remove an order from buyOrders/sellOrders array in stockExchange and update order_status to "Canceled" in stock_orders table
+app.put("/cancelTradeOrder", (req, res) => {
+   // remove from buyOrders or sellOrders array in stock exchange (stockMatchingClass)
+   stockExchange.removeOrder(req.query.order_id, req.query.order_type);
+
+   //update the stock_orders table to change order_status to "Canceled"
+   service.updateOrderStatusToCanceled(req.query.order_id);
+
+   res.send("order canceled");
+   // //log buy/sell orders to ensure order is removed from arrays:
+   // console.log(stockExchange.buyOrders);
+   // console.log(stockExchange.sellOrders);
+});
+
 //Stock Exchange functionalities:
 //match buy/sell orders inside a setInterval function then update db tables
 const matchedOrders = setInterval(async () => {
@@ -86,6 +110,7 @@ const matchedOrders = setInterval(async () => {
 
       // update db tables after matching an order: matched_orders, stock_data, user_portfolio, stock_holdings tables
       service.updateMatchedOrdersTable(order);
+      service.updateOrderStatusStockOrdersTable(order.buyID, order.sellID);
       service.updateStockDataTable(order.price, order.ticker);
       service.updateUserPortfolioTable(
          order.buyID,

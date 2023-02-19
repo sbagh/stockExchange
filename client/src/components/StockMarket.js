@@ -47,12 +47,12 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
                // user,
                orderDetails,
             })
-            .then(() => {
-               console.log("order sent");
+            .then(console.log("order sent"))
+            .then(
                setOrderFeedback(
                   `${user.user_name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-               );
-            });
+               )
+            );
       } catch (err) {
          console.log("did not send", err);
       }
@@ -65,7 +65,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
             handleChange={handleChange}
             handleSubmit={handleSubmit}
          />
-         <>{orderFeedback}</>
+         <div>{orderFeedback}</div>
          {/* <br></br> */}
          {/* <div>Order Status: {orderDetails.orderStatus}</div> */}
       </div>

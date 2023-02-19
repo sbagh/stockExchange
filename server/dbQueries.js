@@ -37,12 +37,25 @@ const getUserStocks = async (user_id) => {
    }
 };
 
+// function to query stock_orders db and get a json of a specific user's stock orders
+const getUserStockOrders = async (user_id) => {
+   try {
+      const queryString =
+         "SELECT (order_type, ticker, quantity, price, order_status, order_time, trade_id) FROM stock_orders WHERE user_id = $1 ORDER BY order_time DESC ";
+      const queryParameter = [user_id];
+      const result = await pool.query(queryString, queryParameter);
+      return result.rows;
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
 //function to query stock_data db and get a json of stock data
 const getStockData = async (req, res) => {
    try {
       const queryString =
          "Select ticker, price, volume, last_update FROM stock_data ORDER BY stock_id ASC";
-
       const results = await pool.query(queryString);
       return results.rows;
    } catch (error) {
@@ -109,6 +122,34 @@ const updateStockDataTable = async (order_price, order_ticker) => {
       const queryParameters = [order_price, order_ticker];
 
       await pool.query(queryString, queryParameters);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
+//update order status in stock_orders table
+const updateOrderStatusStockOrdersTable = async (buy_id, sell_id) => {
+   try {
+      const queryString =
+         "UPDATE stock_orders SET order_status =$1 WHERE trade_id = $2 OR trade_id = $3";
+      const queryParameters = ["Closed", buy_id, sell_id];
+
+      await pool.query(queryString, queryParameters);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
+
+//update order status to canceled in stock_orders table after an order is canceled
+const updateOrderStatusToCanceled = async (order_id) => {
+   try {
+      const queryString =
+         "UPDATE stock_orders SET order_status = $1 where trade_id = $2";
+      const queryParameter = ["Canceled", order_id];
+
+      await pool.query(queryString, queryParameter);
    } catch (error) {
       console.log(error);
       throw error;
@@ -216,10 +257,13 @@ const updateStockHoldingsTable = async (buy_id, sell_id, ticker, quantity) => {
 module.exports = {
    getAllUsers,
    getUserStocks,
+   getUserStockOrders,
    getStockData,
    // getTradeHistory,
    addTradeOrder,
    updateMatchedOrdersTable,
+   updateOrderStatusStockOrdersTable,
+   updateOrderStatusToCanceled,
    updateStockDataTable,
    updateUserPortfolioTable,
    updateStockHoldingsTable,

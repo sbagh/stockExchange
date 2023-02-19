@@ -8,14 +8,38 @@ class stockMatchingSystem {
       (this.buyOrders = []), (this.sellOrders = []);
    }
 
+   //add a buy order in buyOrders array
    addBuyOrder(buyer, ticker, quantity, price, orderID) {
       const time = new Date().toString();
       this.buyOrders.push({ buyer, ticker, quantity, price, orderID, time });
    }
 
+   //add a sell order in sellOrders array
    addSellOrder(seller, ticker, quantity, price, orderID) {
       const time = new Date().toString();
       this.sellOrders.push({ seller, ticker, quantity, price, orderID, time });
+   }
+
+   // Remove an order from buyOrders or sellOrders given an order id and type... used if a user cancels their trade order
+   removeOrder(orderID, orderType) {
+      if (orderType === "buy") {
+         const index = this.buyOrders.findIndex(
+            (order) => (order.orderID = orderID)
+         );
+         if (index !== -1) {
+            this.buyOrders.splice(index, 1);
+            return true;
+         }
+      } else if (orderType === "sell") {
+         const index = this.sellOrders.findIndex(
+            (order) => (order.orderID = orderID)
+         );
+         if (index !== -1) {
+            this.sellOrders.splice(index, 1);
+            return true;
+         }
+      }
+      return false;
    }
 
    matchOrders() {
@@ -54,6 +78,7 @@ class stockMatchingSystem {
             this.buyOrders[i].quantity -= tradeQuantity;
             this.sellOrders[j].quantity -= tradeQuantity;
 
+            //if the overlap trade quantity is greater than 0, push the min amount into the matched orders array
             if (tradeQuantity > 0) {
                matchedOrders.push({
                   buyID: this.buyOrders[i].orderID,
