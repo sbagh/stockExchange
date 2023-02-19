@@ -42,7 +42,7 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
       orderDetails.order_time = new Date();
       orderDetails.order_status = "Pending";
 
-      console.log("order: ", orderDetails);
+      // console.log("order: ", orderDetails);
 
       try {
          await axios.post("http://localhost:5555/sendTradeOrder", {

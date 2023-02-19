@@ -89,7 +89,7 @@ const addTradeOrder = async (orderDetails) => {
 };
 
 // after matching an order, update the matched_orders tabe
-const updateMatchedOrders = async (order) => {
+const updateMatchedOrdersTable = async (order) => {
    try {
       const queryString =
          "INSERT INTO public.matched_orders(buy_order_id, sell_order_id, matched_time) VALUES($1,$2,$3)";
@@ -103,7 +103,7 @@ const updateMatchedOrders = async (order) => {
 };
 
 //after matching an order, update the stock price of the ticker
-const updateStockData = async (order_price, order_ticker) => {
+const updateStockDataTable = async (order_price, order_ticker) => {
    try {
       const queryString = "UPDATE stock_data SET price = $1 WHERE ticker = $2";
       const queryParameters = [order_price, order_ticker];
@@ -116,7 +116,7 @@ const updateStockData = async (order_price, order_ticker) => {
 };
 
 //after matching an order, update the user_porftolio table (cash value for buyer and sell)
-const updateUserPortfolio = async (
+const updateUserPortfolioTable = async (
    buy_id,
    sell_id,
    order_price,
@@ -134,7 +134,7 @@ const updateUserPortfolio = async (
          ])
          .then(async (result) => {
             const buyUserId = result.rows[0].user_id;
-            console.log("buyUserID is:  ", buyUserId);
+            // console.log("buyUserID is:  ", buyUserId);
 
             await pool.query(
                "UPDATE user_portfolio SET cash = cash - $1 WHERE user_id = $2 ",
@@ -149,8 +149,8 @@ const updateUserPortfolio = async (
          ])
          .then(async (result) => {
             const sellUserId = result.rows[0].user_id;
-            console.log("sellUserID is:  ", sellUserId);
-            
+            // console.log("sellUserID is:  ", sellUserId);
+
             await pool.query(
                "UPDATE user_portfolio SET cash = cash + $1 WHERE user_id = $2 ",
                [totalCost, sellUserId]
@@ -163,54 +163,55 @@ const updateUserPortfolio = async (
 };
 
 // after matching an order, update the buyer's and seller's stock_holdings
-// const updateStockHoldings = async (buy_id, sell_id, ticker, quantity) => {
-//    // get the user id of the buyer
-//    const buyUserRow = await pool.query(
-//       "SELECT user_id FROM stock_orders WHERE trade_id = $1 ",
-//       [buy_id]
-//    );
-//    const buyUserId = buyUserRow.rows[0].user_id;
+const updateStockHoldingsTable = async (buy_id, sell_id, ticker, quantity) => {
+   // get the user id of the buyer
+   const buyUserRow = await pool
+      .query("SELECT user_id FROM stock_orders WHERE trade_id = $1 ", [buy_id])
+      .then(async (result) => {
+         buyUserId = result.rows[0].user_id;
 
-//    // update buyer's stock_holdings by adding the stock
-//    const buyersOldQuantityRow = await pool.query(
-//       "SELECT quantity FROM stock_holdings where (user_id = $1 and stock_ticker = $2)",
-//       [buyUserId, ticker]
-//    );
-//    const buyersOldQuantity = buyersOldQuantityRow.rows[0].quantity;
+         // update buyer's stock_holdings by adding the stock
+         const buyersOldQuantityRow = await pool.query(
+            "SELECT quantity FROM stock_holdings where (user_id = $1 and stock_ticker = $2)",
+            [buyUserId, ticker]
+         );
+         const buyersOldQuantity = buyersOldQuantityRow.rows[0].quantity;
 
-//    if (!buyersOldQuantity) {
-//       await pool.query(
-//          "INSERT INTO stock_holdings (user_id, stock_ticker, quantity)",
-//          [buyUserId, ticker, quantity]
-//       );
-//    } else {
-//       const buyersNewQuantity = buyersOldQuantity + quantity;
-//       await pool.query(
-//          "UPDATE stock_holdings SET quantity = $1 WHERE (user_id = $2 and stock_ticker = $3)",
-//          [buyersNewQuantity, buyUserId, ticker]
-//       );
-//    }
+         if (!buyersOldQuantity) {
+            await pool.query(
+               "INSERT INTO stock_holdings (user_id, stock_ticker, quantity)",
+               [buyUserId, ticker, quantity]
+            );
+         } else {
+            const buyersNewQuantity = buyersOldQuantity + quantity;
+            await pool.query(
+               "UPDATE stock_holdings SET quantity = $1 WHERE (user_id = $2 and stock_ticker = $3)",
+               [buyersNewQuantity, buyUserId, ticker]
+            );
+         }
+      });
 
-//    // get the user id of the seller
-//    const sellUserRow = await pool.query(
-//       "SELECT user_id FROM stock_orders WHERE trade_id = $1",
-//       [sell_id]
-//    );
-//    const sellUserId = sellUserRow.rows[0].user_id;
+   // get the user id of the seller
+   const sellUserRow = await pool
+      .query("SELECT user_id FROM stock_orders WHERE trade_id = $1", [sell_id])
+      .then(async (result) => {
+         const sellUserId = result.rows[0].user_id;
 
-//    // update sellers's stock_holdings by adding the stock, assume check for enough stocks to sell is done on front-end
-//    const sellersOldQuantityRow = await pool.query(
-//       "SELECT quantity FROM stock_holdings where (user_id = $1 and stock_ticker = $2)",
-//       [sellUserId, ticker]
-//    );
-//    const sellersOldQuantity = sellersOldQuantityRow.rows[0].quantity;
-//    const sellersNewQuantity = sellersOldQuantity - quantity;
+         // update seller's stock_holdings by reducing the stock, assume that checking if there is enough stocks to sell is done on front-end
+         const sellersOldQuantityRow = await pool.query(
+            "SELECT quantity FROM stock_holdings where (user_id = $1 and stock_ticker = $2)",
+            [sellUserId, ticker]
+         );
 
-//    await pool.query(
-//       "UPDATE stock_holdings SET quantity = $1 WHERE (user_id = $2 and stock_ticker = $3)",
-//       [sellersNewQuantity, sellUserId, ticker]
-//    );
-// };
+         const sellersOldQuantity = sellersOldQuantityRow.rows[0].quantity;
+         const sellersNewQuantity = sellersOldQuantity - quantity;
+
+         await pool.query(
+            "UPDATE stock_holdings SET quantity = $1 WHERE (user_id = $2 and stock_ticker = $3)",
+            [sellersNewQuantity, sellUserId, ticker]
+         );
+      });
+};
 
 module.exports = {
    getAllUsers,
@@ -218,8 +219,8 @@ module.exports = {
    getStockData,
    // getTradeHistory,
    addTradeOrder,
-   updateMatchedOrders,
-   updateStockData,
-   updateUserPortfolio,
-   // updateStockHoldings,
+   updateMatchedOrdersTable,
+   updateStockDataTable,
+   updateUserPortfolioTable,
+   updateStockHoldingsTable,
 };

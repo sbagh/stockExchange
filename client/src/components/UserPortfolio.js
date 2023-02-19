@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const UserPortfolio = ({ userPortfolio, setUserPortfolio, user }) => {
    //useEffect to fetch user's stock holdings from stock_holdings table
    useEffect(() => {
-      const fetchUserPortfolio = async () => {
+      const fetchUserStockHoldings = async () => {
          try {
             let response = await fetch(
                `http://localhost:5555/userStockHoldings?user_id=${user.user_id}`
@@ -13,21 +13,25 @@ const UserPortfolio = ({ userPortfolio, setUserPortfolio, user }) => {
                return "there was a network failure";
             }
 
-            const userPortfolioCash = await response.json();
-            setUserPortfolio(userPortfolioCash);
+            const userStockHoldings = await response.json();
+            setUserPortfolio(userStockHoldings);
+            console.log(
+               "interval fetch userStockHoldings: ",
+               userStockHoldings
+            );
          } catch (error) {
             console.log(error);
          }
       };
-      fetchUserPortfolio();
-      const interval = setInterval(fetchUserPortfolio, 5000);
+      fetchUserStockHoldings();
+      const interval = setInterval(fetchUserStockHoldings, 5000);
       return () => clearInterval(interval);
-   }, []);
+   }, [user]);
 
    return (
       <div className="user-portfolio">
-         {console.log("user :", user)}
-         {console.log("userPortfolio2 :", userPortfolio)}
+         {/* {console.log("user :", user)}
+         {console.log("userPortfolio :", userPortfolio)} */}
 
          <h4> User Portfolio: {user.user_name}</h4>
 

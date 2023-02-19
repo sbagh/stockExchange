@@ -35,6 +35,7 @@ const SelectUser = ({ users, setUsers, setUser }) => {
             {users.map((user) => (
                <option key={user.user_id} value={user.user_id}>
                   {user.user_name}
+                  {/* {console.log(user)} */}
                </option>
             ))}
          </select>

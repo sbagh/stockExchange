@@ -85,20 +85,20 @@ const matchedOrders = setInterval(async () => {
       console.log(order);
 
       // update db tables after matching an order: matched_orders, stock_data, user_portfolio, stock_holdings tables
-      service.updateMatchedOrders(order);
-      service.updateStockData(order.price, order.ticker);
-      service.updateUserPortfolio(
+      service.updateMatchedOrdersTable(order);
+      service.updateStockDataTable(order.price, order.ticker);
+      service.updateUserPortfolioTable(
          order.buyID,
          order.sellID,
          order.price,
          order.quantity
       );
-      // service.updateStockHoldings(
-      //    order.buyID,
-      //    order.sellID,
-      //    order.ticker,
-      //    order.quantity
-      // );
+      service.updateStockHoldingsTable(
+         order.buyID,
+         order.sellID,
+         order.ticker,
+         order.quantity
+      );
    }
 }, 1000);
 
