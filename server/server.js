@@ -32,6 +32,14 @@ app.get("/userStockHoldings", (req, res) => {
    });
 });
 
+//query to get a specific user's orders (db table: stock_orders)
+app.get("/getUserStockOrders", (req, res) => {
+   service.getUserStockOrders(req.query.user_id).then((orders) => {
+      // console.log(orders);
+      res.send(orders);
+   });
+});
+
 // query db for stock prices and stock data (db table: stock_data)
 app.get("/getStockData", (req, res) => {
    service.getStockData(req, res).then((data) => {

@@ -85,3 +85,31 @@
    font-size: 15px;
    font-weight: 400;
 }
+
+/* Styles for the table cells inside the userStockOrders component */
+
+.userStockOrdersTable {
+   flex-basis: 100%;
+   margin-top: 10px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+}
+
+.userStockOrdersTable table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.userStockOrdersTable th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+}
+
+.userStockOrdersTable td {
+   padding: 10px;
+   font-size: 15px;
+   font-weight: 400;
+   background-color: #f2f2f2;
+}

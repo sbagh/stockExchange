@@ -25,7 +25,7 @@ const StockPrices = ({
 
    return (
       <div className="stock-prices">
-         <h2>Stock Marketplace</h2>
+         <h4>Stock Prices</h4>
          {stockDataIsLoading ? (
             <p>Loading....</p>
          ) : (

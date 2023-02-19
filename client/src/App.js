@@ -4,6 +4,7 @@ import StockMarket from "./components/StockMarket";
 import SelectUser from "./components/SelectUser";
 import StockPrices from "./components/StockPrices";
 import TradeHistory from "./components/TradeHistory";
+import UserStockOrders from "./components/UserStockOrders";
 
 const App = () => {
    //state for selecting a user , passed as props to SelectUser component
@@ -14,6 +15,9 @@ const App = () => {
 
    //state for rendering a users portfolio including stocks held and cash:
    const [userPortfolio, setUserPortfolio] = useState([]);
+
+   //state for rendering a user's stock orders
+   const [userStockOrders, setUserStockOrders] = useState([]);
 
    //state for rendering stock data (current price, ticker..etc)
    const [stockData, setStockData] = useState({});
@@ -45,6 +49,14 @@ const App = () => {
                   stockData={stockData}
                   userPortfolio={userPortfolio}
                   user={user}
+               />
+            )}
+
+            {user.user_id && (
+               <UserStockOrders
+                  user_id={user.user_id}
+                  userStockOrders={userStockOrders}
+                  setUserStockOrders={setUserStockOrders}
                />
             )}
 
