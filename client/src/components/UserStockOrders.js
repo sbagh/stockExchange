@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 
 const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
-   console.log(user_id);
+
+   //use effect to fetch the specific user's stock orders
    useEffect(() => {
       const fetchUserOrders = async () => {
          try {
@@ -26,7 +27,7 @@ const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
       return () => clearInterval(interval);
    }, [user_id]);
 
-   // function to send a cancel order PUT request to server.js
+   // Send a cancel order PUT request to server.js
    const cancelOrder = async (order_id, order_type) => {
       try {
          const response = await fetch(
