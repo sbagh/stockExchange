@@ -6,10 +6,10 @@ Project is in progress, so code and files are not fully orgranized or optimized 
 
 To run project:
 
--  install react and node modules.
--  start server.js. do not use nodemon as everytime the server resets buy/sell orders will be lost.
+-  install react and node modules
+-  start server.js
 -  start react
--  On the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that are "Open"
+-  on the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that are "Open"
 
 
 Current progress:
