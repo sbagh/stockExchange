@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
-const PORT = 5555;
+const user_accounts_PORT = 4000;
 
 // require db connection and queries:
 const service = require("./db_queries");
@@ -18,4 +18,10 @@ app.get("/getAllUsers", (req, res) => {
    });
 });
 
-app.listen(PORT, console.log("listening on port: ", PORT));
+app.listen(
+   user_accounts_PORT,
+   console.log(
+      "user accounts microservice running on port  ",
+      user_accounts_PORT
+   )
+);

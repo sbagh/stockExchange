@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 //get user cash:
-const getUserCashHoldigns = async (user_id) => {
+const getUserCashHoldings = async (user_id) => {
    try {
       const queryString = "SELECT cash FROM cash_holdings WHERE user_id = $1";
       const queryParameter = [user_id];
@@ -43,6 +43,6 @@ const getUserStockHoldings = async (user_id) => {
 };
 
 module.exports = {
-   getUserCashHoldigns,
+   getUserCashHoldings,
    getUserStockHoldings,
 };
