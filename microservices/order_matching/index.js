@@ -10,8 +10,9 @@ app.use(express.json());
 
 const order_matching_PORT = 4004;
 
-// microservices url used in this file
-const stock_order_URL = "http://localhost:4003/updateStockOrderingAfterMatch";
+// other microservices used in this file
+const stock_ordering_URL =
+   "http://localhost:4003/updateStockOrderingAfterMatch";
 const stock_data_URL = "http://localhost:4002/updateStockDataAfterMatch";
 const user_porftolio_URL =
    "http://localhost:4001/updateUserPortfolioAfterMatch";
@@ -19,11 +20,11 @@ const user_porftolio_URL =
 // require db connection and queries:
 const service = require("./dbQueries");
 
-//instantiate a stock exchange from stockMatchingSystem class
+//instantiate a stock exchange from stockMatchingClass
 const stockExchange = new stockMatchingClass();
 
 //receive stock orders from stock_ordering microservice
-app.post("/startTradeOrder", (req, res) => {
+app.post("/sendOrderToMatchingService", (req, res) => {
    const order_details = req.body;
 
    // add to buy or sell orders array depending on order_type
@@ -52,27 +53,33 @@ const matchOrders = async () => {
       let order = orders[0];
       console.log(order);
 
-      //update matched_orders db
+      //update matched_orders db after matching a trade
       service.updateMatchedOrdersTable(order);
 
-      //send post to stock ordering microservice
+      //send post to stock ordering microservice after matching a trade
       updateStockOrderingAfterMatch(order);
 
-      //send post to stock data microservice
+      //send post to stock data microservice after matching a trade
       updateStockDataAfterMatch(order);
 
-      //send post to user portfolio microservice
+      //send post to user portfolio microservice after matching a trade
       updateUserPortfolioAfterMatch(order);
    }
 };
 
 // send post to stock ordering microservice after matching an order
 const updateStockOrderingAfterMatch = async (order) => {
-   data = {
+   body = {
       buy_id: order.buy_id,
       sell_id: order.sell_id,
    };
-   axios.put(stock_order_URL, data);
+   await axios.put(stock_order_URL, body).catch((error) => {
+      console.log(
+         "error in sending matched order to stock ordering microservice",
+         error
+      );
+      throw error;
+   });
 };
 
 // send post to stock data microservice after matching an order
@@ -81,7 +88,7 @@ const updateStockDataAfterMatch = async (order) => {
       price: order.price,
       ticker: order.ticker,
    };
-   axios.put(stock_data_URL, data);
+   await axios.put(stock_data_URL, data);
 };
 
 // send post to user portfolio microservice after matching an order
@@ -92,7 +99,7 @@ const updateUserPortfolioAfterMatch = async (order) => {
       price: order.price,
       ticker: order.ticker,
    };
-   axios.put(user_porftolio_URL, data);
+   await axios.put(user_porftolio_URL, data);
 };
 
 app.listen(

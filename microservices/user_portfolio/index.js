@@ -27,6 +27,16 @@ app.get("/getUserStockHoldings", (req, res) => {
    });
 });
 
+app.put("/updateUserPortfolioAfterMatch", (req, res) => {
+   matched_order = req.body;
+   service.updateUserPortfolioTableAfterMatch(
+      matched_order.buy_id,
+      matched_order.sell_id,
+      matched_order.price,
+      matched_order.quantity
+   );
+});
+
 app.listen(
    user_portfolio_PORT,
    console.log(

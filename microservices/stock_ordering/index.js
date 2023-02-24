@@ -8,7 +8,9 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
 const stock_ordering_PORT = 4003;
-const order_matching_URL = "http://localhost:4004";
+
+// other microservices used in this file
+const order_matching_URL = "http://localhost:4004/sendOrderToMatchingService";
 
 // require db connection and queries:
 const service = require("./db_queries");
@@ -21,9 +23,9 @@ app.get("/getUserStockOrders", (req, res) => {
    });
 });
 
-// create a trade order by sending it to order_matching microservice
+// receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", (req, res) => {
-   // console.log(req.body)
+   // console.log(req.body);
 
    const order_details = req.body.order_details;
    // console.log(order_details);
@@ -40,7 +42,8 @@ app.post("/startTradeOrder", (req, res) => {
 
 // make an axios post to order matching microservice with the order details in body
 const sendToOrderMatchingService = async (order_details) => {
-   const data = {
+   // set the body of the request:
+   const body = {
       order_type: order_details.order_type,
       user_id: order_details.user_id,
       ticker: order_details.ticker,
@@ -49,10 +52,16 @@ const sendToOrderMatchingService = async (order_details) => {
       order_id: order_details.order_id,
    };
 
-   axios.post(order_matching_URL, data);
+   axios.post(order_matching_URL, body).catch((error) => {
+      console.log(
+         "error in sending trade order to order matching microservice ",
+         error
+      );
+      throw error;
+   });
 };
 
-// update order status to "Closed" after matched order is received from order matching microservice
+// receive matched order from order_matching microservice
 app.put("/updateStockOrderingAfterMatch", (req, res) => {
    order_details = req.body;
    service.updateOrderStatusStockOrdersTable(

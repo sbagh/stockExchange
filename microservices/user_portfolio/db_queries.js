@@ -42,6 +42,22 @@ const getUserStockHoldings = async (user_id) => {
    }
 };
 
+
+////////// no buy / sell order ids in user portfolio tables !!!! ??
+const updateUserPortfolioTableAfterMatch = async (
+   buy_id,
+   sell_id,
+   ticker,
+   quantiy
+) => {
+   try {
+      // first update the cash_holdings table:
+
+      
+
+   } catch (error) {}
+};
+
 module.exports = {
    getUserCashHoldings,
    getUserStockHoldings,
