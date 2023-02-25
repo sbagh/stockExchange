@@ -19,6 +19,11 @@ app.get("/getStockData", (req, res) => {
    });
 });
 
+// update stock_data db after an order is matched, recieved from order_matching microservice
+app.put("/updateStockDataAfterMatch", (req, res) => {
+   service.updateStockDataAfterMatch(req.body.price, req.body.ticker);
+});
+
 app.listen(
    stock_data_PORT,
    console.log("stock data microservice running on port  ", stock_data_PORT)

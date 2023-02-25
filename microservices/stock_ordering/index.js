@@ -52,6 +52,7 @@ const sendToOrderMatchingService = async (order_details) => {
       order_id: order_details.order_id,
    };
 
+   // post to order matching microservice
    axios.post(order_matching_URL, body).catch((error) => {
       console.log(
          "error in sending trade order to order matching microservice ",
@@ -63,11 +64,18 @@ const sendToOrderMatchingService = async (order_details) => {
 
 // receive matched order from order_matching microservice
 app.put("/updateStockOrderingAfterMatch", (req, res) => {
-   order_details = req.body;
+   const matched_order = req.body;
    service.updateOrderStatusStockOrdersTable(
-      order_details.buy_id,
-      order_details.sell_id
+      matched_order.buy_order_id,
+      matched_order.sell_order_id
    );
+});
+
+// get buyer and seller id given order ids, request from order matching microservice
+app.get("/getUserIDsfromStockOrdering", (req, res) => {
+   const { buy_order_id, sell_order_id } = req.query;
+   const user_ids = service.getBuyerAndSellerID(buy_order_id, sell_order_id);
+   res.send(user_ids);
 });
 
 app.listen(

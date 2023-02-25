@@ -13,6 +13,9 @@ const order_matching_PORT = 4004;
 // other microservices used in this file
 const stock_ordering_URL =
    "http://localhost:4003/updateStockOrderingAfterMatch";
+const stock_ordering_getUserID_URL =
+   "http://localhost:4003/getUserIDsfromStockOrdering";
+
 const stock_data_URL = "http://localhost:4002/updateStockDataAfterMatch";
 const user_porftolio_URL =
    "http://localhost:4001/updateUserPortfolioAfterMatch";
@@ -30,14 +33,14 @@ app.post("/sendOrderToMatchingService", (req, res) => {
    // add to buy or sell orders array depending on order_type
    order_details.order_type === "buy"
       ? stockExchange.addBuyOrder(
-           order_details.userID,
+           order_details.user_id,
            order_details.ticker,
            order_details.quantity,
            order_details.price,
            order_details.order_id
         )
       : stockExchange.addSellOrder(
-           order_details.userID,
+           order_details.user_id,
            order_details.ticker,
            order_details.quantity,
            order_details.price,
@@ -45,35 +48,39 @@ app.post("/sendOrderToMatchingService", (req, res) => {
         );
 });
 
-// match orders then update matched_order db and send matched order to other microservices
+// match orders, then update matched_order db and send the matched order to other microservices
 const matchOrders = async () => {
-   const orders = stockExchange.matchOrders();
+   const matched_orders = stockExchange.matchOrders();
 
-   if (orders) {
-      let order = orders[0];
-      console.log(order);
+   if (matched_orders) {
+      let matched_order = matched_orders[0];
+      //   console.log(matched_order);
+
+      // a matched order will be an object of this format:
+      // matched_order = { buy_order_id, sell_order_id, price, time, ticker, quantity, }
+
 
       //update matched_orders db after matching a trade
-      service.updateMatchedOrdersTable(order);
+      service.updateMatchedOrdersTable(matched_order);
 
       //send post to stock ordering microservice after matching a trade
-      updateStockOrderingAfterMatch(order);
+      updateStockOrderingAfterMatch(matched_order);
 
       //send post to stock data microservice after matching a trade
-      updateStockDataAfterMatch(order);
+      updateStockDataAfterMatch(matched_order);
 
       //send post to user portfolio microservice after matching a trade
-      updateUserPortfolioAfterMatch(order);
+      updateUserPortfolioAfterMatch(matched_order);
    }
 };
 
 // send post to stock ordering microservice after matching an order
-const updateStockOrderingAfterMatch = async (order) => {
-   body = {
-      buy_id: order.buy_id,
-      sell_id: order.sell_id,
+const updateStockOrderingAfterMatch = async (matched_order) => {
+   const body = {
+      buy_order_id: matched_order.buy_order_id,
+      sell_order_id: matched_order.sell_order_id,
    };
-   await axios.put(stock_order_URL, body).catch((error) => {
+   await axios.put(stock_ordering_URL, body).catch((error) => {
       console.log(
          "error in sending matched order to stock ordering microservice",
          error
@@ -83,23 +90,36 @@ const updateStockOrderingAfterMatch = async (order) => {
 };
 
 // send post to stock data microservice after matching an order
-const updateStockDataAfterMatch = async (order) => {
-   data = {
-      price: order.price,
-      ticker: order.ticker,
+const updateStockDataAfterMatch = async (matched_order) => {
+   body = {
+      price: matched_order.price,
+      ticker: matched_order.ticker,
    };
-   await axios.put(stock_data_URL, data);
+   await axios.put(stock_data_URL, body);
 };
 
 // send post to user portfolio microservice after matching an order
-const updateUserPortfolioAfterMatch = async (order) => {
-   data = {
-      buy_id: order.buy_id,
-      sell_id: order.sell_id,
-      price: order.price,
-      ticker: order.ticker,
-   };
-   await axios.put(user_porftolio_URL, data);
+const updateUserPortfolioAfterMatch = async (matched_order) => {
+   // to update buyer and sellers portfolios, we first need to get user id's, as this is not provided in the matched_order object
+   getBuyerAndSellerID(matched_order).then(async (user_ids) => {
+      // put the user ids in the body along with the matched order price, ticker, and quantity
+      body = {
+         ...user_ids,
+         price: matched_order.price,
+         ticker: matched_order.ticker,
+         quantity: matched_order.quantity,
+      };
+      //send body to user portfolio microservice
+      await axios.put(user_porftolio_URL, body);
+   });
+};
+
+// get buyer and seller user id from stock_orders microservice after matching an order
+const getBuyerAndSellerID = async (matched_order) => {
+   const user_ids = await axios.get(
+      `${stock_ordering_getUserID_URL}?buy_order_id=${matched_order.buy_order_id}&sell_order_id=${matched_order.sell_order_id}`
+   );
+   return user_ids.data;
 };
 
 app.listen(

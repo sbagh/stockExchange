@@ -89,8 +89,8 @@ class stockMatchingSystem {
             //if the overlap trade quantity is greater than 0, push the min amount into the matched orders array
             if (trade_quantity > 0) {
                matchedOrders.push({
-                  buyID: this.buy_orders[i].order_id,
-                  sellID: this.sell_orders[i].order_id,
+                  buy_order_id: this.buy_orders[i].order_id,
+                  sell_order_id: this.sell_orders[i].order_id,
                   price: this.sell_orders[i].price,
                   time: new Date(),
                   ticker: this.sell_orders[i].ticker,

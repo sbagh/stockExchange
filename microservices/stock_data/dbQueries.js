@@ -25,6 +25,19 @@ const getStockData = async (req, res) => {
    }
 };
 
+//update stock price after maching an order is matched
+const updateStockDataAfterMatch = async (price, ticker) => {
+   try {
+      const queryString = "UPDATE stock_data SET price = $1 WHERE ticker = $2";
+      const queryParameter = [price, ticker];
+      await pool.query(queryString, queryParameter);
+   } catch (error) {
+      console.log("error in update stock price after order is matched", error);
+      throw error;
+   }
+};
+
 module.exports = {
    getStockData,
+   updateStockDataAfterMatch,
 };
