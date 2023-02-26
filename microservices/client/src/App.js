@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserPortfolio from "./components/UserPortfolio";
 import StockMarket from "./components/StockMarket";
 import SelectUser from "./components/SelectUser";
-import StockPrices from "./components/StockPrices";
+import StockData from "./components/StockData";
 import TradeHistory from "./components/TradeHistory";
 import UserStockOrders from "./components/UserStockOrders";
 
@@ -21,8 +21,8 @@ const App = () => {
    //  const [userStockOrders, setUserStockOrders] = useState([]);
 
    //  //state for rendering stock data (current price, ticker..etc)
-   //  const [stockData, setStockData] = useState({});
-   //  const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
+   const [stockData, setStockData] = useState({});
+   const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
 
    //  //state for rendering stock trade history from tradeHistory.json
    //  const [tradeHistoryData, setTradeHistoryData] = useState({});
@@ -44,8 +44,7 @@ const App = () => {
                   setUserStockHoldings={setUserStockHoldings}
                />
             )}
-
-            {/* {stockData && (
+            {/* {/* {stockData && (
                <StockMarket
                   key={userPortfolio}
                   className="stock-market"
@@ -53,22 +52,21 @@ const App = () => {
                   userPortfolio={userPortfolio}
                   user={user}
                />
-            )}
-
-            {user.user_id && (
+            )} */}
+            {/* {user.user_id && (
                <UserStockOrders
                   user_id={user.user_id}
                   userStockOrders={userStockOrders}
                   setUserStockOrders={setUserStockOrders}
                />
-            )}
-
-            <StockPrices
+            )} */}
+            <StockData
                stockData={stockData}
                stockDataIsLoading={stockDataIsLoading}
                setStockData={setStockData}
                setStockDataIsLoading={setStockDataIsLoading}
-            /> */}
+            />{" "}
+            
             {/* <TradeHistory
                tradeHistoryData={tradeHistoryData}
                setTradeHistoryData={setTradeHistoryData}

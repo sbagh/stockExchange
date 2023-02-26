@@ -9,7 +9,7 @@ const StockPrices = ({
    //useEffect for rendering and fetching stock data (current price, ticker..etc)
    useEffect(() => {
       const fetchData = () => {
-         fetch("http://localhost:5555/getStockData")
+         fetch("http://localhost:4002/getStockData")
             .then((res) => res.json())
             .then((data) => {
                setStockData(data);
@@ -42,7 +42,7 @@ const StockPrices = ({
                      <tr key={stock.ticker}>
                         <th>{stock.ticker}</th>
                         <th>{stock.price}</th>
-                        <th>{stock.last_update}</th>
+                        <th>{stock.lastUpdate}</th>
                      </tr>
                   ))}
                </tbody>
