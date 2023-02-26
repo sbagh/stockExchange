@@ -13,34 +13,37 @@ const App = () => {
    //state for selecting a user , passed as props to SelectUser component
    const [user, setUser] = useState({});
 
-  //  //state for rendering a users portfolio including stocks held and cash:
-  //  const [userPortfolio, setUserPortfolio] = useState([]);
+   //state for rendering a users portfolio including stocks held and cash:
+   const [userCashHoldings, setUserCashHoldings] = useState([]);
+   const [userStockHoldings, setUserStockHoldings] = useState([]);
 
-  //  //state for rendering a user's stock orders
-  //  const [userStockOrders, setUserStockOrders] = useState([]);
+   //  //state for rendering a user's stock orders
+   //  const [userStockOrders, setUserStockOrders] = useState([]);
 
-  //  //state for rendering stock data (current price, ticker..etc)
-  //  const [stockData, setStockData] = useState({});
-  //  const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
+   //  //state for rendering stock data (current price, ticker..etc)
+   //  const [stockData, setStockData] = useState({});
+   //  const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
 
-  //  //state for rendering stock trade history from tradeHistory.json
-  //  const [tradeHistoryData, setTradeHistoryData] = useState({});
-  //  const [tradeHistoryDataIsLoading, setTradeHistoryDataIsLoading] =
-  //     useState(true);
+   //  //state for rendering stock trade history from tradeHistory.json
+   //  const [tradeHistoryData, setTradeHistoryData] = useState({});
+   //  const [tradeHistoryDataIsLoading, setTradeHistoryDataIsLoading] =
+   //     useState(true);
 
    return (
       <div>
          <SelectUser users={users} setUsers={setUsers} setUser={setUser} />
 
-         {/* <div className="main-container">
-            {user.user_id && (
+         <div className="main-container">
+            {user.userID && (
                <UserPortfolio
                   className="user-portfolio"
                   user={user}
-                  userPortfolio={userPortfolio}
-                  setUserPortfolio={setUserPortfolio}
+                  userCashHoldings={userCashHoldings}
+                  setUserCashHoldings={setUserCashHoldings}
+                  userStockHoldings={userStockHoldings}
+                  setUserStockHoldings={setUserStockHoldings}
                />
-            )} */}
+            )}
 
             {/* {stockData && (
                <StockMarket
@@ -72,7 +75,7 @@ const App = () => {
                tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
                setTradeHistoryDataIsLoading={setTradeHistoryDataIsLoading}
             /> */}
-         {/* </div> */}
+         </div>
       </div>
    );
 };

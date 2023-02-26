@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const user_accounts_microservice_URL = "http://localhost:4000";
+// URL to user accounts micorservice, index.js
+const userAccountsURL = "http://localhost:4000";
 
 const SelectUser = ({ users, setUsers, setUser }) => {
    // useEffect to fetch all the users from the db:user_accounts, table:users
@@ -9,12 +10,12 @@ const SelectUser = ({ users, setUsers, setUser }) => {
    useEffect(() => {
       const fetchUsers = async () => {
          try {
-            const response = await fetch(
-               `${user_accounts_microservice_URL}/getAllUsers`
-            );
+            const response = await fetch(`${userAccountsURL}/getAllUsers`);
             if (!response.ok) {
                throw new Error("network response was not ok");
             }
+
+            //.json() returns a promise, so use await
             let usersData = await response.json();
             setUsers(usersData);
             setUser(usersData[0]);
@@ -28,7 +29,7 @@ const SelectUser = ({ users, setUsers, setUser }) => {
    // handle change when selecting a new user from drop-down list
    const handleChange = (e) => {
       const selectedUser = users.find(
-         (user) => user.user_id === parseInt(e.target.value)
+         (user) => user.userID === parseInt(e.target.value)
       );
       setUser(selectedUser);
    };

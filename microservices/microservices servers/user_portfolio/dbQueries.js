@@ -11,15 +11,17 @@ const pool = new Pool({
    port: 5432,
 });
 
+// !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
+
 //get user cash:
-const getUserCashHoldings = async (user_id) => {
+const getUserCashHoldings = async (userID) => {
    try {
       const queryString = "SELECT cash FROM cash_holdings WHERE user_id = $1";
-      const queryParameter = [user_id];
+      const queryParameter = [userID];
 
       const results = await pool.query(queryString, queryParameter);
-
-      return results.rows;
+      // console.log(results.rows);
+      return results.rows[0];
    } catch (error) {
       console.log("error in getting Cash Holdings", error);
       throw error;
@@ -27,14 +29,13 @@ const getUserCashHoldings = async (user_id) => {
 };
 
 //get user stocks:
-const getUserStockHoldings = async (user_id) => {
+const getUserStockHoldings = async (userID) => {
    try {
       const queryString =
-         "SELECT (ticker, quantity) from stock_holdings WHERE user_id = $1";
-      const queryParameter = [user_id];
-
+         "SELECT ticker, quantity FROM stock_holdings WHERE user_id = $1";
+      const queryParameter = [userID];
       const results = await pool.query(queryString, queryParameter);
-
+      // console.log(results.rows);
       return results.rows;
    } catch (error) {
       console.log("error in getting Stock Holdings", error);
