@@ -1,6 +1,4 @@
-const { query } = require("express");
-
-const Pool = require("pg");
+const Pool = require("pg").Pool;
 
 // connect to db:
 const pool = new Pool({
@@ -15,8 +13,18 @@ const pool = new Pool({
 const getAllUsers = async (req, res) => {
    try {
       const queryString = "SELECT * FROM users";
-      const results = pool.query(queryString, queryParameter);
-      res.send(results);
+      const results = await pool.query(queryString);
+      // console.log(results.rows);
+
+      // changing to camel case
+      const camelCaseResults = results.rows.map((user) => {
+         return {
+            userID: user.user_id,
+            firstName: user.first_name,
+            lastName: user.last_name,
+         };
+      });
+      return camelCaseResults;
    } catch (error) {
       console.log("error in Getting All Users", error);
       throw error;

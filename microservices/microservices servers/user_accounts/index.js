@@ -5,12 +5,13 @@ const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
-const user_accounts_PORT = 4000;
+
+const userAccountsPORT = 4000;
 
 // require db connection and queries:
-const service = require("./db_queries");
+const service = require("./dbQueries");
 
-// query db for all users (db table: user_portfolio)
+// query db for all users (db: user_accounts, table: users)
 app.get("/getAllUsers", (req, res) => {
    service.getAllUsers(req, res).then((users) => {
       // console.log(users);
@@ -19,9 +20,6 @@ app.get("/getAllUsers", (req, res) => {
 });
 
 app.listen(
-   user_accounts_PORT,
-   console.log(
-      "user accounts microservice running on port  ",
-      user_accounts_PORT
-   )
+   userAccountsPORT,
+   console.log("user accounts microservice running on port  ", userAccountsPORT)
 );

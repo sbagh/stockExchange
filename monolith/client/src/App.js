@@ -7,11 +7,11 @@ import TradeHistory from "./components/TradeHistory";
 import UserStockOrders from "./components/UserStockOrders";
 
 const App = () => {
+   // state for redering all users from the db user_accounts table users
+   const [users, setUsers] = useState([]);
+   
    //state for selecting a user , passed as props to SelectUser component
    const [user, setUser] = useState({});
-
-   // state for redering all users from the db table user_portfolio
-   const [users, setUsers] = useState([]);
 
    //state for rendering a users portfolio including stocks held and cash:
    const [userPortfolio, setUserPortfolio] = useState([]);

@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,500&display=swap");
+
+.main-container {
+   font-family: "Open Sans", Arial, Helvetica, sans-serif;
+   display: flex;
+   flex-wrap: wrap;
+}
+
+/* Styles for the Select User component */
+.select-user {
+   font-family: "Open Sans";
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-right: 10px;
+}
+
+/* Styles for the user portfolio component */
+.user-portfolio {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-right: 10px;
+}
+
+/* Styles for the stock market component */
+.stock-market {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+}
+
+/* Styles for the stock prices component */
+.stock-prices {
+   flex-basis: 100%;
+   margin-top: 10px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+}
+
+/* Styles for the table inside the stock prices component */
+.stock-prices table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+/* Styles for the table headers inside the trade history component */
+.stock-prices th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+}
+
+/* Styles for the table cells inside the trade history component */
+.stock-prices td {
+   padding: 10px;
+}
+
+.stock-prices tbody th {
+   font-size: 15px;
+   font-weight: 400;
+}
+
+/* Styles for the trade history component */
+.trade-history {
+   flex-basis: 100%;
+   margin-top: 10px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+}
+
+/* Styles for the table inside the trade history component */
+.trade-history table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+/* Styles for the table headers inside the trade history component */
+.trade-history th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+}
+
+/* Styles for the table cells inside the trade history component */
+.trade-history td {
+   padding: 10px;
+}
+
+.trade-history tbody th {
+   font-size: 15px;
+   font-weight: 400;
+}
+
+/* Styles for the table cells inside the userStockOrders component */
+
+.userStockOrdersTable {
+   flex-basis: 100%;
+   margin-top: 10px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+}
+
+.userStockOrdersTable table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.userStockOrdersTable th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+}
+
+.userStockOrdersTable td {
+   padding: 10px;
+   font-size: 15px;
+   font-weight: 400;
+   background-color: #f2f2f2;
+}
