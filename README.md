@@ -8,15 +8,14 @@ To run project:
 
 -  install react and node modules
 -  start server.js
--  start react
+-  start react 
+-  add records to db: user_accounts, user_portfolio, stock_data
 -  on the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that are "Open"
 
+Completed features:
 
-Current progress:
-
--  You can switch between the 3 users.
--  See user's portfolio, inlcuding their stocks and cash.
--  See stock prices through a list of pre-defined tickers
+-  Switch between the 3 users, and see the user's portfolio (their stocks and cash)
+-  See latest stock prices
 -  Set buy/sell orders:
    -  Orders will post to server.js which uses the stockMatchingClass
    -  The stockMatchingClass matches the highest buy to the highest sell order.
@@ -24,18 +23,17 @@ Current progress:
 -  See a trade history table of all stocks matched and their details.
 -  Migrated data storage from local JSON files to PostgreSQL database, tables are: user_portfolio, stock_holdings, stock_data, stock_orders, matched_orders
 -  Implemented an order-status functionality. will show the user if their order is pending, open, closed, or canceled. User can cancel open orders through a button on the ui
-
+-  Set up initial parts of microservices transition.
 
 Next steps:
 
--  Refactor for microservices compatibility
+-  Complete refactoring for microservices compatibility, including using rabbitMQ for messaging b/w microservices and replicating db's between microservices
 -  Implement sound solution architecture principles
--  host on AWS
--  Through a button, simulate 100s of buy/sell orders and drive prices up or down to test the applications capabilities
+-  host serverlessly on AWS
+-  Simulate a high load on the system by creaing lots of buy/sell orders
 -  Possibly move to a websocket based system using socket.io
-
 
 issues:
 
+-  facing challenges in re-rendering data in the monolith, a temporary solution is to use a setInterval for useEffects hooks that fetch data.
 -  attempted to move to a websocket system for easier back and forth communication, the websocket is promising but did not work well for now, commented code out.
--  facing challenges in re-rendering data, a temporary solution is to use a setInterval for useEffects hooks that fetch data
