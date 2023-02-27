@@ -3,20 +3,23 @@ import StockOrderForm from "./StockOrderForm";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-const StockMarket = ({ stockData, userPortfolio, user }) => {
+// stock ordering microservice URL
+const stockOrderingURL = "http://localhost:4003";
+
+const StockOrdering = ({ user }) => {
    //state about order details when buying/selling a stock
    const [orderDetails, setOrderDetails] = useState({
       orderID: "",
       userID: "",
-      order_type: "buy",
+      orderType: "buy",
       ticker: "",
       quantity: "",
       price: "",
-      order_time: "",
-      order_status: "",
+      orderTime: "",
+      orderStatus: "",
    });
 
-   //state for returning a message when user buys/sells a stock:
+   //state for returning a message when a user starts a buy/sell order:
    const [orderFeedback, setOrderFeedback] = useState("");
 
    // handle user input on the form when placing a buy/sell order, passed as props to the StockOrderForm.js
@@ -27,34 +30,32 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
 
    // handle submit of form, passed as props to StockOrderForm.js
    const handleSubmit = (e) => {
-      // console.log("order: ", orderDetails);
-      sendTradeOrder();
+      startTradeOrder();
    };
 
    // send trade order to back end via body of an axios request
-   const sendTradeOrder = async () => {
+   const startTradeOrder = async () => {
       //set the remaining body of orderDetails:
       orderDetails.orderID = uuidv4();
-      orderDetails.userID = user.user_id;
-      orderDetails.order_time = new Date();
-      orderDetails.order_status = "Pending";
+      orderDetails.userID = user.userID;
+      orderDetails.quantity = parseInt(orderDetails.quantity);
+      orderDetails.price = parseInt(orderDetails.price);
+      orderDetails.orderTime = new Date();
+      orderDetails.orderStatus = "Pending";
 
-      // console.log("order: ", orderDetails);
+      console.log("order: ", orderDetails);
 
       try {
          await axios
-            .post("http://localhost:5555/sendTradeOrder", {
-               // user,
-               orderDetails,
-            })
-            .then(console.log("order sent"))
+            .post(`${stockOrderingURL}/startTradeOrder`, { orderDetails })
             .then(
                setOrderFeedback(
-                  `${user.user_name}'s ${orderDetails.order_type} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
+                  `${user.firstName}'s ${orderDetails.orderType} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
                )
             );
       } catch (err) {
          console.log("did not send", err);
+         setOrderFeedback("you order was not sent");
       }
    };
 
@@ -66,10 +67,8 @@ const StockMarket = ({ stockData, userPortfolio, user }) => {
             handleSubmit={handleSubmit}
          />
          <div>{orderFeedback}</div>
-         {/* <br></br> */}
-         {/* <div>Order Status: {orderDetails.orderStatus}</div> */}
       </div>
    );
 };
 
-export default StockMarket;
+export default StockOrdering;

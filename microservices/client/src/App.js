@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserPortfolio from "./components/UserPortfolio";
-import StockMarket from "./components/StockMarket";
+import StockOrdering from "./components/StockOrdering";
 import SelectUser from "./components/SelectUser";
 import StockData from "./components/StockData";
 import TradeHistory from "./components/TradeHistory";
@@ -44,15 +44,7 @@ const App = () => {
                   setUserStockHoldings={setUserStockHoldings}
                />
             )}
-            {/* {/* {stockData && (
-               <StockMarket
-                  key={userPortfolio}
-                  className="stock-market"
-                  stockData={stockData}
-                  userPortfolio={userPortfolio}
-                  user={user}
-               />
-            )} */}
+            <StockOrdering className="stock-market" user={user} />
             {/* {user.user_id && (
                <UserStockOrders
                   user_id={user.user_id}
@@ -66,7 +58,6 @@ const App = () => {
                setStockData={setStockData}
                setStockDataIsLoading={setStockDataIsLoading}
             />{" "}
-            
             {/* <TradeHistory
                tradeHistoryData={tradeHistoryData}
                setTradeHistoryData={setTradeHistoryData}

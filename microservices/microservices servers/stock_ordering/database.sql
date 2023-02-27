@@ -1,8 +1,8 @@
-CREATE DATABASE stock_orders
+CREATE DATABASE stock_ordering
 
 Create TABLE stock_orders (
     order_id TEXT PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES user_accounts(user_id),
+    user_id INTEGER NOT NULL,
     order_type TEXT NOT NULL,
     ticker TEXT NOT NULL,
     quantity INTEGER NOT NULL,
