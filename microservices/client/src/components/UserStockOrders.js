@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
 const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
-
    //use effect to fetch the specific user's stock orders
    useEffect(() => {
       const fetchUserOrders = async () => {
@@ -32,9 +31,7 @@ const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
       try {
          const response = await fetch(
             `http://localhost:5555/cancelTradeOrder?order_id=${order_id}&order_type=${order_type}`,
-            {
-               method: "PUT",
-            }
+            { method: "PUT" }
          );
 
          if (!response.ok) {
