@@ -18,7 +18,7 @@ const App = () => {
    const [userStockHoldings, setUserStockHoldings] = useState([]);
 
    //  //state for rendering a user's stock orders
-   //  const [userStockOrders, setUserStockOrders] = useState([]);
+   const [userOrderHistory, setUserOrderHistory] = useState([]);
 
    //  //state for rendering stock data (current price, ticker..etc)
    const [stockData, setStockData] = useState({});
@@ -45,19 +45,19 @@ const App = () => {
                />
             )}
             <StockOrdering className="stock-market" user={user} />
-            {/* {user.user_id && (
+            {user.userID && (
                <UserStockOrders
-                  user_id={user.user_id}
-                  userStockOrders={userStockOrders}
-                  setUserStockOrders={setUserStockOrders}
+                  userID={user.userID}
+                  userOrderHistory={userOrderHistory}
+                  setUserOrderHistory={setUserOrderHistory}
                />
-            )} */}
+            )}
             <StockData
                stockData={stockData}
                stockDataIsLoading={stockDataIsLoading}
                setStockData={setStockData}
                setStockDataIsLoading={setStockDataIsLoading}
-            />{" "}
+            />
             {/* <TradeHistory
                tradeHistoryData={tradeHistoryData}
                setTradeHistoryData={setTradeHistoryData}

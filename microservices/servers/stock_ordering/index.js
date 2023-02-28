@@ -16,19 +16,19 @@ const stockOrderingPORT = 4003;
 const service = require("./dbQueries");
 
 // // get a specifc user's trade orders
-// app.get("/getUserStockOrders", (req, res) => {
-//    service.getUserStockOrders(req.query.userID).then((orders) => {
-//       // console.log(orders);
-//       res.send(orders);
-//    });
-// });
+app.get("/getUserStockOrders", (req, res) => {
+   service.getUserStockOrders(req.query.userID).then((orders) => {
+      console.log(orders);
+      res.send(orders);
+   });
+});
 
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", (req, res) => {
    // console.log(req.body);
 
    const orderDetails = req.body.orderDetails;
-   console.log("received order: ", orderDetails);
+   // console.log("received order: ", orderDetails);
 
    // set order_status to open
    orderDetails.orderStatus = "Open";

@@ -9,19 +9,35 @@ const pool = new Pool({
    port: 5432,
 });
 
-// //get user trade orders
-// const getUserStockOrders = async (userID) => {
-//    try {
-//       const query_string =
-//          "SELECT (order_type, ticker, quantity, price, order_status, order_time, order_id) FROM trade_orders WHERE user_id = $1 ORDER BY order_time DESC ";
-//       const query_parameter = [userID];
-//       const result = await pool.query(query_string, query_parameter);
-//       return result.rows;
-//    } catch (error) {
-//       console.log(error);
-//       throw error;
-//    }
-// };
+// //get a user's trade orders
+const getUserStockOrders = async (userID) => {
+   try {
+      const queryString =
+         "SELECT order_type, ticker, quantity, price, order_status, order_time, order_id FROM stock_orders WHERE user_id = $1 ORDER BY order_time DESC ";
+      const queryParameter = [userID];
+
+      const results = await pool.query(queryString, queryParameter);
+
+      console.log(results.rows);
+
+      // convert to camel case
+      const camelCaseResults = results.rows.map((result) => {
+         return {
+            orderType: result.order_type,
+            orderStatus: result.order_status,
+            orderTime: result.order_time,
+            orderID: result.order_id,
+            ticker: result.ticker,
+            quantity: result.quantity,
+            price: result.price,
+         };
+      });
+      return camelCaseResults;
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
 
 // add a stock trade order
 const addStockOrder = async (orderDetails) => {
@@ -78,7 +94,7 @@ const addStockOrder = async (orderDetails) => {
 // };
 
 module.exports = {
-   // getUserStockOrders,
+   getUserStockOrders,
    addStockOrder,
    // updateOrderStatusStockOrdersTable,
    // getBuyerAndSellerID,

@@ -1,21 +1,23 @@
 import React, { useEffect } from "react";
 
-const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
+// stock ordering microservice URL
+const stockOrderingURL = "http://localhost:4003";
+
+const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
    //use effect to fetch the specific user's stock orders
    useEffect(() => {
       const fetchUserOrders = async () => {
          try {
             const response = await fetch(
-               `http://localhost:5555/getUserStockOrders?user_id=${user_id}`
+               `${stockOrderingURL}/getUserStockOrders?userID=${userID}`
             );
-
             if (!response.ok) {
                console.log("network error");
             }
 
             let userOrders = await response.json();
-            console.log(userOrders);
-            setUserStockOrders(userOrders);
+            // console.log(userOrders);
+            setUserOrderHistory(userOrders);
          } catch (error) {
             console.log(error);
             throw error;
@@ -24,26 +26,27 @@ const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
       fetchUserOrders();
       const interval = setInterval(fetchUserOrders, 5000);
       return () => clearInterval(interval);
-   }, [user_id]);
+   }, [userID]);
 
-   // Send a cancel order PUT request to server.js
-   const cancelOrder = async (order_id, order_type) => {
-      try {
-         const response = await fetch(
-            `http://localhost:5555/cancelTradeOrder?order_id=${order_id}&order_type=${order_type}`,
-            { method: "PUT" }
-         );
+   //// Send a cancel order PUT request to server.js
+   // const cancelOrder = async (orderID, orderType) => {
+   //    try {
+   //       const response = await fetch(
+   //          `http://localhost:5555/cancelTradeOrder?order_id=${orderID}&order_type=${orderType}`,
+   //          { method: "PUT" }
+   //       );
 
-         if (!response.ok) {
-            console.log("Network error");
-         }
-         const result = await response.json();
-         console.log(result);
-      } catch (error) {
-         console.log(error);
-         throw error;
-      }
-   };
+   //       if (!response.ok) {
+   //          console.log("Network error");
+   //       }
+   //       const result = await response.json();
+   //       console.log(result);
+   //    } catch (error) {
+   //       console.log(error);
+   //       throw error;
+   //    }
+   // };
+
    return (
       <div className="userStockOrdersTable">
          <h4> User Trade Orders</h4>
@@ -61,30 +64,21 @@ const UserStockOrders = ({ user_id, userStockOrders, setUserStockOrders }) => {
                </tr>
             </thead>
             <tbody>
-               {userStockOrders.map((order) => {
-                  const [
-                     order_type,
-                     ticker,
-                     quantity,
-                     price,
-                     order_status,
-                     order_time,
-                     order_id,
-                  ] = order.row.slice(1, -1).split(",");
+               {userOrderHistory.map((order) => {
                   return (
-                     <tr key={order.row}>
-                        <td>{order_type}</td>
-                        <td>{ticker}</td>
-                        <td>{quantity}</td>
-                        <td>{price}</td>
-                        <td>{order_time}</td>
-                        <td>{order_status}</td>
+                     <tr key={order.orderID}>
+                        <td>{order.orderType}</td>
+                        <td>{order.ticker}</td>
+                        <td>{order.quantity}</td>
+                        <td>{order.price}</td>
+                        <td>{order.orderTime}</td>
+                        <td>{order.orderStatus}</td>
                         <td>
-                           {order_status === "Open" && (
+                           {order.orderStatus === "Open" && (
                               <button
-                                 onClick={() =>
-                                    cancelOrder(order_id, order_type)
-                                 }
+                              // onClick={() =>
+                              //    cancelOrder(order.orderID, order.orderType)
+                              // }
                               >
                                  Cancel
                               </button>

@@ -19,7 +19,7 @@ const getStockData = async (req, res) => {
       const results = await pool.query(queryString);
 
       //convert last_update to camel case:
-      const updatedResults = results.rows.map((stock) => {
+      const camelCaseResults = results.rows.map((stock) => {
          return {
             ticker: stock.ticker,
             price: stock.price,
@@ -28,7 +28,7 @@ const getStockData = async (req, res) => {
          };
       });
 
-      return updatedResults;
+      return camelCaseResults;
    } catch (error) {
       console.log("error in getting Stock Data ", error);
       console.log(error);
