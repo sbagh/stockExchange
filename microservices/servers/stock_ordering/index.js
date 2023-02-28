@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
+// require file to send order to amqp queue
+const { sendToOrderMatchingQue } = require("/rabbitMQ");
+
 const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
@@ -24,7 +27,7 @@ app.get("/getUserStockOrders", (req, res) => {
 });
 
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
-app.post("/startTradeOrder", (req, res) => {
+app.post("/startTradeOrder", async (req, res) => {
    // console.log(req.body);
 
    const orderDetails = req.body.orderDetails;
@@ -36,33 +39,11 @@ app.post("/startTradeOrder", (req, res) => {
    // add trade order to stock_orders db
    service.addStockOrder(orderDetails);
 
-   // send trade order to order_matching microservice
-   // sendToOrderMatchingService(order_details);
+   // send order to order mathcing queue, which will send to order matching microservice
+   await sendToQueue(orderDetails);
 
    res.send("order received");
 });
-
-// make an axios post to order matching microservice with the order details in body
-// const sendToOrderMatchingService = async (order_details) => {
-//    // set the body of the request:
-//    const body = {
-//       order_type: order_details.order_type,
-//       userID: order_details.userID,
-//       ticker: order_details.ticker,
-//       quantity: parseInt(order_details.quantity),
-//       price: parseInt(order_details.price),
-//       order_id: order_details.order_id,
-//    };
-//
-// post to order matching microservice
-//    axios.post(orderMatchingURL, body).catch((error) => {
-//       console.log(
-//          "error in sending trade order to order matching microservice ",
-//          error
-//       );
-//       throw error;
-//    });
-// };
 
 // // receive matched order from order_matching microservice
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
