@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const amqp = require("amqplib/callback_api");
 
 const app = express();
 app.use(cors());
@@ -9,8 +10,9 @@ app.use(express.json());
 
 const stockOrderingPORT = 4003;
 
-// // other microservices used in this file
-// const orderMatchingURL = "http://localhost:4004/sendOrderToMatchingService";
+// other microservices used in this file
+//1-send to order matching microservice with this url /sendOrderToMatchingService
+const orderMatchingURL = "http://localhost:4004/sendOrderToMatchingService";
 
 // require db connection and queries:
 const service = require("./dbQueries");
@@ -37,32 +39,32 @@ app.post("/startTradeOrder", (req, res) => {
    service.addStockOrder(orderDetails);
 
    // send trade order to order_matching microservice
-   // sendToOrderMatchingService(order_details);
+   sendToOrderMatchingService(orderDetails);
 
    res.send("order received");
 });
 
 // make an axios post to order matching microservice with the order details in body
-// const sendToOrderMatchingService = async (order_details) => {
-//    // set the body of the request:
-//    const body = {
-//       order_type: order_details.order_type,
-//       userID: order_details.userID,
-//       ticker: order_details.ticker,
-//       quantity: parseInt(order_details.quantity),
-//       price: parseInt(order_details.price),
-//       order_id: order_details.order_id,
-//    };
-//
-// post to order matching microservice
-//    axios.post(orderMatchingURL, body).catch((error) => {
-//       console.log(
-//          "error in sending trade order to order matching microservice ",
-//          error
-//       );
-//       throw error;
-//    });
-// };
+const sendToOrderMatchingService = async (orderDetails) => {
+   // set the body of the request:
+   const body = {
+      orderType: orderDetails.orderType,
+      userID: orderDetails.userID,
+      ticker: orderDetails.ticker,
+      quantity: parseInt(orderDetails.quantity),
+      price: parseInt(orderDetails.price),
+      orderID: orderDetails.orderID,
+   };
+
+   // post to order matching microservice
+   axios.post(orderMatchingURL, body).catch((error) => {
+      console.log(
+         "error in sending trade order to order matching microservice ",
+         error
+      );
+      throw error;
+   });
+};
 
 // // receive matched order from order_matching microservice
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
