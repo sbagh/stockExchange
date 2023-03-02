@@ -1,21 +1,21 @@
-const amqp = require("amqp");
+const amqp = require("amqplib");
 
-let publisherConnection = null;
-let publisherChannel = null;
+let senderConnection = null;
+let senderChannel = null;
 
 const QueueName = "stock_orders";
-const RabbitMqUrl = "http://127.0.0.1";
+const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-const sendToOrderMatchingQue = async (orderDetails) => {
+const sendToStockOrderingQueue = async (orderDetails) => {
    try {
       // creaate connection
-      publisherConnection = await amqp.connect(RabbitMqUrl);
+      senderConnection = await amqp.connect(RabbitMqUrl);
       // create channel
-      publisherChannel = await publisherConnection.createChannel();
+      senderChannel = await senderConnection.createChannel();
       // assert Queue, set durability = true in case of server crash or restart
-      publisherChannel.assertQueue(QueueName, { durability: true });
+      await senderChannel.assertQueue(QueueName, { durability: true });
       // create and send the message to queue
-      publisherChannel.sendToQueue(
+      senderChannel.sendToQueue(
          QueueName,
          Buffer.from(JSON.stringify(orderDetails))
       );
@@ -24,8 +24,8 @@ const sendToOrderMatchingQue = async (orderDetails) => {
 
       // close channel and connection
       setTimeout(() => {
-         sendingChannel.close();
-         sendingConnection.close();
+         senderChannel.close();
+         senderConnection.close();
       }, 500);
    } catch (error) {
       console.log("error in sending order to order matching queu: ", error);
@@ -33,12 +33,12 @@ const sendToOrderMatchingQue = async (orderDetails) => {
    }
 };
 
-// close channel and connection if server is turned off
-process.on("SIGINT", () => {
-   if (sendingChannel) sendingChannel.close();
-   if (sendingConnection) sendingConnection.close();
-});
+// // close channel and connection if server is turned off
+// process.on("SIGINT", () => {
+//    if (senderChannel) senderChannel.close();
+//    if (senderConnection) senderConnection.close();
+// });
 
-modules.exports = {
-   sendToOrderMatchingQue,
+module.exports = {
+   sendToStockOrderingQueue,
 };

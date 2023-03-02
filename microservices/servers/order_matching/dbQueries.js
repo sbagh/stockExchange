@@ -1,6 +1,6 @@
 const { query } = require("express");
 
-const Pool = require("pg");
+const Pool = require("pg").Pool;
 
 // connect to db:
 const pool = new Pool({

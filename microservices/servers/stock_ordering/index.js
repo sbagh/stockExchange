@@ -3,7 +3,7 @@ const cors = require("cors");
 const axios = require("axios");
 
 // require file to send order to amqp queue
-const { sendToOrderMatchingQue } = require("/rabbitMQ");
+const { sendToStockOrderingQueue } = require("./rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -21,7 +21,7 @@ const service = require("./dbQueries");
 // // get a specifc user's trade orders
 app.get("/getUserStockOrders", (req, res) => {
    service.getUserStockOrders(req.query.userID).then((orders) => {
-      console.log(orders);
+      // console.log(orders);
       res.send(orders);
    });
 });
@@ -31,7 +31,7 @@ app.post("/startTradeOrder", async (req, res) => {
    // console.log(req.body);
 
    const orderDetails = req.body.orderDetails;
-   // console.log("received order: ", orderDetails);
+   console.log("received order: ", orderDetails);
 
    // set order_status to open
    orderDetails.orderStatus = "Open";
@@ -40,7 +40,7 @@ app.post("/startTradeOrder", async (req, res) => {
    service.addStockOrder(orderDetails);
 
    // send order to order mathcing queue, which will send to order matching microservice
-   await sendToQueue(orderDetails);
+   await sendToStockOrderingQueue(orderDetails);
 
    res.send("order received");
 });

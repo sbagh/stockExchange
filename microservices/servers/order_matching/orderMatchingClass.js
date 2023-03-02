@@ -1,6 +1,6 @@
 //class that matches highest buy order to highest sell order
 
-class stockMatchingSystem {
+class orderMatchingClass {
    //buy and sell_orders are arrays of objects containing trade info such as buyer/seller, qty, price, time, type, status..etc
    //e.g: buy_orders = [{buyer: {id: 1, name: "user1"}, symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
 
@@ -116,5 +116,5 @@ class stockMatchingSystem {
 }
 
 module.exports = {
-   stockMatchingSystem,
+   orderMatchingClass,
 };
