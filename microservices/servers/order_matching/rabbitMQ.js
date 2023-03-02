@@ -1,25 +1,17 @@
 const amqp = require("amqplib");
 
-let subscriberConnection = null;
-let subscriberChannel = null;
-
 const QueueName = "stock_orders";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-const recieveFromStockOrderingQueue = async () => {
+const recieveFromStockOrdersQueue = async () => {
    try {
       //create connection
-      subscriberConnection = await amqp.connect(RabbitMqUrl);
-      // console.log("Connected to RabbitMQ");
-
+      const subscriberConnection = await amqp.connect(RabbitMqUrl);
       //create channel
-      subscriberChannel = await subscriberConnection.createChannel();
+      const subscriberChannel = await subscriberConnection.createChannel();
       //assert queue
       await subscriberChannel.assertQueue(QueueName, { durable: true });
-      // console.log("Waiting for messages in queue...");
-
       //consume message from queue
-      // const consumedMessage =
       await subscriberChannel.consume(QueueName, (consumedMessage) => {
          if (consumedMessage) {
             // console.log("consumed message:  ", consumedMessage);
@@ -46,17 +38,18 @@ const recieveFromStockOrderingQueue = async () => {
    } catch (error) {
       console.log("error in consuming message from stock ordering que", error);
       throw error;
-   } finally {
-      // close channel and connection when finished
-      if (subscriberChannel) {
-         await subscriberChannel.close();
-      }
-      if (subscriberConnection) {
-         await subscriberConnection.close();
-      }
    }
+   // } finally {
+   //    // close channel and connection when finished
+   //    if (subscriberChannel) {
+   //       await subscriberChannel.close();
+   //    }
+   //    if (subscriberConnection) {
+   //       await subscriberConnection.close();
+   //    }
+   // }
 };
 
 module.exports = {
-   recieveFromStockOrderingQueue,
+   recieveFromStockOrdersQueue,
 };

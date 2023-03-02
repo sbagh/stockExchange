@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const { orderMatchingClass } = require("./orderMatchingClass");
-const { recieveFromStockOrderingQueue } = require("./rabbitMQ.js");
+
+// require function to get orders from amqp queue
+const { recieveFromStockOrdersQueue } = require("./rabbitMQ.js");
 
 const app = express();
 app.use(cors());
@@ -28,7 +30,7 @@ const orderMatchingPORT = 4004;
 const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
-recieveFromStockOrderingQueue();
+recieveFromStockOrdersQueue();
 
 // (async () => {
 //    const orderDetails = await recieveFromStockOrderingQueue();

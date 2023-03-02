@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
-// require file to send order to amqp queue
-const { sendToStockOrderingQueue } = require("./rabbitMQ");
+// require function to send order to amqp queue
+const { sendToStockOrdersQueue } = require("./rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -40,7 +40,7 @@ app.post("/startTradeOrder", async (req, res) => {
    service.addStockOrder(orderDetails);
 
    // send order to order mathcing queue, which will send to order matching microservice
-   await sendToStockOrderingQueue(orderDetails);
+   await sendToStockOrdersQueue(orderDetails);
 
    res.send("order received");
 });
