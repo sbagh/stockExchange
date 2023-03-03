@@ -15,7 +15,8 @@ To run project:
 Completed features:
 
 -  Functionalities: 
-   -  Switch between users, and see each user's portfolio and their trade history, See latest stock prices, 
+   -  Switch between users, and see each user's portfolio and their trade history
+   - See latest stock prices, 
    - Set buy and sell orders:
       - Orders will post to the stock ordering microservice, which will publish a message through rabbitMQ to the order matching microservice.
       - The Order matching microservice matches orders based on the stockMatchingClass which matches the highest buy to the highest sell order.
@@ -37,3 +38,8 @@ issues:
 
 -  facing challenges in re-rendering data in the monolith, a temporary solution is to use a setInterval for useEffects hooks that fetch data.
 -  attempted to move to a websocket system for easier back and forth communication, the websocket is promising but did not work well for now, commented code out.
+
+
+High level system design:
+<img width="1440" alt="Screen Shot 2023-03-01 at 5 12 33 PM" src="https://user-images.githubusercontent.com/52921619/222810115-c219838e-a9be-4f34-81d3-04bd29b75833.png">
+
