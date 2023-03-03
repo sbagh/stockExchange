@@ -39,7 +39,7 @@ issues:
 -  facing challenges in re-rendering data in the monolith, a temporary solution is to use a setInterval for useEffects hooks that fetch data.
 -  attempted to move to a websocket system for easier back and forth communication, the websocket is promising but did not work well for now, commented code out.
 
-
 High level system design:
-<img width="1440" alt="Screen Shot 2023-03-01 at 5 12 33 PM" src="https://user-images.githubusercontent.com/52921619/222810115-c219838e-a9be-4f34-81d3-04bd29b75833.png">
+<img width="1245" alt="Screen Shot 2023-03-02 at 6 59 01 AM" src="https://user-images.githubusercontent.com/52921619/222810242-33159bfc-c21d-4a5b-b285-f711f8527d66.png">
+
 
