@@ -19,8 +19,8 @@ Completed features:
    - See latest stock prices, 
    - Set buy and sell orders:
       - Orders will post to the stock ordering microservice, which will publish a message through rabbitMQ to the order matching microservice.
-      - The Order matching microservice matches orders based on the stockMatchingClass which matches the highest buy to the highest sell order.
-      - Buy and Sell orders will impact the price of the stock similar to a real stock exchange, the new price will be the last matched order price.
+      - The Order matching microservice will match orders based on highest buy to the highest sell order.
+      - Buy and Sell orders will impact the price of the stock similar to a real stock exchange, and the new price will be the last matched order price.
 -  Migrated data storage from local JSON files to PostgreSQL database, then to separate DBs per microservice and appended data querying APIs for each implementation
 -  Implemented an order-status functionality, with options of 'pending', 'open', 'closed', or 'canceled'.
 -  Currently moving from monolith to a microservices architecture, the 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching. 
