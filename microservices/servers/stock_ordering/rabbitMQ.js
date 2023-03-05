@@ -4,29 +4,32 @@ const QueueName = "stock_orders";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
 const sendToStockOrdersQueue = async (orderDetails) => {
-   try {
-      // creaate connection
-      const senderConnection = await amqp.connect(RabbitMqUrl);
-      // create channel
-      const senderChannel = await senderConnection.createChannel();
-      // assert Queue, set durability = true in case of server crash or restart
-      await senderChannel.assertQueue(QueueName, { durability: true });
-      // create and send the message to queue
-      senderChannel.sendToQueue(
-         QueueName,
-         Buffer.from(JSON.stringify(orderDetails))
-      );
-      
-      console.log("order sent to order matching queue: ", orderDetails);
-      // close channel and connection
-      setTimeout(() => {
-         senderChannel.close();
-         senderConnection.close();
-      }, 500);
-   } catch (error) {
-      console.log("error in sending order to order matching queu: ", error);
-      throw error;
-   }
+   return new Promise(async (resolve, reject) => {
+      try {
+         // creaate connection
+         const senderConnection = await amqp.connect(RabbitMqUrl);
+         // create channel
+         const senderChannel = await senderConnection.createChannel();
+         // assert Queue, set durability = true in case of server crash or restart
+         await senderChannel.assertQueue(QueueName, { durability: true });
+         // create and send the message to queue
+         senderChannel.sendToQueue(
+            QueueName,
+            Buffer.from(JSON.stringify(orderDetails))
+         );
+
+         console.log("order sent to order matching queue: ", orderDetails);
+         // close channel and connection
+         setTimeout(() => {
+            senderChannel.close();
+            senderConnection.close();
+            resolve();
+         }, 500);
+      } catch (error) {
+         console.log("error in sending order to order matching queu: ", error);
+         reject(error);
+      }
+   });
 };
 
 // // close channel and connection if server is turned off

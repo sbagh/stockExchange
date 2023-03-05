@@ -30,12 +30,15 @@ const orderMatchingPORT = 4004;
 const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
-recieveFromStockOrdersQueue();
 
-// (async () => {
-//    const orderDetails = await recieveFromStockOrderingQueue();
-//    console.log("recieved message from queue: ", orderDetails);
-// })();
+const receiveFromQue = async () => {
+   const orderDetails = await recieveFromStockOrdersQueue();
+   console.log("order received from que: ", orderDetails);
+};
+
+setInterval(receiveFromQue, 2000);
+
+// recieveFromStockOrdersQueue();
 
 //.then((orderDetails) => {
 //    // add to buy or sell orders array depending on order_type
