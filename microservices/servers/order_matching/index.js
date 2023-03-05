@@ -68,11 +68,10 @@ const matchOrders = async () => {
       let matchedOrder = matchedOrders[0];
       console.log("matched order: ", matchedOrder);
 
-      // a matched order will be an object of this format:
-      // matched_order = { buy_order_id, sell_order_id, price, time, ticker, quantity, }
+      // a matched order will be an object of this format: matched_order = { buy_order_id, sell_order_id, price, time, ticker, quantity }
 
       //update matched_orders db after matching a trade
-      // service.updateMatchedOrdersTable(matched_order);
+      service.updateMatchedOrdersTable(matchedOrder);
 
       // //send post to stock ordering microservice after matching a trade
       // updateStockOrderingAfterMatch(matched_order);

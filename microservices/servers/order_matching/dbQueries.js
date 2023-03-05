@@ -12,11 +12,15 @@ const pool = new Pool({
 });
 
 // update matched_orders table after matching an order
-const updateMatchedOrdersTable = async (order) => {
+const updateMatchedOrdersTable = async (matchedOrder) => {
    try {
       const queryString =
-         "INSERT INTO public.matched_orders(buy_order_id, sell_order_id, matched_time) VALUES($1,$2,$3)";
-      const queryParameters = [order.buyID, order.sellID, order.time];
+         "INSERT INTO matched_orders(buy_order_id, sell_order_id, matched_time) VALUES($1,$2,$3)";
+      const queryParameters = [
+         matchedOrder.buyID,
+         matchedOrder.sellID,
+         matchedOrder.time,
+      ];
 
       await pool.query(queryString, queryParameters);
    } catch (error) {
