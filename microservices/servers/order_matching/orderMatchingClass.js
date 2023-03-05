@@ -1,48 +1,48 @@
 //class that matches highest buy order to highest sell order
 
-class stockMatchingSystem {
-   //buy and sell_orders are arrays of objects containing trade info such as buyer/seller, qty, price, time, type, status..etc
-   //e.g: buy_orders = [{buyer: {id: 1, name: "user1"}, symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
+class orderMatchingClass {
+   //buy and sellOrders are arrays of objects containing trade info such as buyer/seller, qty, price, time, type, status..etc
+   //e.g: buyOrders = [{buyer: {id: 1, name: "user1"}, symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
 
    constructor() {
-      (this.buy_orders = []), (this.sell_orders = []);
+      (this.buyOrders = []), (this.sellOrders = []);
    }
 
-   //add a buy order in buy_orders array
-   addBuyOrder(buyer, ticker, quantity, price, order_id) {
+   //add a buy order in buyOrders array
+   addBuyOrder(buyer, ticker, quantity, price, orderID) {
       const time = new Date().toString();
-      this.buy_orders.push({ buyer, ticker, quantity, price, order_id, time });
+      this.buyOrders.push({ buyer, ticker, quantity, price, orderID, time });
    }
 
-   //add a sell order in sell_orders array
-   addSellOrder(seller, ticker, quantity, price, order_id) {
+   //add a sell order in sellOrders array
+   addSellOrder(seller, ticker, quantity, price, orderID) {
       const time = new Date().toString();
-      this.sell_orders.push({
+      this.sellOrders.push({
          seller,
          ticker,
          quantity,
          price,
-         order_id,
+         orderID,
          time,
       });
    }
 
-   //remove an order from buy_orders or sell_orders array, given an order id and type. (used if a user cancels their trade order)
-   removeOrder(order_id, order_type) {
-      if (order_type === "buy") {
-         const index = this.buy_orders.findIndex(
-            (order) => (order.order_id = order_id)
+   //remove an order from buyOrders or sellOrders array, given an order id and type. (used if a user cancels their trade order)
+   removeOrder(orderID, orderType) {
+      if (orderType === "buy") {
+         const index = this.buyOrders.findIndex(
+            (order) => (order.orderID = orderID)
          );
          if (index !== -1) {
-            this.buy_orders.splice(index, 1);
+            this.buyOrders.splice(index, 1);
             return true;
          }
-      } else if (order_type === "sell") {
-         const index = this.sell_orders.findIndex(
-            (order) => (order.order_id = order_id)
+      } else if (orderType === "sell") {
+         const index = this.sellOrders.findIndex(
+            (order) => (order.orderID = orderID)
          );
          if (index !== -1) {
-            this.sell_orders.splice(index, 1);
+            this.sellOrders.splice(index, 1);
             return true;
          }
       }
@@ -51,7 +51,7 @@ class stockMatchingSystem {
 
    matchOrders() {
       //first sort buy and sell orders in descending order to get highest value of each, if prices are equal, sort by time (oldest first)
-      this.buy_orders.sort((a, b) => {
+      this.buyOrders.sort((a, b) => {
          if (b.price === a.price) {
             return new Date(b.time) - new Date(a.time);
          } else {
@@ -59,7 +59,7 @@ class stockMatchingSystem {
          }
       });
 
-      this.sell_orders.sort((a, b) => {
+      this.sellOrders.sort((a, b) => {
          if (b.price === a.price) {
             return new Date(b.time) - new Date(a.time);
          } else {
@@ -69,42 +69,42 @@ class stockMatchingSystem {
 
       let matchedOrders = [];
 
-      //loop through the buy_orders and sell_orders arrays, if buy_orders price > sell_orders price, execute a trade, else increment the sell order
+      //loop through the buyOrders and sellOrders arrays, if buyOrders price > sellOrders price, execute a trade, else increment the sell order
       let i = 0,
          j = 0;
 
-      while (i < this.buy_orders.length && j < this.sell_orders.length) {
+      while (i < this.buyOrders.length && j < this.sellOrders.length) {
          if (
-            this.buy_orders[i].ticker === this.sell_orders[j].ticker &&
-            this.buy_orders[i].price >= this.sell_orders[j].price
+            this.buyOrders[i].ticker === this.sellOrders[j].ticker &&
+            this.buyOrders[i].price >= this.sellOrders[j].price
          ) {
             let trade_quantity = Math.min(
-               this.buy_orders[i].quantity,
-               this.sell_orders[j].quantity
+               this.buyOrders[i].quantity,
+               this.sellOrders[j].quantity
             );
 
-            this.buy_orders[i].quantity -= trade_quantity;
-            this.sell_orders[j].quantity -= trade_quantity;
+            this.buyOrders[i].quantity -= trade_quantity;
+            this.sellOrders[j].quantity -= trade_quantity;
 
             //if the overlap trade quantity is greater than 0, push the min amount into the matched orders array
             if (trade_quantity > 0) {
                matchedOrders.push({
-                  buy_order_id: this.buy_orders[i].order_id,
-                  sell_order_id: this.sell_orders[i].order_id,
-                  price: this.sell_orders[i].price,
+                  buyOrderID: this.buyOrders[i].orderID,
+                  sellOrderID: this.sellOrders[i].orderID,
+                  price: this.sellOrders[i].price,
                   time: new Date(),
-                  ticker: this.sell_orders[i].ticker,
+                  ticker: this.sellOrders[i].ticker,
                   quantity: trade_quantity,
                });
             }
 
-            if (this.buy_orders[i].quantity === 0) {
+            if (this.buyOrders[i].quantity === 0) {
                i++;
             } else {
                j++;
             }
          } else {
-            if (this.buy_orders[i].price < this.sell_orders[j].price) {
+            if (this.buyOrders[i].price < this.sellOrders[j].price) {
                i++;
             } else {
                j++;
@@ -116,5 +116,5 @@ class stockMatchingSystem {
 }
 
 module.exports = {
-   stockMatchingSystem,
+   orderMatchingClass,
 };

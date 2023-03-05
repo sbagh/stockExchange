@@ -18,7 +18,7 @@ const getUserStockOrders = async (userID) => {
 
       const results = await pool.query(queryString, queryParameter);
 
-      console.log(results.rows);
+      // console.log(results.rows);
 
       // convert to camel case
       const camelCaseResults = results.rows.map((result) => {

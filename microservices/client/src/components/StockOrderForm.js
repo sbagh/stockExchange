@@ -39,7 +39,7 @@ const StockOrderForm = ({ orderDetails, handleChange, handleSubmit }) => {
                Type:
                <select
                   onChange={(e) => handleChange(e)}
-                  name="order_type"
+                  name="orderType"
                   value={orderDetails.orderType}
                >
                   <option value="buy">Buy</option>
