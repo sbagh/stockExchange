@@ -30,81 +30,62 @@ const orderMatchingPORT = 4004;
 const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
-
 const receiveFromQue = async () => {
    const orderDetails = await recieveFromStockOrdersQueue();
-   console.log("order received from que: ", orderDetails);
+   console.log("order received to index.js from que: ", orderDetails);
+   sendToExchange(orderDetails);
 };
 
-setInterval(receiveFromQue, 2000);
+setInterval(receiveFromQue, 500);
 
-// recieveFromStockOrdersQueue();
+const sendToExchange = (orderDetails) => {
+   // add to buy or sell orders array depending on order_type
+   orderDetails.orderType === "buy"
+      ? stockExchange.addBuyOrder(
+           orderDetails.userID,
+           orderDetails.ticker,
+           orderDetails.quantity,
+           orderDetails.price,
+           orderDetails.orderID
+        )
+      : stockExchange.addSellOrder(
+           orderDetails.userID,
+           orderDetails.ticker,
+           orderDetails.quantity,
+           orderDetails.price,
+           orderDetails.orderID
+        );
 
-//.then((orderDetails) => {
-//    // add to buy or sell orders array depending on order_type
-//    // orderDetails.orderType === "buy"
-//    //    ? stockExchange.addBuyOrder(
-//    //         orderDetails.userID,
-//    //         orderDetails.ticker,
-//    //         orderDetails.quantity,
-//    //         orderDetails.price,
-//    //         orderDetails.orderID
-//    //      )
-//    //    : stockExchange.addSellOrder(
-//    //         orderDetails.userID,
-//    //         orderDetails.ticker,
-//    //         orderDetails.quantity,
-//    //         orderDetails.price,
-//    //         orderDetails.orderID
-//    //      );
-// });
+   console.log("buy orders: ", stockExchange.buyOrders);
+   console.log("sell orders: ", stockExchange.sellOrders);
+};
 
-// //receive stock orders from stock_ordering microservice
-// app.post("/sendOrderToMatchingService", (req, res) => {
-//    const order_details = req.body;
+// match orders, then update matched_order db and send the matched order to other microservices
+const matchOrders = async () => {
+   const matchedOrders = stockExchange.matchOrders();
 
-//    // add to buy or sell orders array depending on order_type
-//    order_details.order_type === "buy"
-//       ? stockExchange.addBuyOrder(
-//            order_details.user_id,
-//            order_details.ticker,
-//            order_details.quantity,
-//            order_details.price,
-//            order_details.order_id
-//         )
-//       : stockExchange.addSellOrder(
-//            order_details.user_id,
-//            order_details.ticker,
-//            order_details.quantity,
-//            order_details.price,
-//            order_details.order_id
-//         );
-// });
+   if (matchedOrders) {
+      let matchedOrder = matchedOrders[0];
+      console.log("matched order: ", matchedOrder);
 
-// // match orders, then update matched_order db and send the matched order to other microservices
-// const matchOrders = async () => {
-//    const matched_orders = stockExchange.matchOrders();
+      // a matched order will be an object of this format:
+      // matched_order = { buy_order_id, sell_order_id, price, time, ticker, quantity, }
 
-//    if (matched_orders) {
-//       let matched_order = matched_orders[0];
-//       //   console.log(matched_order);
+      //update matched_orders db after matching a trade
+      // service.updateMatchedOrdersTable(matched_order);
 
-//       // a matched order will be an object of this format:
-//       // matched_order = { buy_order_id, sell_order_id, price, time, ticker, quantity, }
+      // //send post to stock ordering microservice after matching a trade
+      // updateStockOrderingAfterMatch(matched_order);
 
-//       //update matched_orders db after matching a trade
-//       service.updateMatchedOrdersTable(matched_order);
+      // //send post to stock data microservice after matching a trade
+      // updateStockDataAfterMatch(matched_order);
 
-//       //send post to stock ordering microservice after matching a trade
-//       updateStockOrderingAfterMatch(matched_order);
+      // //send post to user portfolio microservice after matching a trade
+      // updateUserPortfolioAfterMatch(matched_order);
+   }
+};
 
-//       //send post to stock data microservice after matching a trade
-//       updateStockDataAfterMatch(matched_order);
-
-//       //send post to user portfolio microservice after matching a trade
-//       updateUserPortfolioAfterMatch(matched_order);
-//    }
-// };
+setInterval(matchOrders, 1000);
 
 // // send post to stock ordering microservice after matching an order
 // const updateStockOrderingAfterMatch = async (matched_order) => {

@@ -32,11 +32,10 @@ const recieveFromStockOrdersQueue = async () => {
                      consumedMessage.content.toString()
                   );
                   // console.log("recieved message from queue: ", orderDetails);
-
+                  //resolve with orderDetails
+                  resolve(orderDetails);
                   // acknowledge message consumed from que
                   subscriberChannel.ack(consumedMessage);
-                  //resolve
-                  resolve(orderDetails);
                } else {
                   console.log("no messages in que");
                }
