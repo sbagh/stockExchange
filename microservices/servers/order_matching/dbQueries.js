@@ -6,7 +6,7 @@ const Pool = require("pg").Pool;
 const pool = new Pool({
    user: "postgres",
    password: "password",
-   database: "stock_orders",
+   database: "matched_orders",
    host: "localhost",
    port: 5432,
 });
@@ -17,8 +17,8 @@ const updateMatchedOrdersTable = async (matchedOrder) => {
       const queryString =
          "INSERT INTO matched_orders(buy_order_id, sell_order_id, matched_time) VALUES($1,$2,$3)";
       const queryParameters = [
-         matchedOrder.buyID,
-         matchedOrder.sellID,
+         matchedOrder.buyOrderID,
+         matchedOrder.sellOrderID,
          matchedOrder.time,
       ];
 

@@ -1,6 +1,6 @@
 const amqp = require("amqplib");
 
-const QueueName = "stock_orders";
+const stockOrdersQueName = "stockOrders";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
 const sendToStockOrdersQueue = async (orderDetails) => {
@@ -11,10 +11,12 @@ const sendToStockOrdersQueue = async (orderDetails) => {
          // create channel
          const senderChannel = await senderConnection.createChannel();
          // assert Queue, set durability = true in case of server crash or restart
-         await senderChannel.assertQueue(QueueName, { durability: true });
+         await senderChannel.assertQueue(stockOrdersQueName, {
+            durability: true,
+         });
          // create and send the message to queue
          senderChannel.sendToQueue(
-            QueueName,
+            stockOrdersQueName,
             Buffer.from(JSON.stringify(orderDetails))
          );
 

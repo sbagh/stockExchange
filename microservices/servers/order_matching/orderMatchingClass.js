@@ -91,6 +91,8 @@ class orderMatchingClass {
                matchedOrders.push({
                   buyOrderID: this.buyOrders[i].orderID,
                   sellOrderID: this.sellOrders[i].orderID,
+                  buyerID: this.buyOrders[i].buyer,
+                  sellerID: this.sellOrders[i].seller,
                   price: this.sellOrders[i].price,
                   time: new Date(),
                   ticker: this.sellOrders[i].ticker,

@@ -24,7 +24,7 @@ const orderMatchingPORT = 4004;
 //    "http://localhost:4001/updateUserPortfolioAfterMatch";
 
 // require db connection and queries:
-// const service = require("./dbQueries");
+const service = require("./dbQueries");
 
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();
@@ -68,7 +68,7 @@ const matchOrders = async () => {
       let matchedOrder = matchedOrders[0];
       console.log("matched order: ", matchedOrder);
 
-      // a matched order will be an object of this format: matched_order = { buy_order_id, sell_order_id, price, time, ticker, quantity }
+      // a matched order object: matchedOrder = { buyOrderID, sellOrderID, buyerID, sellerID, price, time, ticker, quantity }
 
       //update matched_orders db after matching a trade
       service.updateMatchedOrdersTable(matchedOrder);

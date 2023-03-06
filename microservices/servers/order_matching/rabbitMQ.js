@@ -1,6 +1,7 @@
 const amqp = require("amqplib");
 
-const QueueName = "stock_orders";
+const stockOrdersQueName = "stockOrders";
+// const matchedOrdersQueName = "matchedOrders"
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
 const recieveFromStockOrdersQueue = async () => {
@@ -11,10 +12,12 @@ const recieveFromStockOrdersQueue = async () => {
          //create channel
          const subscriberChannel = await subscriberConnection.createChannel();
          //assert queue
-         await subscriberChannel.assertQueue(QueueName, { durable: true });
+         await subscriberChannel.assertQueue(stockOrdersQueName, {
+            durable: true,
+         });
          //consume message from queue
          await subscriberChannel.consume(
-            QueueName,
+            stockOrdersQueName,
             (consumedMessage) => {
                if (consumedMessage) {
                   // console.log("consumed message:  ", consumedMessage);
@@ -60,6 +63,12 @@ const recieveFromStockOrdersQueue = async () => {
    //    }
    // }
 };
+
+// const publishMatchedOrder = async() => {
+//    return new Promise((resolve, reject) => {
+
+//    })
+// }
 
 module.exports = {
    recieveFromStockOrdersQueue,
