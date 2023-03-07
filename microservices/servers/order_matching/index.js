@@ -10,9 +10,6 @@ const { receiveFromQue, sendToQueue } = require("./rabbitMQ.js");
 const stockOrdersQueue = "stockOrdersQueue";
 //send message to these queues
 const matchedOrdersQueue = "matchedOrdersQueue";
-const matchedOrderStockOrderingQueue = "matchedOrderStockOrdering";
-const matchedOrderStockDataQueue = "matchedOrderStockData";
-const matchedOrderUserPortfolioQueue = "matchedOrderUserPortfolio";
 
 const app = express();
 app.use(cors());
@@ -68,7 +65,7 @@ const matchOrders = async () => {
          clearInterval(matchOrdersInterval);
          // a matched order object: matchedOrder = { buyOrderID, sellOrderID, buyerID, sellerID, price, time, ticker, quantity }
          let matchedOrder = matchedOrders[0];
-         console.log("matched order: ", matchedOrder);
+         // console.log("matched order: ", matchedOrder);
 
          //update matched_orders db after matching a trade
          service.updateMatchedOrdersTable(matchedOrder);
@@ -78,16 +75,16 @@ const matchOrders = async () => {
 
          //send post to stock ordering microservice after matching a trade
          // sendToQueue(matchedOrderStockOrderingQueue, matchedOrder);
-
-         // //send post to stock data microservice after matching a trade
-         // updateStockDataAfterMatch(matched_order);
-
-         // //send post to user portfolio microservice after matching a trade
-         // updateUserPortfolioAfterMatch(matched_order);
       }
    }, 1000);
 };
 matchOrders();
+
+// //send post to stock data microservice after matching a trade
+// updateStockDataAfterMatch(matched_order);
+
+// //send post to user portfolio microservice after matching a trade
+// updateUserPortfolioAfterMatch(matched_order);
 
 // // send post to stock ordering microservice after matching an order
 // const updateStockOrderingAfterMatch = async (matched_order) => {

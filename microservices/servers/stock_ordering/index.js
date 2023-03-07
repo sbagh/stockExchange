@@ -15,7 +15,7 @@ const stockOrderingPORT = 4003;
 //send message to stockOrders queue using rabbitMQ/amqplib:
 const stockOrdersQueue = "stockOrdersQueue";
 // receive messages from order matching queue using rabbitMQ/amqplib:
-const matchedOrderStockOrderingQueue = "matchedOrderStockOrdering";
+const matchedOrdersQueue = "matchedOrdersQueue";
 
 // require db connection and queries:
 const service = require("./dbQueries");
@@ -47,10 +47,22 @@ app.post("/startTradeOrder", async (req, res) => {
    res.send("order received");
 });
 
-// // receive matched order from order_matching microservice
-// const receivedMatchedOrder = await receiveFromQue(
-//    matchedOrderStockOrderingQueue
-// );
+// receive matched order from order_matching microservice
+const receiveMatchedOrder = async () => {
+   const matchedOrder = await receiveFromQue(matchedOrdersQueue);
+   console.log(
+      `matched order received from ${matchedOrdersQueue} queue, order: `,
+      matchedOrder
+   );
+
+   // update order status to closed in stock_orders table after buy and sell orders are matched
+   service.updateOrderStatusStockOrdersTable(
+      matchedOrder.buyOrderID,
+      matchedOrder.sellOrderID
+   );
+};
+
+setInterval(receiveMatchedOrder, 1000);
 
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
 //    const matched_order = req.body;
