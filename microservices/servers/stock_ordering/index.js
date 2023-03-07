@@ -30,20 +30,15 @@ app.get("/getUserStockOrders", (req, res) => {
 
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", async (req, res) => {
-   // console.log(req.body);
-
    const orderDetails = req.body.orderDetails;
-   // console.log("received order: ", orderDetails);
+   // console.log("received order from UI: ", orderDetails);
 
    // set order_status to open
    orderDetails.orderStatus = "Open";
-
    // add trade order to stock_orders db
    service.addStockOrder(orderDetails);
-
-   // send order to order mathcing queue, which will send to order matching microservice
+   // send order to stockOrdersQueue, which will send to order matching microservice
    await sendToQueue(stockOrdersQueue, orderDetails);
-
    res.send("order received");
 });
 
@@ -61,7 +56,6 @@ const receiveMatchedOrder = async () => {
       matchedOrder.sellOrderID
    );
 };
-
 setInterval(receiveMatchedOrder, 1000);
 
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
