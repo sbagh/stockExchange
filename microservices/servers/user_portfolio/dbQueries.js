@@ -45,27 +45,27 @@ const getUserStockHoldings = async (userID) => {
 
 // update buyer and seller's cash holdings after an order is matched
 const updateUserCashHoldingsAfterMatch = async (
-   buyer_id,
-   seller_id,
+   buyerID,
+   sellerID,
    price,
    quantity
 ) => {
    // first get the total cost of the buy/sell order
-   let total_cost = price * quantity;
+   let totalCost = price * quantity;
    // console.log("total cost is:  ", totalCost);
 
    try {
       // update buyers cash holdings
-      const buyer_query_string =
+      const buyerQueryString =
          "UPDATE cash_holdings SET cash = cash - $1 WHERE user_id = $2";
-      const buyer_query_parameter = [total_cost, buyer_id];
-      await pool.query(buyer_query_string, buyer_query_parameter);
+      const buyerQueryParameter = [totalCost, buyerID];
+      await pool.query(buyerQueryString, buyerQueryParameter);
 
       // update sellers cash holdings
-      const seller_query_string =
+      const sellerQueryString =
          "UPDATE cash_holdings SET cash = cash + $1 WHERE user_id = $2";
-      const seller_query_parameter = [total_cost, seller_id];
-      await pool.query(seller_query_string, seller_query_parameter);
+      const sellerQueryParameter = [totalCost, sellerID];
+      await pool.query(sellerQueryString, sellerQueryParameter);
    } catch (error) {
       console.log("error in updating buyer or seller cash holdings", error);
       throw error;
@@ -73,45 +73,45 @@ const updateUserCashHoldingsAfterMatch = async (
 };
 
 const updateUserStockHoldingsAfterMatch = async (
-   buyer_id,
-   seller_id,
+   buyerID,
+   sellerID,
    ticker,
    quantity
 ) => {
    // update buyer's stock_holdings by adding the stock
    // first get buyer's old quantity then add the new quantity to it
-   const buyers_old_quantity_row = await pool.query(
+   const buyersOldQuantityRow = await pool.query(
       "SELECT quantity FROM stock_holdings where (user_id = $1 and ticker = $2)",
-      [buyer_id, ticker]
+      [buyerID, ticker]
    );
-   const buyers_old_quantity = buyers_old_quantity_row.rows[0].quantity;
+   const buyersOldQuantity = buyersOldQuantityRow.rows[0].quantity;
 
-   if (!buyers_old_quantity) {
+   if (!buyersOldQuantity) {
       await pool.query(
          "INSERT INTO stock_holdings (user_id, ticker, quantity)",
-         [buyer_id, ticker, quantity]
+         [buyerID, ticker, quantity]
       );
    } else {
-      const buyers_new_quantity = buyers_old_quantity + quantity;
+      const buyersNewQuantity = buyersOldQuantity + quantity;
       await pool.query(
          "UPDATE stock_holdings SET quantity = $1 WHERE (user_id = $2 and ticker = $3)",
-         [buyers_new_quantity, buyer_id, ticker]
+         [buyersNewQuantity, buyerID, ticker]
       );
    }
 
    // update sellers's stock_holdings by adding the stock
    // first get sellers's old quantity then subtract the new quantity from it
-   const sellers_old_quantity_row = await pool.query(
+   const sellersOldQuantityRow = await pool.query(
       "SELECT quantity FROM stock_holdings where (user_id = $1 and ticker = $2)",
-      [seller_id, ticker]
+      [sellerID, ticker]
    );
 
-   const sellers_old_quantity = sellers_old_quantity_row.rows[0].quantity;
-   const sellers_new_quantity = sellers_old_quantity - quantity;
+   const sellersOldQuantity = sellersOldQuantityRow.rows[0].quantity;
+   const sellersNewQuantity = sellersOldQuantity - quantity;
 
    await pool.query(
       "UPDATE stock_holdings SET quantity = $1 WHERE (user_id = $2 and ticker = $3)",
-      [sellers_new_quantity, seller_id, ticker]
+      [sellersNewQuantity, sellerID, ticker]
    );
 };
 
