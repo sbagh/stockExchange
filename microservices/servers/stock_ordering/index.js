@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
-// require function to send order to amqp queue
-const { sendToStockOrdersQueue } = require("./rabbitMQ");
+// require functions to send and receive messages to amqp/rabbitMQ queue
+const { sendToQueue, receiveFromQue } = require("./rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -12,13 +12,15 @@ app.use(express.json());
 
 const stockOrderingPORT = 4003;
 
-// // other microservices used in this file
-// const orderMatchingURL = "http://localhost:4004/sendOrderToMatchingService";
+//send message to stockOrders queue using rabbitMQ/amqplib:
+const stockOrdersQueue = "stockOrdersQueue";
+// receive messages from order matching queue using rabbitMQ/amqplib:
+const matchedOrderStockOrderingQueue = "matchedOrderStockOrdering";
 
 // require db connection and queries:
 const service = require("./dbQueries");
 
-// // get a specifc user's trade orders
+// get a specifc user's trade orders from stock_orders db, requested from UI
 app.get("/getUserStockOrders", (req, res) => {
    service.getUserStockOrders(req.query.userID).then((orders) => {
       // console.log(orders);
@@ -31,7 +33,7 @@ app.post("/startTradeOrder", async (req, res) => {
    // console.log(req.body);
 
    const orderDetails = req.body.orderDetails;
-   console.log("received order: ", orderDetails);
+   // console.log("received order: ", orderDetails);
 
    // set order_status to open
    orderDetails.orderStatus = "Open";
@@ -40,12 +42,16 @@ app.post("/startTradeOrder", async (req, res) => {
    service.addStockOrder(orderDetails);
 
    // send order to order mathcing queue, which will send to order matching microservice
-   await sendToStockOrdersQueue(orderDetails);
+   await sendToQueue(stockOrdersQueue, orderDetails);
 
    res.send("order received");
 });
 
 // // receive matched order from order_matching microservice
+// const receivedMatchedOrder = await receiveFromQue(
+//    matchedOrderStockOrderingQueue
+// );
+
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
 //    const matched_order = req.body;
 //    service.updateOrderStatusStockOrdersTable(

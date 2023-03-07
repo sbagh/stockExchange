@@ -4,7 +4,14 @@ const axios = require("axios");
 const { orderMatchingClass } = require("./orderMatchingClass");
 
 // require function to get orders from amqp queue
-const { recieveFromStockOrdersQueue } = require("./rabbitMQ.js");
+const { receiveFromQue, sendToQueue } = require("./rabbitMQ.js");
+
+//receive message from stockOrders queue, received from stock_orders microservice after an order is placed
+const stockOrdersQueue = "stockOrdersQueue";
+//send message to these queues
+const matchedOrderStockOrderingQueue = "matchedOrderStockOrdering";
+const matchedOrderStockDataQueue = "matchedOrderStockData";
+const matchedOrderUserPortfolioQueue = "matchedOrderUserPortfolio";
 
 const app = express();
 app.use(cors());
@@ -13,16 +20,6 @@ app.use(express.json());
 
 const orderMatchingPORT = 4004;
 
-// other microservices used in this file
-// const stock_ordering_URL =
-//    "http://localhost:4003/updateStockOrderingAfterMatch";
-// const stock_ordering_getUserID_URL =
-//    "http://localhost:4003/getUserIDsfromStockOrdering";
-
-// const stock_data_URL = "http://localhost:4002/updateStockDataAfterMatch";
-// const user_porftolio_URL =
-//    "http://localhost:4001/updateUserPortfolioAfterMatch";
-
 // require db connection and queries:
 const service = require("./dbQueries");
 
@@ -30,13 +27,13 @@ const service = require("./dbQueries");
 const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
-const receiveFromQue = async () => {
-   const orderDetails = await recieveFromStockOrdersQueue();
-   console.log("order received to index.js from que: ", orderDetails);
+const receiveStockOrder = async () => {
+   const orderDetails = await receiveFromQue(stockOrdersQueue);
+   // console.log("order received to index.js from que: ", orderDetails);
    sendToExchange(orderDetails);
 };
 
-setInterval(receiveFromQue, 500);
+setInterval(receiveStockOrder, 500);
 
 const sendToExchange = (orderDetails) => {
    // add to buy or sell orders array depending on order_type
@@ -56,8 +53,8 @@ const sendToExchange = (orderDetails) => {
            orderDetails.orderID
         );
 
-   console.log("buy orders: ", stockExchange.buyOrders);
-   console.log("sell orders: ", stockExchange.sellOrders);
+   // console.log("buy orders: ", stockExchange.buyOrders);
+   // console.log("sell orders: ", stockExchange.sellOrders);
 };
 
 // match orders, then update matched_order db and send the matched order to other microservices
@@ -73,8 +70,8 @@ const matchOrders = async () => {
       //update matched_orders db after matching a trade
       service.updateMatchedOrdersTable(matchedOrder);
 
-      // //send post to stock ordering microservice after matching a trade
-      // updateStockOrderingAfterMatch(matched_order);
+      //send post to stock ordering microservice after matching a trade
+      // sendToQueue(matchedOrderStockOrderingQueue, matchedOrder);
 
       // //send post to stock data microservice after matching a trade
       // updateStockDataAfterMatch(matched_order);
