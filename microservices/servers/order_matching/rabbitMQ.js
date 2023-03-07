@@ -66,10 +66,10 @@ const receiveFromQue = async (queueName) => {
                   const message = JSON.parse(
                      consumedMessage.content.toString()
                   );
-                  console.log(
-                     `received message from ${queueName} queue, message: `,
-                     message
-                  );
+                  // console.log(
+                  //    `received message from ${queueName} queue, message: `,
+                  //    message
+                  // );
                   // resolve with the message
                   resolve(message);
                   // acknowledge message consumed from queue
