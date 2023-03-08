@@ -2,7 +2,14 @@ const amqp = require("amqplib");
 
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-// send messages to a queue, given a queue name and a message (which is orderDetails here)
+// fan-out exchange to publish messages to any queue that connects, this is not used in sendToQueue and receiveFromQue functions
+const fanOutExchange = 'matchedOrdersExchange'
+
+const sendToFanOutExchange = async(message) => {
+
+}
+
+// send messages to a queue, given a queue name and a message
 const sendToQueue = async (queueName, message) => {
    return new Promise(async (resolve, reject) => {
       try {

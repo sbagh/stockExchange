@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 // require functions to send and receive messages to amqp/rabbitMQ queue
-const { sendToQueue, receiveFromQue } = require("./rabbitMQ");
+const { receiveFromQue } = require("./rabbitMQ");
 
 const app = express();
 app.use(cors());
