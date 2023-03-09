@@ -2,18 +2,48 @@ const amqp = require("amqplib");
 
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-// fan-out exchange to publish messages to any queue that connects, this is not used in sendToQueue and receiveFromQue functions
-const fanOutExchange = 'matchedOrdersExchange'
+// fan-out exchange to publish messages to any queue that subscribes
+const fanOutExchange = "matchedOrdersExchange";
 
-const sendToFanOutExchange = async(message) => {
-
-}
+const publishToFanOutExchange = async (exchangeName, message) => {
+   return new Promise(async (resolve, reject) => {
+      try {
+         //1- create connection
+         const publisherConnection = await amqp.connect(RabbitMqUrl);
+         //2- create channel
+         const publisherChannel = await publisherConnection.createChannel();
+         //3- assert fanout Exchange
+         await publisherChannel.assertExchange(exchangeName, "fanout", {
+            durable: true,
+         });
+         //4- publish message to exchange, keep queuename as empty string so any queueu can subscribe
+         await publisherChannel.publish(
+            exchangeName,
+            "",
+            Buffer.from(JSON.stringify(message))
+         );
+         console.log(`message sent to ${exchangeName} exchange: `, message);
+         // 5- close channel and connection
+         setTimeout(() => {
+            publisherChannel.close();
+            publisherConnection.close();
+            resolve();
+         }, 500);
+      } catch (error) {
+         console.log(
+            `error in sending order to ${exchangeName} exchange, error: `,
+            error
+         );
+         reject(error);
+      }
+   });
+};
 
 // send messages to a queue, given a queue name and a message
 const sendToQueue = async (queueName, message) => {
    return new Promise(async (resolve, reject) => {
       try {
-         // 1- creaate connection
+         // 1- create connection
          const publisherConnection = await amqp.connect(RabbitMqUrl);
          // 2- create channel
          const publisherChannel = await publisherConnection.createChannel();
@@ -97,4 +127,5 @@ const receiveFromQue = async (queueName) => {
 module.exports = {
    sendToQueue,
    receiveFromQue,
+   publishToFanOutExchange,
 };

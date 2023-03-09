@@ -26,18 +26,18 @@ app.get("/getStockData", (req, res) => {
    });
 });
 
-// receive matched order from order_matching microservice
-const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFromQue(matchedOrdersQueue);
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
+// // receive matched order from order_matching microservice
+// const receiveMatchedOrder = async () => {
+//    const matchedOrder = await receiveFromQue(matchedOrdersQueue);
+//    console.log(
+//       `matched order received from ${matchedOrdersQueue} queue, order: `,
+//       matchedOrder
+//    );
 
-   // update order status to closed in stock_orders table after buy and sell orders are matched
-   service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
-};
-setInterval(receiveMatchedOrder, 1000);
+//    // update order status to closed in stock_orders table after buy and sell orders are matched
+//    service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
+// };
+// setInterval(receiveMatchedOrder, 1000);
 
 // // update stock_data db after an order is matched, recieved from order_matching microservice
 // app.put("/updateStockDataAfterMatch", (req, res) => {

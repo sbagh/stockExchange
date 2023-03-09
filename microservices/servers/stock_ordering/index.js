@@ -42,21 +42,21 @@ app.post("/startTradeOrder", async (req, res) => {
    res.send("order received");
 });
 
-// receive matched order from order_matching microservice
-const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFromQue(matchedOrdersQueue);
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
+// // receive matched order from order_matching microservice
+// const receiveMatchedOrder = async () => {
+//    const matchedOrder = await receiveFromQue(matchedOrdersQueue);
+//    console.log(
+//       `matched order received from ${matchedOrdersQueue} queue, order: `,
+//       matchedOrder
+//    );
 
-   // update order status to closed in stock_orders table after buy and sell orders are matched
-   service.updateOrderStatusStockOrdersTable(
-      matchedOrder.buyOrderID,
-      matchedOrder.sellOrderID
-   );
-};
-setInterval(receiveMatchedOrder, 1000);
+//    // update order status to closed in stock_orders table after buy and sell orders are matched
+//    service.updateOrderStatusStockOrdersTable(
+//       matchedOrder.buyOrderID,
+//       matchedOrder.sellOrderID
+//    );
+// };
+// setInterval(receiveMatchedOrder, 1000);
 
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
 //    const matched_order = req.body;

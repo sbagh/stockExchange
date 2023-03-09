@@ -4,12 +4,16 @@ const axios = require("axios");
 const { orderMatchingClass } = require("./orderMatchingClass");
 
 // require function to get orders from amqp queue
-const { receiveFromQue, sendToQueue } = require("./rabbitMQ.js");
+const {
+   receiveFromQue,
+   sendToQueue,
+   publishToFanOutExchange,
+} = require("./rabbitMQ.js");
 
 //receive message from stockOrders queue, received from stock_orders microservice after an order is placed
 const stockOrdersQueue = "stockOrdersQueue";
-//send message to these queues
-const matchedOrdersQueue = "matchedOrdersQueue";
+//publish matched order message to this exchange
+const matchedOrdersExchange = "matchedOrdersExchange";
 
 const app = express();
 app.use(cors());
@@ -70,11 +74,8 @@ const matchOrders = async () => {
          //update matched_orders db after matching a trade
          service.updateMatchedOrdersTable(matchedOrder);
 
-         // send matched order to matchedOrdersQueue
-         await sendToQueue(matchedOrdersQueue, matchedOrder);
-
-         //send post to stock ordering microservice after matching a trade
-         // sendToQueue(matchedOrderStockOrderingQueue, matchedOrder);
+         // send matched order to the fanout exchange called matchedOrdersExchange
+         await publishToFanOutExchange(matchedOrdersExchange, matchedOrder);
       }
    }, 1000);
 };

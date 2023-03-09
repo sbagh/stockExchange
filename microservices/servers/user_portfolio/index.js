@@ -36,29 +36,29 @@ app.get("/getUserStockHoldings", (req, res) => {
    });
 });
 
-// receive matched order from order_matching microservice
-const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFromQue(matchedOrdersQueue);
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
+// // receive matched order from order_matching microservice
+// const receiveMatchedOrder = async () => {
+//    const matchedOrder = await receiveFromQue(matchedOrdersQueue);
+//    console.log(
+//       `matched order received from ${matchedOrdersQueue} queue, order: `,
+//       matchedOrder
+//    );
 
-   // update user cash and stock holdings after matched order is received
-   service.updateUserCashHoldingsAfterMatch(
-      matchedOrder.buyerID,
-      matchedOrder.sellerID,
-      matchedOrder.price,
-      matchedOrder.quantity
-   );
-   service.updateUserStockHoldingsAfterMatch(
-      matchedOrder.buyerID,
-      matchedOrder.sellerID,
-      matchedOrder.ticker,
-      matchedOrder.quantity
-   );
-};
-setInterval(receiveMatchedOrder, 1000);
+//    // update user cash and stock holdings after matched order is received
+//    service.updateUserCashHoldingsAfterMatch(
+//       matchedOrder.buyerID,
+//       matchedOrder.sellerID,
+//       matchedOrder.price,
+//       matchedOrder.quantity
+//    );
+//    service.updateUserStockHoldingsAfterMatch(
+//       matchedOrder.buyerID,
+//       matchedOrder.sellerID,
+//       matchedOrder.ticker,
+//       matchedOrder.quantity
+//    );
+// };
+// setInterval(receiveMatchedOrder, 1000);
 
 // // update buy and seller user portfolios after an order is matched, received from order matching microservice
 // app.put("/updateUserPortfolioAfterMatch", (req, res) => {
