@@ -20,7 +20,7 @@ const stockOrderingPORT = 4003;
 const stockOrdersQueue = "stockOrdersQueue";
 //recieve matched order from this fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
-const matchedOrdersQueue = "matchedOrdersQueue";
+const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
 
 // require db connection and queries:
 const service = require("./dbQueries");
