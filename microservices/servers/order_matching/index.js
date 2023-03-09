@@ -1,14 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-const { orderMatchingClass } = require("./orderMatchingClass");
+const { orderMatchingClass } = require("./classes/orderMatchingClass");
 
 // require function to get orders from amqp queue
 const {
    receiveFromQue,
    sendToQueue,
    publishToFanOutExchange,
-} = require("./rabbitMQ.js");
+} = require("./rabbitMQ/rabbitMQ.js");
 
 //receive message from stockOrders queue, received from stock_orders microservice after an order is placed
 const stockOrdersQueue = "stockOrdersQueue";
@@ -23,7 +23,7 @@ app.use(express.json());
 const orderMatchingPORT = 4004;
 
 // require db connection and queries:
-const service = require("./dbQueries");
+const service = require("./database/dbQueries");
 
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();

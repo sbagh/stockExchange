@@ -9,7 +9,7 @@ app.use(express.json());
 const userAccountsPORT = 4000;
 
 // require db connection and queries:
-const service = require("./dbQueries");
+const service = require("./database/dbQueries");
 
 // query db for all users (db: user_accounts, table: users)
 app.get("/getAllUsers", (req, res) => {
