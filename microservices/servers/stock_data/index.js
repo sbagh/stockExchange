@@ -38,8 +38,8 @@ const receiveMatchedOrder = async () => {
       matchedOrder
    );
 
-   // // update order status to closed in stock_orders table after buy and sell orders are matched
-   // service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
+   // update stock price is stock data db after an order is matched
+   service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
 };
 setInterval(receiveMatchedOrder, 1000);
 
