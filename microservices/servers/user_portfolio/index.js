@@ -48,19 +48,19 @@ const receiveMatchedOrder = async () => {
       matchedOrder
    );
 
-   // // update user cash and stock holdings after matched order is received
-   // service.updateUserCashHoldingsAfterMatch(
-   //    matchedOrder.buyerID,
-   //    matchedOrder.sellerID,
-   //    matchedOrder.price,
-   //    matchedOrder.quantity
-   // );
-   // service.updateUserStockHoldingsAfterMatch(
-   //    matchedOrder.buyerID,
-   //    matchedOrder.sellerID,
-   //    matchedOrder.ticker,
-   //    matchedOrder.quantity
-   // );
+   // update user cash and stock holdings after matched order is received
+   service.updateUserCashHoldingsAfterMatch(
+      matchedOrder.buyerID,
+      matchedOrder.sellerID,
+      matchedOrder.price,
+      matchedOrder.quantity
+   );
+   service.updateUserStockHoldingsAfterMatch(
+      matchedOrder.buyerID,
+      matchedOrder.sellerID,
+      matchedOrder.ticker,
+      matchedOrder.quantity
+   );
 };
 setInterval(receiveMatchedOrder, 1000);
 
