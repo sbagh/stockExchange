@@ -3,7 +3,11 @@ const cors = require("cors");
 const axios = require("axios");
 
 // require functions to send and receive messages to amqp/rabbitMQ queue
-const { sendToQueue, receiveFromQue } = require("./rabbitMQ");
+const {
+   sendToQueue,
+   receiveFromFanOutExchange,
+   receiveFromQue,
+} = require("./rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -14,8 +18,9 @@ const stockOrderingPORT = 4003;
 
 //send message to stockOrders queue using rabbitMQ/amqplib:
 const stockOrdersQueue = "stockOrdersQueue";
-// receive messages from order matching queue using rabbitMQ/amqplib:
-const matchedOrderStockOrderingQueue = "matchedOrderStockOrdering";
+//recieve matched order from this fan out exchange and queue
+const matchedOrdersExchange = "matchedOrdersExchange";
+const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
 
 // require db connection and queries:
 const service = require("./dbQueries");
@@ -30,27 +35,36 @@ app.get("/getUserStockOrders", (req, res) => {
 
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", async (req, res) => {
-   // console.log(req.body);
-
    const orderDetails = req.body.orderDetails;
-   // console.log("received order: ", orderDetails);
+   // console.log("received order from UI: ", orderDetails);
 
    // set order_status to open
    orderDetails.orderStatus = "Open";
-
    // add trade order to stock_orders db
    service.addStockOrder(orderDetails);
-
-   // send order to order mathcing queue, which will send to order matching microservice
+   // send order to stockOrdersQueue, which will send to order matching microservice
    await sendToQueue(stockOrdersQueue, orderDetails);
-
    res.send("order received");
 });
 
-// // receive matched order from order_matching microservice
-// const receivedMatchedOrder = await receiveFromQue(
-//    matchedOrderStockOrderingQueue
-// );
+// receive matched order from order_matching microservice
+const receiveMatchedOrder = async () => {
+   const matchedOrder = await receiveFromFanOutExchange(
+      matchedOrdersExchange,
+      matchedOrdersQueue
+   );
+   console.log(
+      `matched order received from ${matchedOrdersQueue} queue, order: `,
+      matchedOrder
+   );
+
+   // update order status to closed in stock_orders table after buy and sell orders are matched
+   service.updateOrderStatusStockOrdersTable(
+      matchedOrder.buyOrderID,
+      matchedOrder.sellOrderID
+   );
+};
+setInterval(receiveMatchedOrder, 1000);
 
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
 //    const matched_order = req.body;

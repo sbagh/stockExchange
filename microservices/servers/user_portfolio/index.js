@@ -1,10 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 
+// require functions to send and receive messages to amqp/rabbitMQ queue
+const { receiveFromFanOutExchange } = require("./rabbitMQ");
+
 const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
+//recieve matched order from this fan out exchange and queue
+const matchedOrdersExchange = "matchedOrdersExchange";
+const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
 const userPortfolioPORT = 4001;
 
@@ -29,6 +36,33 @@ app.get("/getUserStockHoldings", (req, res) => {
       res.send(stocks);
    });
 });
+
+// receive matched order from order_matching microservice
+const receiveMatchedOrder = async () => {
+   const matchedOrder = await receiveFromFanOutExchange(
+      matchedOrdersExchange,
+      matchedOrdersQueue
+   );
+   console.log(
+      `matched order received from ${matchedOrdersQueue} queue, order: `,
+      matchedOrder
+   );
+
+   // update user cash and stock holdings after matched order is received
+   service.updateUserCashHoldingsAfterMatch(
+      matchedOrder.buyerID,
+      matchedOrder.sellerID,
+      matchedOrder.price,
+      matchedOrder.quantity
+   );
+   service.updateUserStockHoldingsAfterMatch(
+      matchedOrder.buyerID,
+      matchedOrder.sellerID,
+      matchedOrder.ticker,
+      matchedOrder.quantity
+   );
+};
+setInterval(receiveMatchedOrder, 1000);
 
 // // update buy and seller user portfolios after an order is matched, received from order matching microservice
 // app.put("/updateUserPortfolioAfterMatch", (req, res) => {

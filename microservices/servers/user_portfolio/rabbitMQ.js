@@ -2,48 +2,11 @@ const amqp = require("amqplib");
 
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-// fan-out exchange to publish messages to any queue that subscribes
-const fanOutExchange = "matchedOrdersExchange";
-
-const publishToFanOutExchange = async (exchangeName, message) => {
-   return new Promise(async (resolve, reject) => {
-      try {
-         //1- create connection
-         const publisherConnection = await amqp.connect(RabbitMqUrl);
-         //2- create channel
-         const publisherChannel = await publisherConnection.createChannel();
-         //3- assert fanout Exchange
-         await publisherChannel.assertExchange(exchangeName, "fanout", {
-            durable: true,
-         });
-         //4- publish message to exchange, keep queuename as empty string so any queueu can subscribe
-         await publisherChannel.publish(
-            exchangeName,
-            "",
-            Buffer.from(JSON.stringify(message))
-         );
-         console.log(`message sent to ${exchangeName} exchange: `, message);
-         // 5- close channel and connection
-         setTimeout(() => {
-            publisherChannel.close();
-            publisherConnection.close();
-            resolve();
-         }, 500);
-      } catch (error) {
-         console.log(
-            `error in sending order to ${exchangeName} exchange, error: `,
-            error
-         );
-         reject(error);
-      }
-   });
-};
-
 // send messages to a queue, given a queue name and a message
 const sendToQueue = async (queueName, message) => {
    return new Promise(async (resolve, reject) => {
       try {
-         // 1- create connection
+         // 1- creaate connection
          const publisherConnection = await amqp.connect(RabbitMqUrl);
          // 2- create channel
          const publisherChannel = await publisherConnection.createChannel();
@@ -56,7 +19,7 @@ const sendToQueue = async (queueName, message) => {
             queueName,
             Buffer.from(JSON.stringify(message))
          );
-         console.log(`message sent to ${queueName} queue: `, message);
+         // console.log(`message sent to ${queueName} queue, message: `, message);
 
          // 5- close channel and connection
          setTimeout(() => {
@@ -69,6 +32,55 @@ const sendToQueue = async (queueName, message) => {
             `error in sending order to ${queueName} queu, error: `,
             error
          );
+         reject(error);
+      }
+   });
+};
+
+// recieve messages from a fan out exchange
+const receiveFromFanOutExchange = async (exchangeName, queueName) => {
+   return new Promise(async (resolve, reject) => {
+      try {
+         //1- create connection
+         const subscriberConnection = await amqp.connect(RabbitMqUrl);
+         //2- create channel
+         const subscriberChannel = await subscriberConnection.createChannel();
+         //3- assert fanout exchange
+         await subscriberChannel.assertExchange(exchangeName, "fanout", {
+            durable: true,
+         });
+         //4- assert queue
+         await subscriberChannel.assertQueue(queueName, { durable: true });
+         //5- bind queue to exchange using am empty routing key
+         await subscriberChannel.bindQueue(queueName, exchangeName, "");
+         //6- consume message
+         await subscriberChannel.consume(queueName, (consumedMessage) => {
+            if (consumedMessage) {
+               // console.log(
+               //    "message consumed from fan out exchagne queue: ",
+               //    consumedMessage
+               // );
+               // ensure message is a valid object
+               if (
+                  typeof consumedMessage.content !== "object" ||
+                  !consumedMessage.content
+               ) {
+                  console.log("Invalid message format");
+                  return null;
+               }
+               // parse contents of incoming message
+               const message = JSON.parse(consumedMessage.content.toString());
+               console.log(
+                  `received message from ${queueName} queue, message: `,
+                  message
+               );
+               // resolve and acknowledge message
+               resolve(message);
+               subscriberChannel.ack(consumedMessage);
+            }
+         });
+      } catch (error) {
+         console.log("error in receiving message from queue", error);
          reject(error);
       }
    });
@@ -103,10 +115,10 @@ const receiveFromQue = async (queueName) => {
                   const message = JSON.parse(
                      consumedMessage.content.toString()
                   );
-                  // console.log(
-                  //    `received message from ${queueName} queue, message: `,
-                  //    message
-                  // );
+                  console.log(
+                     `received message from ${queueName} queue, message: `,
+                     message
+                  );
                   // resolve with the message
                   resolve(message);
                   // acknowledge message consumed from queue
@@ -126,6 +138,6 @@ const receiveFromQue = async (queueName) => {
 
 module.exports = {
    sendToQueue,
+   receiveFromFanOutExchange,
    receiveFromQue,
-   publishToFanOutExchange,
 };

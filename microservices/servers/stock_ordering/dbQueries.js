@@ -61,22 +61,19 @@ const addStockOrder = async (orderDetails) => {
    }
 };
 
-// //update order_status for both buy and sell orders to "Closed" in stock_orders table after matching
-// const updateOrderStatusStockOrdersTable = async (
-//    buy_order_id,
-//    sell_order_id
-// ) => {
-//    try {
-//       const query_string =
-//          "UPDATE stock_orders SET order_status =$1 WHERE trade_id = $2 OR trade_id = $3";
-//       const query_parameter = ["Closed", buy_order_id, sell_order_id];
+// update order_status for both buy and sell orders to "Closed" in stock_orders table after matching
+const updateOrderStatusStockOrdersTable = async (buyOrderID, sellOrderID) => {
+   try {
+      const queryString =
+         "UPDATE stock_orders SET order_status =$1 WHERE order_id = $2 OR order_id = $3";
+      const queryParameter = ["Closed", buyOrderID, sellOrderID];
 
-//       await pool.query(query_string, query_parameter);
-//    } catch (error) {
-//       console.log(error);
-//       throw error;
-//    }
-// };
+      await pool.query(queryString, queryParameter);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
 
 // const getBuyerAndSellerID = async (buy_order_id, sell_order_id) => {
 //    try {
@@ -96,6 +93,6 @@ const addStockOrder = async (orderDetails) => {
 module.exports = {
    getUserStockOrders,
    addStockOrder,
-   // updateOrderStatusStockOrdersTable,
+   updateOrderStatusStockOrdersTable,
    // getBuyerAndSellerID,
 };
