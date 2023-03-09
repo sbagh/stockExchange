@@ -2,12 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
+// require db connection and queries:
+const service = require("./database/dbQueries");
+
 // require functions to send and receive messages to amqp/rabbitMQ queue
 const {
    sendToQueue,
    receiveFromFanOutExchange,
    receiveFromQue,
-} = require("./rabbitMQ");
+} = require("./rabbitMQ/rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -21,9 +24,6 @@ const stockOrdersQueue = "stockOrdersQueue";
 //recieve matched order from this fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
-
-// require db connection and queries:
-const service = require("./dbQueries");
 
 // get a specifc user's trade orders from stock_orders db, requested from UI
 app.get("/getUserStockOrders", (req, res) => {

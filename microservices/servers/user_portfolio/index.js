@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 
+// require db connection and queries:
+const service = require("./database/dbQueries");
+
 // require functions to send and receive messages to amqp/rabbitMQ queue
-const { receiveFromFanOutExchange } = require("./rabbitMQ");
+const { receiveFromFanOutExchange } = require("./rabbitMQ/rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -14,9 +17,6 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
 const userPortfolioPORT = 4001;
-
-// require db connection and queries:
-const service = require("./dbQueries");
 
 // !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 

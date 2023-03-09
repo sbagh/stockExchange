@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 
+// require db connection and queries:
+const service = require("./database/dbQueries");
+
 // require functions to send and receive messages to amqp/rabbitMQ queue
-const { receiveFromFanOutExchange } = require("./rabbitMQ");
+const { receiveFromFanOutExchange } = require("./rabbitMQ/rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -15,9 +18,6 @@ const stockDataPORT = 4002;
 //recieve matched order from fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockDataQueue";
-
-// require db connection and queries:
-const service = require("./dbQueries");
 
 // query db for stock prices and stock data (db: stock_data, table: stock_data)
 app.get("/getStockData", (req, res) => {
