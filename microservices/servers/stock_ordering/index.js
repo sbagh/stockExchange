@@ -3,7 +3,11 @@ const cors = require("cors");
 const axios = require("axios");
 
 // require functions to send and receive messages to amqp/rabbitMQ queue
-const { sendToQueue, receiveFromQue } = require("./rabbitMQ");
+const {
+   sendToQueue,
+   receiveFromFanOutExchange,
+   receiveFromQue,
+} = require("./rabbitMQ");
 
 const app = express();
 app.use(cors());
@@ -14,7 +18,8 @@ const stockOrderingPORT = 4003;
 
 //send message to stockOrders queue using rabbitMQ/amqplib:
 const stockOrdersQueue = "stockOrdersQueue";
-// receive messages from order matching queue using rabbitMQ/amqplib:
+//recieve matched order from this fan out exchange and queue
+const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersQueue";
 
 // require db connection and queries:
@@ -42,21 +47,24 @@ app.post("/startTradeOrder", async (req, res) => {
    res.send("order received");
 });
 
-// // receive matched order from order_matching microservice
-// const receiveMatchedOrder = async () => {
-//    const matchedOrder = await receiveFromQue(matchedOrdersQueue);
-//    console.log(
-//       `matched order received from ${matchedOrdersQueue} queue, order: `,
-//       matchedOrder
-//    );
+// receive matched order from order_matching microservice
+const receiveMatchedOrder = async () => {
+   const matchedOrder = await receiveFromFanOutExchange(
+      matchedOrdersExchange,
+      matchedOrdersQueue
+   );
+   console.log(
+      `matched order received from ${matchedOrdersQueue} queue, order: `,
+      matchedOrder
+   );
 
-//    // update order status to closed in stock_orders table after buy and sell orders are matched
-//    service.updateOrderStatusStockOrdersTable(
-//       matchedOrder.buyOrderID,
-//       matchedOrder.sellOrderID
-//    );
-// };
-// setInterval(receiveMatchedOrder, 1000);
+   // update order status to closed in stock_orders table after buy and sell orders are matched
+   service.updateOrderStatusStockOrdersTable(
+      matchedOrder.buyOrderID,
+      matchedOrder.sellOrderID
+   );
+};
+setInterval(receiveMatchedOrder, 1000);
 
 // app.put("/updateStockOrderingAfterMatch", (req, res) => {
 //    const matched_order = req.body;
