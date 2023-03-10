@@ -6,12 +6,13 @@ const { orderMatchingClass } = require("./classes/orderMatchingClass");
 // require function to get orders from amqp queue
 const {
    receiveFromQue,
-   sendToQueue,
    publishToFanOutExchange,
 } = require("./rabbitMQ/rabbitMQ.js");
 
-//receive message from stockOrders queue, received from stock_orders microservice after an order is placed
+//receive message from stockOrders queue, which comes from stock orders microservice after an order is placed
 const stockOrdersQueue = "stockOrdersQueue";
+//receive canceled order meessage from canceledOrders queue, which comes from stock orders microservice after an open order is canceled
+const canceledOrdersQueue = "canceledOrdersQueue";
 //publish matched order message to this exchange
 const matchedOrdersExchange = "matchedOrdersExchange";
 
@@ -37,6 +38,7 @@ const receiveStockOrder = async () => {
 
 setInterval(receiveStockOrder, 500);
 
+// when a stock order is recieved, send it to the stock exchange, to be placed in a buyOrders or sellOrders array then matched
 const sendToExchange = (orderDetails) => {
    // add to buy or sell orders array depending on order_type
    orderDetails.orderType === "buy"
@@ -81,59 +83,15 @@ const matchOrders = async () => {
 };
 matchOrders();
 
-// //send post to stock data microservice after matching a trade
-// updateStockDataAfterMatch(matched_order);
-
-// //send post to user portfolio microservice after matching a trade
-// updateUserPortfolioAfterMatch(matched_order);
-
-// // send post to stock ordering microservice after matching an order
-// const updateStockOrderingAfterMatch = async (matched_order) => {
-//    const body = {
-//       buy_order_id: matched_order.buy_order_id,
-//       sell_order_id: matched_order.sell_order_id,
-//    };
-//    await axios.put(stock_ordering_URL, body).catch((error) => {
-//       console.log(
-//          "error in sending matched order to stock ordering microservice",
-//          error
-//       );
-//       throw error;
-//    });
-// };
-
-// // send post to stock data microservice after matching an order
-// const updateStockDataAfterMatch = async (matched_order) => {
-//    body = {
-//       price: matched_order.price,
-//       ticker: matched_order.ticker,
-//    };
-//    await axios.put(stock_data_URL, body);
-// };
-
-// // send post to user portfolio microservice after matching an order
-// const updateUserPortfolioAfterMatch = async (matched_order) => {
-//    // to update buyer and sellers portfolios, we first need to get user id's, as this is not provided in the matched_order object
-//    getBuyerAndSellerID(matched_order).then(async (user_ids) => {
-//       // put the user ids in the body along with the matched order price, ticker, and quantity
-//       body = {
-//          ...user_ids,
-//          price: matched_order.price,
-//          ticker: matched_order.ticker,
-//          quantity: matched_order.quantity,
-//       };
-//       //send body to user portfolio microservice
-//       await axios.put(user_porftolio_URL, body);
-//    });
-// };
-
-// // get buyer and seller user id from stock_orders microservice after matching an order
-// const getBuyerAndSellerID = async (matched_order) => {
-//    const user_ids = await axios.get(
-//       `${stock_ordering_getUserID_URL}?buy_order_id=${matched_order.buy_order_id}&sell_order_id=${matched_order.sell_order_id}`
-//    );
-//    return user_ids.data;
-// };
+// receive canceled trade orders from
+const receiveCanceledOrder = async () => {
+   const canceledOrder = await receiveFromQue(canceledOrdersQueue);
+   console.log(
+      "order received to index.js from canceled orders que: ",
+      canceledOrder
+   );
+};
+setInterval(receiveCanceledOrder, 500);
 
 app.listen(
    orderMatchingPORT,

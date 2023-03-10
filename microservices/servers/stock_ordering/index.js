@@ -17,10 +17,13 @@ app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
+// port
 const stockOrderingPORT = 4003;
 
-//send message to stockOrders queue using rabbitMQ/amqplib:
+//send stock order message to stockOrders queue using rabbitMQ/amqplib:
 const stockOrdersQueue = "stockOrdersQueue";
+//send canceled order meessage to canceledOrders queue using rabbitMQ
+const canceledOrdersQueue = "canceledOrdersQueue";
 //recieve matched order from this fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
@@ -66,20 +69,20 @@ const receiveMatchedOrder = async () => {
 };
 setInterval(receiveMatchedOrder, 1000);
 
-// app.put("/updateStockOrderingAfterMatch", (req, res) => {
-//    const matched_order = req.body;
-//    service.updateOrderStatusStockOrdersTable(
-//       matched_order.buy_order_id,
-//       matched_order.sell_order_id
-//    );
-// });
+// cancel a trade order if request from UI
+app.put("/cancelTradeOrder", async (req, res) => {
+   // deconstruct req qeuries and place in a canceledOrder object
+   const canceledOrder = {
+      orderID: req.query.orderID,
+      orderType: req.query.orderType,
+      orderStatus: req.query.orderStatus,
+   };
+   console.log(canceledOrder);
 
-// get buyer and seller id given order ids, request from order matching microservice
-// app.get("/getUserIDsfromStockOrdering", (req, res) => {
-//    const { buy_order_id, sell_order_id } = req.query;
-//    const user_ids = service.getBuyerAndSellerID(buy_order_id, sell_order_id);
-//    res.send(user_ids);
-// });
+   //send canceledOrder object to order matching service via
+   await sendToQueue(canceledOrdersQueue, canceledOrder);
+   res.send("order canceled");
+});
 
 app.listen(
    stockOrderingPORT,

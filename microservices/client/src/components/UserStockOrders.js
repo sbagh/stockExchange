@@ -28,24 +28,24 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
       return () => clearInterval(interval);
    }, [userID]);
 
-   //// Send a cancel order PUT request to server.js
-   // const cancelOrder = async (orderID, orderType) => {
-   //    try {
-   //       const response = await fetch(
-   //          `http://localhost:5555/cancelTradeOrder?order_id=${orderID}&order_type=${orderType}`,
-   //          { method: "PUT" }
-   //       );
+   // Send a cancel order PUT request to server.js
+   const cancelOrder = async (orderID, orderType, orderStatus) => {
+      try {
+         const response = await fetch(
+            `${stockOrderingURL}/cancelTradeOrder?orderID=${orderID}&orderType=${orderType}&orderStatus=${orderStatus}`,
+            { method: "PUT" }
+         );
 
-   //       if (!response.ok) {
-   //          console.log("Network error");
-   //       }
-   //       const result = await response.json();
-   //       console.log(result);
-   //    } catch (error) {
-   //       console.log(error);
-   //       throw error;
-   //    }
-   // };
+         if (!response.ok) {
+            console.log("Network error");
+         }
+         const result = await response.json();
+         console.log(result);
+      } catch (error) {
+         console.log(error);
+         throw error;
+      }
+   };
 
    return (
       <div className="userStockOrdersTable">
@@ -76,9 +76,13 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
                         <td>
                            {order.orderStatus === "Open" && (
                               <button
-                              // onClick={() =>
-                              //    cancelOrder(order.orderID, order.orderType)
-                              // }
+                                 onClick={() =>
+                                    cancelOrder(
+                                       order.orderID,
+                                       order.orderType,
+                                       order.orderStatus
+                                    )
+                                 }
                               >
                                  Cancel
                               </button>
