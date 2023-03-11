@@ -3,8 +3,6 @@ const amqp = require("amqplib");
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
 // fan-out exchange to publish messages to any queue that subscribes
-const fanOutExchange = "matchedOrdersExchange";
-
 const publishToFanOutExchange = async (exchangeName, message) => {
    return new Promise(async (resolve, reject) => {
       try {

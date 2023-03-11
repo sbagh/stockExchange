@@ -32,7 +32,7 @@ const stockExchange = new orderMatchingClass();
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
 const receiveStockOrder = async () => {
    const orderDetails = await receiveFromQue(stockOrdersQueue);
-   // console.log("order received to index.js from que: ", orderDetails);
+   console.log("order received to index.js from que: ", orderDetails);
    sendToExchange(orderDetails);
 };
 
@@ -57,8 +57,8 @@ const sendToExchange = (orderDetails) => {
            orderDetails.orderID
         );
 
-   // console.log("buy orders: ", stockExchange.buyOrders);
-   // console.log("sell orders: ", stockExchange.sellOrders);
+   console.log("buy orders: ", stockExchange.buyOrders);
+   console.log("sell orders: ", stockExchange.sellOrders);
 };
 
 // match orders, then update matched_order db and send the matched order to other microservices
@@ -90,6 +90,16 @@ const receiveCanceledOrder = async () => {
       "order received to index.js from canceled orders que: ",
       canceledOrder
    );
+   console.log("buy orders before: ", stockExchange.buyOrders);
+   console.log("sell orders before: ", stockExchange.sellOrders);
+   // remove order from buyOrders or sellOrders array in stock exchange
+   await stockExchange.removeOrder(
+      canceledOrder.orderID,
+      canceledOrder.orderType
+   );
+
+   console.log("buy orders: ", stockExchange.buyOrders);
+   console.log("sell orders: ", stockExchange.sellOrders);
 };
 setInterval(receiveCanceledOrder, 500);
 
