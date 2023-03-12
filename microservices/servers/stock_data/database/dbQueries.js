@@ -18,7 +18,7 @@ const getStockData = async (req, res) => {
          "SELECT ticker, price, volume, last_update FROM stock_data";
       const results = await pool.query(queryString);
 
-      //convert last_update to camel case:
+      //convert results to camel case:
       const camelCaseResults = results.rows.map((stock) => {
          return {
             ticker: stock.ticker,
