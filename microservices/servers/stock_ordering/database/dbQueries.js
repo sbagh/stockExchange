@@ -75,24 +75,22 @@ const updateOrderStatusStockOrdersTable = async (buyOrderID, sellOrderID) => {
    }
 };
 
-// const getBuyerAndSellerID = async (buy_order_id, sell_order_id) => {
-//    try {
-//       const query_string = "GET (user_id) WHERE trade_id = $1 OR trade_id = $2";
-//       const query_parameter = [buy_order_id, sell_order_id];
-//       const results = await pool.query(query_string, query_parameter);
-//       return results.rows;
-//    } catch (error) {
-//       console.log(
-//          "error getting buyer and seller ID after matched order",
-//          error
-//       );
-//       throw error;
-//    }
-// };
+// update order status to "Canceled" after received canceled order confirmation
+const updateOrderStatusToCanceled = async (canceledOrder) => {
+   try {
+      const queryString =
+         "UPDATE stock_orders SET order_status = $1 WHERE order_id = $2";
+      const queryParameter = ["Canceled", canceledOrder.orderID];
+      await pool.query(queryString, queryParameter);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+};
 
 module.exports = {
    getUserStockOrders,
    addStockOrder,
    updateOrderStatusStockOrdersTable,
-   // getBuyerAndSellerID,
+   updateOrderStatusToCanceled,
 };

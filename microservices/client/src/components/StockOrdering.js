@@ -54,7 +54,7 @@ const StockOrdering = ({ user }) => {
                )
             );
       } catch (err) {
-         console.log("did not send", err);
+         console.log("did not send stock order: ", err);
          setOrderFeedback("you order was not sent");
       }
    };
