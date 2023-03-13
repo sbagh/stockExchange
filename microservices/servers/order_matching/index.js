@@ -3,38 +3,34 @@ const cors = require("cors");
 const axios = require("axios");
 const { orderMatchingClass } = require("./classes/orderMatchingClass");
 
-// require function to get orders from amqp queue
-const {
-   receiveFromQue,
-   publishToFanOutExchange,
-   sendToQueue,
-} = require("./rabbitMQ/rabbitMQ.js");
+// require db connection and queries:
+const service = require("./database/dbQueries");
 
-//receive message from stockOrders queue, which comes from stock orders microservice after an order is placed
-const stockOrdersQueue = "stockOrdersQueue";
-//receive canceled order meessage from canceledOrders queue, which comes from stock orders microservice after an open order is canceled
-const canceledOrdersQueue = "canceledOrdersQueue";
-// send canceled order confirmation to canceledOrdersConfirmation queue
-const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
-//publish matched order message to this exchange
-const matchedOrdersExchange = "matchedOrdersExchange";
+// require functions to send and receive messages using amqp/rabbitMQ
+const { sendToQueue } = require("./rabbitMQ/sendToQueue");
+const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
+const { publishFanOutExchange } = require("./rabbitMQ/publishFanOutExchange");
 
 const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
+// order matching microservice PORT
 const orderMatchingPORT = 4004;
 
-// require db connection and queries:
-const service = require("./database/dbQueries");
+// Queue and Exchange names used
+const stockOrdersQueue = "stockOrdersQueue";
+const canceledOrdersQueue = "canceledOrdersQueue";
+const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
+const matchedOrdersExchange = "matchedOrdersExchange";
 
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
 const receiveStockOrder = async () => {
-   const orderDetails = await receiveFromQue(stockOrdersQueue);
+   const orderDetails = await receiveFromQueue(stockOrdersQueue);
    console.log("order received to index.js from que: ", orderDetails);
    sendToExchange(orderDetails);
 };
@@ -74,13 +70,13 @@ const matchOrders = async () => {
          clearInterval(matchOrdersInterval);
          // a matched order object: matchedOrder = { buyOrderID, sellOrderID, buyerID, sellerID, price, time, ticker, quantity }
          let matchedOrder = matchedOrders[0];
-         // console.log("matched order: ", matchedOrder);
+         console.log("matched order: ", matchedOrder);
 
          //update matched_orders db after matching a trade
          service.updateMatchedOrdersTable(matchedOrder);
 
          // send matched order to the fanout exchange called matchedOrdersExchange
-         await publishToFanOutExchange(matchedOrdersExchange, matchedOrder);
+         await publishFanOutExchange(matchedOrdersExchange, matchedOrder);
       }
    }, 1000);
 };
@@ -88,11 +84,11 @@ matchOrders();
 
 // receive canceled trade orders from
 const receiveCanceledOrder = async () => {
-   const canceledOrder = await receiveFromQue(canceledOrdersQueue);
-   console.log(
-      "order received to index.js from canceled orders que: ",
-      canceledOrder
-   );
+   const canceledOrder = await receiveFromQueue(canceledOrdersQueue);
+   // console.log(
+   //    "order received to index.js from canceled orders que: ",
+   //    canceledOrder
+   // );
    // remove order from buyOrders or sellOrders array in stock exchange
    await stockExchange.removeOrder(
       canceledOrder.orderID,
@@ -100,7 +96,7 @@ const receiveCanceledOrder = async () => {
    );
    // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
    await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
-   console.log("sent confirmation of canceled order");
+   // console.log("sent confirmation of canceled order");
 };
 
 setInterval(receiveCanceledOrder, 500);

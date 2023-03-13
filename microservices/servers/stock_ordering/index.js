@@ -5,29 +5,24 @@ const axios = require("axios");
 // require db connection and queries:
 const service = require("./database/dbQueries");
 
-// require functions to send and receive messages to amqp/rabbitMQ queue
-const {
-   sendToQueue,
-   receiveFromFanOutExchange,
-   receiveFromQue,
-} = require("./rabbitMQ/rabbitMQ");
+// require functions to send and receive messages using amqp/rabbitMQ
+const { sendToQueue } = require("./rabbitMQ/sendToQueue");
+const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
+const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
 const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
-// port
+// stock ordering microservice PORT
 const stockOrderingPORT = 4003;
 
-//send stock order message to stockOrders queue using rabbitMQ/amqplib:
+// Queue and Exchange names used
 const stockOrdersQueue = "stockOrdersQueue";
-//send canceled order meessage to canceledOrders queue using rabbitMQ
 const canceledOrdersQueue = "canceledOrdersQueue";
-//recieve matched order from this fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
-// send canceled order confirmation to canceledOrdersConfirmation queue
 const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 
 // get a specifc user's trade orders from stock_orders db, requested from UI
@@ -54,7 +49,7 @@ app.post("/startTradeOrder", async (req, res) => {
 
 // receive matched order from order_matching microservice
 const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFromFanOutExchange(
+   const matchedOrder = await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue
    );
@@ -78,7 +73,7 @@ app.put("/cancelTradeOrder", async (req, res) => {
       orderType: req.query.orderType,
       orderStatus: req.query.orderStatus,
    };
-   console.log(canceledOrder);
+   // console.log("canceled order from ui: ", canceledOrder);
 
    //send canceledOrder object to order matching service via
    await sendToQueue(canceledOrdersQueue, canceledOrder);
@@ -87,9 +82,11 @@ app.put("/cancelTradeOrder", async (req, res) => {
 
 // recieve confirmation that order is canceled then update order status in stock orders db
 const receiveCanceledOrderConfirmation = async () => {
-   const canceledorder = await receiveFromQue(canceledOrdersConfirmationQueue);
+   const canceledorder = await receiveFromQueue(
+      canceledOrdersConfirmationQueue
+   );
    // update db
-   console.log("received canceled order confirmation");
+   // console.log("received canceled order confirmation");
    service.updateOrderStatusToCanceled(canceledorder);
 };
 setInterval(receiveCanceledOrderConfirmation, 1000);
