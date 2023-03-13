@@ -14,6 +14,8 @@ const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
+// stock ordering microservice PORT
 const stockOrderingPORT = 4003;
 
 // Queue and Exchange names used
