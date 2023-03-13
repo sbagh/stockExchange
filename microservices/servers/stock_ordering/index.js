@@ -6,11 +6,9 @@ const axios = require("axios");
 const service = require("./database/dbQueries");
 
 // require functions to send and receive messages to amqp/rabbitMQ queue
-const {
-   sendToQueue,
-   receiveFromFanOutExchange,
-   receiveFromQue,
-} = require("./rabbitMQ/rabbitMQ");
+const { sendToQueue } = require("./rabbitMQ/sendToQueue");
+const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
+const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
 const app = express();
 app.use(cors());
@@ -54,7 +52,7 @@ app.post("/startTradeOrder", async (req, res) => {
 
 // receive matched order from order_matching microservice
 const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFromFanOutExchange(
+   const matchedOrder = await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue
    );
@@ -87,7 +85,9 @@ app.put("/cancelTradeOrder", async (req, res) => {
 
 // recieve confirmation that order is canceled then update order status in stock orders db
 const receiveCanceledOrderConfirmation = async () => {
-   const canceledorder = await receiveFromQue(canceledOrdersConfirmationQueue);
+   const canceledorder = await receiveFromQueue(
+      canceledOrdersConfirmationQueue
+   );
    // update db
    console.log("received canceled order confirmation");
    service.updateOrderStatusToCanceled(canceledorder);
