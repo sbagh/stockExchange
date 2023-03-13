@@ -7,7 +7,8 @@ To run project:
 -  install react and node.js modules
 -  start each microservice index.js
 -  start react
--  add records to db: user_accounts, user_portfolio, stock_data
+-  create DBs locally and add records to user_accounts, user_portfolio, stock_data
+-  current local build uses rabbitMQ, download and install it
 -  on the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that have a status of "Open".
 
 Completed features:
@@ -31,7 +32,7 @@ Next steps:
 
 issues:
 
--  facing challenges in re-rendering data in the monolith, a temporary solution is to use a setInterval for useEffects hooks that fetch data.
+-  facing challenges in re-rendering data in the monolith, a temporary solution is to use a setInterval for useEffect hooks that fetch data from back-end.
 -  attempted to move to a websocket system for easier back and forth communication, the websocket is promising but did not work well for now, commented code out.
 
 High level system design:

@@ -70,7 +70,7 @@ const matchOrders = async () => {
          clearInterval(matchOrdersInterval);
          // a matched order object: matchedOrder = { buyOrderID, sellOrderID, buyerID, sellerID, price, time, ticker, quantity }
          let matchedOrder = matchedOrders[0];
-         // console.log("matched order: ", matchedOrder);
+         console.log("matched order: ", matchedOrder);
 
          //update matched_orders db after matching a trade
          service.updateMatchedOrdersTable(matchedOrder);
@@ -84,7 +84,7 @@ matchOrders();
 
 // receive canceled trade orders from
 const receiveCanceledOrder = async () => {
-   const canceledOrder = await receiveFromQue(canceledOrdersQueue);
+   const canceledOrder = await receiveFromQueue(canceledOrdersQueue);
    // console.log(
    //    "order received to index.js from canceled orders que: ",
    //    canceledOrder

@@ -73,7 +73,7 @@ app.put("/cancelTradeOrder", async (req, res) => {
       orderType: req.query.orderType,
       orderStatus: req.query.orderStatus,
    };
-   console.log(canceledOrder);
+   // console.log("canceled order from ui: ", canceledOrder);
 
    //send canceledOrder object to order matching service via
    await sendToQueue(canceledOrdersQueue, canceledOrder);
@@ -86,7 +86,7 @@ const receiveCanceledOrderConfirmation = async () => {
       canceledOrdersConfirmationQueue
    );
    // update db
-   console.log("received canceled order confirmation");
+   // console.log("received canceled order confirmation");
    service.updateOrderStatusToCanceled(canceledorder);
 };
 setInterval(receiveCanceledOrderConfirmation, 1000);
