@@ -1,22 +1,23 @@
 const express = require("express");
 const cors = require("cors");
 
-// require db connection and queries:
+// require db connection and queries
 const service = require("./database/dbQueries");
 
-// require functions to send and receive messages to amqp/rabbitMQ queue
-const { receiveFromFanOutExchange } = require("./rabbitMQ/rabbitMQ");
+// require functions to send and receive messages using amqp/rabbitMQ
+const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
 const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
-//recieve matched order from this fan out exchange and queue
+// user portfolio microservice PORT
+const userPortfolioPORT = 4001;
+
+// Queues and Exchange names used
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
-
-const userPortfolioPORT = 4001;
 
 // !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 
@@ -39,7 +40,7 @@ app.get("/getUserStockHoldings", (req, res) => {
 
 // receive matched order from order_matching microservice
 const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFromFanOutExchange(
+   const matchedOrder = await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue
    );

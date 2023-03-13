@@ -4,7 +4,7 @@ const cors = require("cors");
 // require db connection and queries:
 const service = require("./database/dbQueries");
 
-// require functions to send and receive messages to amqp/rabbitMQ queue
+// require functions to send and receive messages using amqp/rabbitMQ 
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
 const app = express();
