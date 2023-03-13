@@ -5,7 +5,7 @@ const axios = require("axios");
 // require db connection and queries:
 const service = require("./database/dbQueries");
 
-// require functions to send and receive messages to amqp/rabbitMQ queue
+// require functions to send and receive messages using amqp/rabbitMQ
 const { sendToQueue } = require("./rabbitMQ/sendToQueue");
 const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
@@ -14,18 +14,13 @@ const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
-
-// port
 const stockOrderingPORT = 4003;
 
-//send stock order message to stockOrders queue using rabbitMQ/amqplib:
+// Queue and Exchange names used
 const stockOrdersQueue = "stockOrdersQueue";
-//send canceled order meessage to canceledOrders queue using rabbitMQ
 const canceledOrdersQueue = "canceledOrdersQueue";
-//recieve matched order from this fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
-// send canceled order confirmation to canceledOrdersConfirmation queue
 const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 
 // get a specifc user's trade orders from stock_orders db, requested from UI

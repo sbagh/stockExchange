@@ -1,15 +1,21 @@
 const amqp = require("amqplib");
-
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
+
+let subscriberConnection;
+let subscriberChannel;
 
 // recieve messages from a fan out exchange
 const receiveFanOutExchange = async (exchangeName, queueName) => {
    return new Promise(async (resolve, reject) => {
       try {
-         //1- create connection
-         const subscriberConnection = await amqp.connect(RabbitMqUrl);
-         //2- create channel
-         const subscriberChannel = await subscriberConnection.createChannel();
+         //1- check if a connection exists, if not create one
+         if (!subscriberConnection) {
+            subscriberConnection = await amqp.connect(RabbitMqUrl);
+         }
+         //2- check if a channel exists, if not create one
+         if (!subscriberChannel) {
+            subscriberChannel = await subscriberConnection.createChannel();
+         }
          //3- assert fanout exchange
          await subscriberChannel.assertExchange(exchangeName, "fanout", {
             durable: true,
@@ -25,7 +31,7 @@ const receiveFanOutExchange = async (exchangeName, queueName) => {
                //    "message consumed from fan out exchagne queue: ",
                //    consumedMessage
                // );
-               // ensure message is a valid object
+               //ensure message is a valid object
                if (
                   typeof consumedMessage.content !== "object" ||
                   !consumedMessage.content
