@@ -27,6 +27,8 @@ const canceledOrdersQueue = "canceledOrdersQueue";
 //recieve matched order from this fan out exchange and queue
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
+// send canceled order confirmation to canceledOrdersConfirmation queue
+const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 
 // get a specifc user's trade orders from stock_orders db, requested from UI
 app.get("/getUserStockOrders", (req, res) => {
@@ -60,7 +62,6 @@ const receiveMatchedOrder = async () => {
       `matched order received from ${matchedOrdersQueue} queue, order: `,
       matchedOrder
    );
-
    // update order status to closed in stock_orders table after buy and sell orders are matched
    service.updateOrderStatusStockOrdersTable(
       matchedOrder.buyOrderID,
@@ -83,6 +84,15 @@ app.put("/cancelTradeOrder", async (req, res) => {
    await sendToQueue(canceledOrdersQueue, canceledOrder);
    res.send("order canceled");
 });
+
+// recieve confirmation that order is canceled then update order status in stock orders db
+const receiveCanceledOrderConfirmation = async () => {
+   const canceledorder = await receiveFromQue(canceledOrdersConfirmationQueue);
+   // update db
+   console.log("received canceled order confirmation");
+   service.updateOrderStatusToCanceled(canceledorder);
+};
+setInterval(receiveCanceledOrderConfirmation, 1000);
 
 app.listen(
    stockOrderingPORT,

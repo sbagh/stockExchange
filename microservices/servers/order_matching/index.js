@@ -7,12 +7,15 @@ const { orderMatchingClass } = require("./classes/orderMatchingClass");
 const {
    receiveFromQue,
    publishToFanOutExchange,
+   sendToQueue,
 } = require("./rabbitMQ/rabbitMQ.js");
 
 //receive message from stockOrders queue, which comes from stock orders microservice after an order is placed
 const stockOrdersQueue = "stockOrdersQueue";
 //receive canceled order meessage from canceledOrders queue, which comes from stock orders microservice after an open order is canceled
 const canceledOrdersQueue = "canceledOrdersQueue";
+// send canceled order confirmation to canceledOrdersConfirmation queue
+const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 //publish matched order message to this exchange
 const matchedOrdersExchange = "matchedOrdersExchange";
 
@@ -57,8 +60,8 @@ const sendToExchange = (orderDetails) => {
            orderDetails.orderID
         );
 
-   console.log("buy orders: ", stockExchange.buyOrders);
-   console.log("sell orders: ", stockExchange.sellOrders);
+   // console.log("buy orders: ", stockExchange.buyOrders);
+   // console.log("sell orders: ", stockExchange.sellOrders);
 };
 
 // match orders, then update matched_order db and send the matched order to other microservices
@@ -90,17 +93,16 @@ const receiveCanceledOrder = async () => {
       "order received to index.js from canceled orders que: ",
       canceledOrder
    );
-   console.log("buy orders before: ", stockExchange.buyOrders);
-   console.log("sell orders before: ", stockExchange.sellOrders);
    // remove order from buyOrders or sellOrders array in stock exchange
    await stockExchange.removeOrder(
       canceledOrder.orderID,
       canceledOrder.orderType
    );
-
-   console.log("buy orders: ", stockExchange.buyOrders);
-   console.log("sell orders: ", stockExchange.sellOrders);
+   // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
+   await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
+   console.log("sent confirmation of canceled order");
 };
+
 setInterval(receiveCanceledOrder, 500);
 
 app.listen(
