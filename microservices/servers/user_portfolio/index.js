@@ -1,5 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const app = express();
+
+// websocket/socket.io requirements
+const http = require("http");
+const server = http.createServer(app);
+const io = require("socket.io")(server);
 
 // require db connection and queries
 const service = require("./database/dbQueries");
@@ -7,7 +13,6 @@ const service = require("./database/dbQueries");
 // require functions to send and receive messages using amqp/rabbitMQ
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
-const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
@@ -21,10 +26,26 @@ const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
 // !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 
+// use socket.io
+io.on("connection", (socket) => {
+   console.log("websocket connection started", socket.id);
+
+   socket.on("currentUserID", async (userID) => {
+      const userCashHoldings = await service.getUserCashHoldings(userID);
+      const userStockHoldings = await service.getUserStockHoldings(userID);
+      // console.log("user cash holdings: ", userCashHoldings);
+      // console.log("user stock holdings: ", userStockHoldings);
+      socket.emit("userPortfolio", {
+         cash: userCashHoldings.cash,
+         stocks: userStockHoldings,
+      });
+   });
+});
+
 // get user cash holdings
 app.get("/getUserCashHoldings", (req, res) => {
    service.getUserCashHoldings(req.query.userID).then((result) => {
-      console.log(result.cash);
+      // console.log(result.cash);
       res.send(result.cash);
    });
 });
@@ -33,7 +54,7 @@ app.get("/getUserCashHoldings", (req, res) => {
 // need to setup database replication for this to work, using rabbitMQ
 app.get("/getUserStockHoldings", (req, res) => {
    service.getUserStockHoldings(req.query.userID).then((stocks) => {
-      console.log(stocks);
+      // console.log(stocks);
       res.send(stocks);
    });
 });
@@ -82,7 +103,7 @@ setInterval(receiveMatchedOrder, 1000);
 //    );
 // });
 
-app.listen(
+server.listen(
    userPortfolioPORT,
    console.log(
       "user portfolio microservice running on port ",
