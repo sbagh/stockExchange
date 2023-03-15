@@ -28,34 +28,20 @@ const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
 // use socket.io
 io.on("connection", (socket) => {
-   console.log("websocket connection started", socket.id);
+   console.log("client is connected, id: ", socket.id);
 
+   // receive userID initiated by UI (UserPortfolio component)
    socket.on("currentUserID", async (userID) => {
+      // get user cash and stock holdings
       const userCashHoldings = await service.getUserCashHoldings(userID);
       const userStockHoldings = await service.getUserStockHoldings(userID);
-      // console.log("user cash holdings: ", userCashHoldings);
-      // console.log("user stock holdings: ", userStockHoldings);
+      // console.log("user portfolio: ", {cash: userCashHoldings, stocks: userStockHoldings});
+
+      // emit user cash and stock holdings back to UI (UserPortfolio component)
       socket.emit("userPortfolio", {
-         cash: userCashHoldings.cash,
-         stocks: userStockHoldings,
+         userCashHoldings: userCashHoldings.cash,
+         userStockHoldings: userStockHoldings,
       });
-   });
-});
-
-// get user cash holdings
-app.get("/getUserCashHoldings", (req, res) => {
-   service.getUserCashHoldings(req.query.userID).then((result) => {
-      // console.log(result.cash);
-      res.send(result.cash);
-   });
-});
-
-// get user stock holdings
-// need to setup database replication for this to work, using rabbitMQ
-app.get("/getUserStockHoldings", (req, res) => {
-   service.getUserStockHoldings(req.query.userID).then((stocks) => {
-      // console.log(stocks);
-      res.send(stocks);
    });
 });
 
@@ -85,23 +71,6 @@ const receiveMatchedOrder = async () => {
    );
 };
 setInterval(receiveMatchedOrder, 1000);
-
-// // update buy and seller user portfolios after an order is matched, received from order matching microservice
-// app.put("/updateUserPortfolioAfterMatch", (req, res) => {
-//    req.body = { buyer_id, seller_id, price, ticker, quantity };
-//    service.updateUserCashHoldingsAfterMatch(
-//       buyer_id,
-//       seller_id,
-//       price,
-//       quantity
-//    );
-//    service.updateUserStockHoldingsAfterMatch(
-//       buyer_id,
-//       seller_id,
-//       ticker,
-//       quantity
-//    );
-// });
 
 server.listen(
    userPortfolioPORT,

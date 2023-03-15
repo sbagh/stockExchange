@@ -4,10 +4,13 @@ import io from "socket.io-client";
 const userPortfolioURL = "http://localhost:4001";
 
 //connect to websocket
-const socket = io.connect(userPortfolioURL, {
-   origin: "http://localhost:3000",
-   transports: ["websocket"],
-});
+let socket = null;
+if (!socket) {
+   socket = io.connect(userPortfolioURL, {
+      origin: "http://localhost:3000",
+      transports: ["websocket"],
+   });
+}
 
 const UserPortfolio = ({
    userCashHoldings,
@@ -19,15 +22,17 @@ const UserPortfolio = ({
    useEffect(() => {
       const getUserPortfolio = async () => {
          await socket.emit("currentUserID", user.userID);
+
+         // remove the event listener before adding it again
+         socket.off("userPortfolio");
+
          await socket.on("userPortfolio", (userPortfolio) => {
             console.log("user portfolio: ", userPortfolio);
-            // setUserCashHoldings(userCashHoldings);
+            setUserCashHoldings(userPortfolio.userCashHoldings);
+            setUserStockHoldings(userPortfolio.userStockHoldings);
          });
       };
       getUserPortfolio();
-      return () => {
-         socket.off(getUserPortfolio);
-      };
    }, [user.userID]);
 
    // //useEffect to fetch user's cash and stock holdings from cash_holdings and stock_holdings tables
