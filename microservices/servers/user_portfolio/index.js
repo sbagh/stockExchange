@@ -1,5 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const app = express();
+
+// websocket/socket.io requirements
+const http = require("http");
+const server = http.createServer(app);
+const io = require("socket.io")(server);
 
 // require db connection and queries
 const service = require("./database/dbQueries");
@@ -7,7 +13,6 @@ const service = require("./database/dbQueries");
 // require functions to send and receive messages using amqp/rabbitMQ
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
-const app = express();
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
@@ -21,20 +26,22 @@ const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
 // !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 
-// get user cash holdings
-app.get("/getUserCashHoldings", (req, res) => {
-   service.getUserCashHoldings(req.query.userID).then((result) => {
-      console.log(result.cash);
-      res.send(result.cash);
-   });
-});
+// use socket.io
+io.on("connection", (socket) => {
+   console.log("client is connected, id: ", socket.id);
 
-// get user stock holdings
-// need to setup database replication for this to work, using rabbitMQ
-app.get("/getUserStockHoldings", (req, res) => {
-   service.getUserStockHoldings(req.query.userID).then((stocks) => {
-      console.log(stocks);
-      res.send(stocks);
+   // receive userID initiated by UI (UserPortfolio component)
+   socket.on("currentUserID", async (userID) => {
+      // get user cash and stock holdings
+      const userCashHoldings = await service.getUserCashHoldings(userID);
+      const userStockHoldings = await service.getUserStockHoldings(userID);
+      // console.log("user portfolio: ", {cash: userCashHoldings, stocks: userStockHoldings});
+
+      // emit user cash and stock holdings back to UI (UserPortfolio component)
+      socket.emit("userPortfolio", {
+         userCashHoldings: userCashHoldings.cash,
+         userStockHoldings: userStockHoldings,
+      });
    });
 });
 
@@ -65,24 +72,7 @@ const receiveMatchedOrder = async () => {
 };
 setInterval(receiveMatchedOrder, 1000);
 
-// // update buy and seller user portfolios after an order is matched, received from order matching microservice
-// app.put("/updateUserPortfolioAfterMatch", (req, res) => {
-//    req.body = { buyer_id, seller_id, price, ticker, quantity };
-//    service.updateUserCashHoldingsAfterMatch(
-//       buyer_id,
-//       seller_id,
-//       price,
-//       quantity
-//    );
-//    service.updateUserStockHoldingsAfterMatch(
-//       buyer_id,
-//       seller_id,
-//       ticker,
-//       quantity
-//    );
-// });
-
-app.listen(
+server.listen(
    userPortfolioPORT,
    console.log(
       "user portfolio microservice running on port ",
