@@ -31,7 +31,10 @@ const stockExchange = new orderMatchingClass();
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
 const receiveStockOrder = async () => {
    const orderDetails = await receiveFromQueue(stockOrdersQueue);
-   console.log("order received to index.js from que: ", orderDetails);
+   // console.log(
+   //    "order received to order matching index.js from que: ",
+   //    orderDetails
+   // );
    sendToExchange(orderDetails);
 };
 
@@ -56,8 +59,8 @@ const sendToExchange = (orderDetails) => {
            orderDetails.orderID
         );
 
-   // console.log("buy orders: ", stockExchange.buyOrders);
-   // console.log("sell orders: ", stockExchange.sellOrders);
+   console.log("buy orders array before match: ", stockExchange.buyOrders);
+   console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
 
 // match orders, then update matched_order db and send the matched order to other microservices
@@ -65,18 +68,19 @@ const matchOrders = async () => {
    // create an interval to match new orders in the stockOrdersQueue
    matchOrdersInterval = setInterval(async () => {
       const matchedOrders = stockExchange.matchOrders();
-      if (matchedOrders) {
-         // if orders from queue are matched, stop the interval, so as not to keep matching the same orders in the que
-         clearInterval(matchOrdersInterval);
-         // a matched order object: matchedOrder = { buyOrderID, sellOrderID, buyerID, sellerID, price, time, ticker, quantity }
-         let matchedOrder = matchedOrders[0];
-         console.log("matched order: ", matchedOrder);
-
-         //update matched_orders db after matching a trade
-         service.updateMatchedOrdersTable(matchedOrder);
-
-         // send matched order to the fanout exchange called matchedOrdersExchange
-         await publishFanOutExchange(matchedOrdersExchange, matchedOrder);
+      console.log(matchedOrders);
+      if (matchedOrders && matchedOrders.length > 0) {
+         //loop over the matchedOrders array
+         while (matchedOrders.length > 0) {
+            // a matched order object: matchedOrder = { buyOrderID, sellOrderID, buyerID, sellerID, price, time, ticker, quantity }
+            // take out the first order in the matchedOrders array and process it
+            let matchedOrder = matchedOrders.shift();
+            // console.log("matched order: ", matchedOrder);
+            //update matched_orders db after matching a trade
+            service.updateMatchedOrdersTable(matchedOrder);
+            // send matched order to the fanout exchange called matchedOrdersExchange
+            await publishFanOutExchange(matchedOrdersExchange, matchedOrder);
+         }
       }
    }, 1000);
 };
