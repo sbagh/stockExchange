@@ -5,7 +5,7 @@ let subscriberConnection;
 let subscriberChannel;
 
 // recieve messages from a fan out exchange
-const receiveFanOutExchange = async (exchangeName, queueName) => {
+const receiveFanOutExchange = async (exchangeName, queueName, callback) => {
    return new Promise(async (resolve, reject) => {
       try {
          //1- check if a connection exists, if not create one
@@ -41,12 +41,12 @@ const receiveFanOutExchange = async (exchangeName, queueName) => {
                }
                // parse contents of incoming message
                const message = JSON.parse(consumedMessage.content.toString());
-               console.log(
-                  `received message from ${queueName} queue, message: `,
-                  message
-               );
-               // resolve and acknowledge message
-               resolve(message);
+               // console.log(
+               //    `received message from ${queueName} queue, message: `,
+               //    message
+               // );
+               // use the callback function on the message and acknowledge message
+               callback(message);
                subscriberChannel.ack(consumedMessage);
             }
          });

@@ -46,16 +46,18 @@ io.on("connection", (socket) => {
 });
 
 // receive matched order from order_matching microservice
-const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFanOutExchange(
+const startReceivingMatchedOrders = async () => {
+   await receiveFanOutExchange(
       matchedOrdersExchange,
-      matchedOrdersQueue
+      matchedOrdersQueue,
+      receiveMatchedOrder
    );
+};
+const receiveMatchedOrder = (matchedOrder) => {
    console.log(
       `matched order received from ${matchedOrdersQueue} queue, order: `,
       matchedOrder
    );
-
    // update user cash and stock holdings after matched order is received
    service.updateUserCashHoldingsAfterMatch(
       matchedOrder.buyerID,
@@ -70,7 +72,8 @@ const receiveMatchedOrder = async () => {
       matchedOrder.quantity
    );
 };
-setInterval(receiveMatchedOrder, 1000);
+
+startReceivingMatchedOrders();
 
 server.listen(
    userPortfolioPORT,
