@@ -4,7 +4,7 @@ const cors = require("cors");
 // require db connection and queries:
 const service = require("./database/dbQueries");
 
-// require functions to send and receive messages using amqp/rabbitMQ 
+// require functions to send and receive messages using amqp/rabbitMQ
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
 
 const app = express();
@@ -27,21 +27,23 @@ app.get("/getStockData", (req, res) => {
    });
 });
 
-// receive matched order from order_matching microservice
+// receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFanOutExchange(
+   await receiveFanOutExchange(
       matchedOrdersExchange,
-      matchedOrdersQueue
+      matchedOrdersQueue,
+      updateStockData
    );
-   // console.log(
-   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
-   //    matchedOrder
-   // );
-
-   // update stock price is stock data db after an order is matched
+   console.log(
+      `matched order received from ${matchedOrdersQueue} queue, order: `,
+      matchedOrder
+   );
+};
+// callback function used to update stock data and send to ui
+const updateStockData = (matchedOrder) => {
    service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
 };
-setInterval(receiveMatchedOrder, 1000);
+receiveMatchedOrder();
 
 app.listen(
    stockDataPORT,

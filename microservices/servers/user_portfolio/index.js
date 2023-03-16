@@ -52,34 +52,26 @@ const receiveMatchedOrders = async () => {
       matchedOrdersQueue,
       updateUserPortfolio
    );
+   // console.log(
+   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
+   //    matchedOrder
+   // );
 };
 
 // callback function used to update user portfolio and send to ui
 const updateUserPortfolio = (matchedOrder) => {
-   try {
-      console.log(
-         `matched order received from ${matchedOrdersQueue} queue, order: `,
-         matchedOrder
-      );
-      // update user cash and stock holdings after matched order is received
-      service.updateUserCashHoldingsAfterMatch(
-         matchedOrder.buyerID,
-         matchedOrder.sellerID,
-         matchedOrder.price,
-         matchedOrder.quantity
-      );
-      service.updateUserStockHoldingsAfterMatch(
-         matchedOrder.buyerID,
-         matchedOrder.sellerID,
-         matchedOrder.ticker,
-         matchedOrder.quantity
-      );
-   } catch (error) {
-      console.log(
-         "error receiving matchedOrder to user portfolio index.js",
-         error
-      );
-   }
+   service.updateUserCashHoldingsAfterMatch(
+      matchedOrder.buyerID,
+      matchedOrder.sellerID,
+      matchedOrder.price,
+      matchedOrder.quantity
+   );
+   service.updateUserStockHoldingsAfterMatch(
+      matchedOrder.buyerID,
+      matchedOrder.sellerID,
+      matchedOrder.ticker,
+      matchedOrder.quantity
+   );
 };
 receiveMatchedOrders();
 
