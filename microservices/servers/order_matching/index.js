@@ -58,9 +58,8 @@ const sendToExchange = (orderDetails) => {
            orderDetails.price,
            orderDetails.orderID
         );
-
-   console.log("buy orders array before match: ", stockExchange.buyOrders);
-   console.log("sell orders array before match: ", stockExchange.sellOrders);
+   // console.log("buy orders array before match: ", stockExchange.buyOrders);
+   // console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
 
 // match orders, then update matched_order db and send the matched order to other microservices
@@ -68,7 +67,7 @@ const matchOrders = async () => {
    // create an interval to match new orders in the stockOrdersQueue
    matchOrdersInterval = setInterval(async () => {
       const matchedOrders = stockExchange.matchOrders();
-      console.log(matchedOrders);
+      // console.log(matchedOrders);
       if (matchedOrders && matchedOrders.length > 0) {
          //loop over the matchedOrders array
          while (matchedOrders.length > 0) {
