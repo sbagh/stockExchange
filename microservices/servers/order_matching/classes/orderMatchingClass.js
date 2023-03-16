@@ -5,7 +5,7 @@ class orderMatchingClass {
    //e.g: buyOrders = [{buyer: {id: 1, name: "user1"}, symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
 
    constructor() {
-      (this.buyOrders = []), (this.sellOrders = []);
+      (this.buyOrders = []), (this.sellOrders = []), (this.matchedOrders = []);
    }
 
    //add a buy order in buyOrders array
@@ -67,7 +67,7 @@ class orderMatchingClass {
          }
       });
 
-      let matchedOrders = [];
+      // let matchedOrders = [];
 
       //loop through the buyOrders and sellOrders arrays, if buyOrders price > sellOrders price, execute a trade, else increment the sell order
       let i = 0,
@@ -88,7 +88,7 @@ class orderMatchingClass {
 
             //if the overlap trade quantity is greater than 0, push the min amount into the matched orders array
             if (trade_quantity > 0) {
-               matchedOrders.push({
+               this.matchedOrders.push({
                   buyOrderID: this.buyOrders[i].orderID,
                   sellOrderID: this.sellOrders[i].orderID,
                   buyerID: this.buyOrders[i].buyer,
@@ -113,7 +113,12 @@ class orderMatchingClass {
             }
          }
       }
-      return matchedOrders.length > 0 ? matchedOrders : null;
+      // remove orders from buyOrders and sellOrders array if they have quanitity = 0
+      this.buyOrders = this.buyOrders.filter((order) => order.quantity > 0);
+      this.sellOrders = this.sellOrders.filter((order) => order.quantity > 0);
+
+      // return matchedOrders array
+      return this.matchedOrders.length > 0 ? this.matchedOrders : null;
    }
 }
 
