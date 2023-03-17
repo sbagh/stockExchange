@@ -47,23 +47,26 @@ app.post("/startTradeOrder", async (req, res) => {
    res.send("order received");
 });
 
-// receive matched order from order_matching microservice
+// receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFanOutExchange(
+   await receiveFanOutExchange(
       matchedOrdersExchange,
-      matchedOrdersQueue
+      matchedOrdersQueue,
+      updateOrderStatus
+   );
+};
+// callback function used to update order status and send to ui
+const updateOrderStatus = (matchedOrder) => {
+   service.updateOrderStatusStockOrdersTable(
+      matchedOrder.buyOrderID,
+      matchedOrder.sellOrderID
    );
    console.log(
       `matched order received from ${matchedOrdersQueue} queue, order: `,
       matchedOrder
    );
-   // update order status to closed in stock_orders table after buy and sell orders are matched
-   service.updateOrderStatusStockOrdersTable(
-      matchedOrder.buyOrderID,
-      matchedOrder.sellOrderID
-   );
 };
-setInterval(receiveMatchedOrder, 1000);
+receiveMatchedOrder();
 
 // cancel a trade order if request from UI
 app.put("/cancelTradeOrder", async (req, res) => {

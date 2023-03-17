@@ -52,12 +52,7 @@ const receiveMatchedOrders = async () => {
       matchedOrdersQueue,
       updateUserPortfolio
    );
-   // console.log(
-   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
-   //    matchedOrder
-   // );
 };
-
 // callback function used to update user portfolio and send to ui
 const updateUserPortfolio = (matchedOrder) => {
    service.updateUserCashHoldingsAfterMatch(
@@ -72,6 +67,10 @@ const updateUserPortfolio = (matchedOrder) => {
       matchedOrder.ticker,
       matchedOrder.quantity
    );
+   // console.log(
+   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
+   //    matchedOrder
+   // );
 };
 receiveMatchedOrders();
 
