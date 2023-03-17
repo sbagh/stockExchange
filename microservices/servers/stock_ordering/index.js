@@ -89,7 +89,7 @@ const receiveCanceledOrderConfirmation = async () => {
 // callback function used to update order status and send to ui
 const cancelOrder = (canceledOrder) => {
    service.updateOrderStatusToCanceled(canceledOrder);
-   // console.log("received canceled order confirmation");
+   console.log("received canceled order confirmation");
 };
 receiveCanceledOrderConfirmation();
 

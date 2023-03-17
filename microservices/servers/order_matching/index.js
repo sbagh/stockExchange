@@ -50,10 +50,10 @@ const sendToExchange = (orderDetails) => {
            orderDetails.price,
            orderDetails.orderID
         );
-   console.log(
-      "order received to order matching index.js from que: ",
-      orderDetails
-   );
+   // console.log(
+   //    "order received to order matching index.js from que: ",
+   //    orderDetails
+   // );
    // console.log("buy orders array before match: ", stockExchange.buyOrders);
    // console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
@@ -82,24 +82,25 @@ const matchOrders = async () => {
 };
 matchOrders();
 
-// // receive canceled trade orders from
-// const receiveCanceledOrder = async () => {
-//    const canceledOrder = await receiveFromQueue(canceledOrdersQueue);
-//    // console.log(
-//    //    "order received to index.js from canceled orders que: ",
-//    //    canceledOrder
-//    // );
-//    // remove order from buyOrders or sellOrders array in stock exchange
-//    await stockExchange.removeOrder(
-//       canceledOrder.orderID,
-//       canceledOrder.orderType
-//    );
-//    // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
-//    await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
-//    // console.log("sent confirmation of canceled order");
-// };
-
-// setInterval(receiveCanceledOrder, 500);
+// recieve canceled stock order from stock ordering microservice using rabbitMQ
+const receiveCanceledOrder = async () => {
+   await receiveFromQueue(canceledOrdersQueue, removeOrder);
+};
+// callback to remove order from buyOrders or sellOrders array in stock exchange
+const removeOrder = async (canceledOrder) => {
+   await stockExchange.removeOrder(
+      canceledOrder.orderID,
+      canceledOrder.orderType
+   );
+   console.log(
+      "order received to index.js from canceled orders que: ",
+      canceledOrder
+   );
+   // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
+   await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
+   console.log("sent confirmation of canceled order");
+};
+receiveCanceledOrder();
 
 app.listen(
    orderMatchingPORT,
