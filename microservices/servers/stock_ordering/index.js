@@ -37,7 +37,6 @@ app.get("/getUserStockOrders", (req, res) => {
 app.post("/startTradeOrder", async (req, res) => {
    const orderDetails = req.body.orderDetails;
    // console.log("received order from UI: ", orderDetails);
-
    // set order_status to open
    orderDetails.orderStatus = "Open";
    // add trade order to stock_orders db
@@ -61,10 +60,10 @@ const updateOrderStatus = (matchedOrder) => {
       matchedOrder.buyOrderID,
       matchedOrder.sellOrderID
    );
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
+   // console.log(
+   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
+   //    matchedOrder
+   // );
 };
 receiveMatchedOrder();
 
@@ -83,16 +82,16 @@ app.put("/cancelTradeOrder", async (req, res) => {
    res.send("order canceled");
 });
 
-// recieve confirmation that order is canceled then update order status in stock orders db
+// recieve order cancel confirmation from order matching microservice using rabbitMQ
 const receiveCanceledOrderConfirmation = async () => {
-   const canceledorder = await receiveFromQueue(
-      canceledOrdersConfirmationQueue
-   );
-   // update db
-   // console.log("received canceled order confirmation");
-   service.updateOrderStatusToCanceled(canceledorder);
+   await receiveFromQueue(canceledOrdersConfirmationQueue, cancelOrder);
 };
-setInterval(receiveCanceledOrderConfirmation, 1000);
+// callback function used to update order status and send to ui
+const cancelOrder = (canceledOrder) => {
+   service.updateOrderStatusToCanceled(canceledOrder);
+   // console.log("received canceled order confirmation");
+};
+receiveCanceledOrderConfirmation();
 
 app.listen(
    stockOrderingPORT,
