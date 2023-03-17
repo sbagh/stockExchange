@@ -30,16 +30,8 @@ const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
 const receiveStockOrder = async () => {
-   const orderDetails = await receiveFromQueue(stockOrdersQueue);
-   // console.log(
-   //    "order received to order matching index.js from que: ",
-   //    orderDetails
-   // );
-   sendToExchange(orderDetails);
+   await receiveFromQueue(stockOrdersQueue, sendToExchange);
 };
-
-setInterval(receiveStockOrder, 500);
-
 // when a stock order is recieved, send it to the stock exchange, to be placed in a buyOrders or sellOrders array then matched
 const sendToExchange = (orderDetails) => {
    // add to buy or sell orders array depending on order_type
@@ -58,9 +50,14 @@ const sendToExchange = (orderDetails) => {
            orderDetails.price,
            orderDetails.orderID
         );
+   console.log(
+      "order received to order matching index.js from que: ",
+      orderDetails
+   );
    // console.log("buy orders array before match: ", stockExchange.buyOrders);
    // console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
+receiveStockOrder();
 
 // match orders, then update matched_order db and send the matched order to other microservices
 const matchOrders = async () => {
@@ -85,24 +82,24 @@ const matchOrders = async () => {
 };
 matchOrders();
 
-// receive canceled trade orders from
-const receiveCanceledOrder = async () => {
-   const canceledOrder = await receiveFromQueue(canceledOrdersQueue);
-   // console.log(
-   //    "order received to index.js from canceled orders que: ",
-   //    canceledOrder
-   // );
-   // remove order from buyOrders or sellOrders array in stock exchange
-   await stockExchange.removeOrder(
-      canceledOrder.orderID,
-      canceledOrder.orderType
-   );
-   // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
-   await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
-   // console.log("sent confirmation of canceled order");
-};
+// // receive canceled trade orders from
+// const receiveCanceledOrder = async () => {
+//    const canceledOrder = await receiveFromQueue(canceledOrdersQueue);
+//    // console.log(
+//    //    "order received to index.js from canceled orders que: ",
+//    //    canceledOrder
+//    // );
+//    // remove order from buyOrders or sellOrders array in stock exchange
+//    await stockExchange.removeOrder(
+//       canceledOrder.orderID,
+//       canceledOrder.orderType
+//    );
+//    // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
+//    await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
+//    // console.log("sent confirmation of canceled order");
+// };
 
-setInterval(receiveCanceledOrder, 500);
+// setInterval(receiveCanceledOrder, 500);
 
 app.listen(
    orderMatchingPORT,
