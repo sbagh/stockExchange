@@ -20,7 +20,7 @@ app.use(express.json());
 // user portfolio microservice PORT
 const userPortfolioPORT = 4001;
 
-// Queues and Exchange names used
+// amqp Queues and Exchange names used
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
@@ -45,18 +45,16 @@ io.on("connection", (socket) => {
    });
 });
 
-// receive matched order from order_matching microservice
-const receiveMatchedOrder = async () => {
-   const matchedOrder = await receiveFanOutExchange(
+// receive matched orders from order matching microservice using rabbitMQ
+const receiveMatchedOrders = async () => {
+   await receiveFanOutExchange(
       matchedOrdersExchange,
-      matchedOrdersQueue
+      matchedOrdersQueue,
+      updateUserPortfolio
    );
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
-
-   // update user cash and stock holdings after matched order is received
+};
+// callback function used to update user portfolio and send to ui
+const updateUserPortfolio = (matchedOrder) => {
    service.updateUserCashHoldingsAfterMatch(
       matchedOrder.buyerID,
       matchedOrder.sellerID,
@@ -69,8 +67,12 @@ const receiveMatchedOrder = async () => {
       matchedOrder.ticker,
       matchedOrder.quantity
    );
+   // console.log(
+   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
+   //    matchedOrder
+   // );
 };
-setInterval(receiveMatchedOrder, 1000);
+receiveMatchedOrders();
 
 server.listen(
    userPortfolioPORT,

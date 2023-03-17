@@ -30,16 +30,8 @@ const stockExchange = new orderMatchingClass();
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
 const receiveStockOrder = async () => {
-   const orderDetails = await receiveFromQueue(stockOrdersQueue);
-   // console.log(
-   //    "order received to order matching index.js from que: ",
-   //    orderDetails
-   // );
-   sendToExchange(orderDetails);
+   await receiveFromQueue(stockOrdersQueue, sendToExchange);
 };
-
-setInterval(receiveStockOrder, 500);
-
 // when a stock order is recieved, send it to the stock exchange, to be placed in a buyOrders or sellOrders array then matched
 const sendToExchange = (orderDetails) => {
    // add to buy or sell orders array depending on order_type
@@ -58,17 +50,21 @@ const sendToExchange = (orderDetails) => {
            orderDetails.price,
            orderDetails.orderID
         );
-
-   console.log("buy orders array before match: ", stockExchange.buyOrders);
-   console.log("sell orders array before match: ", stockExchange.sellOrders);
+   // console.log(
+   //    "order received to order matching index.js from que: ",
+   //    orderDetails
+   // );
+   // console.log("buy orders array before match: ", stockExchange.buyOrders);
+   // console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
+receiveStockOrder();
 
 // match orders, then update matched_order db and send the matched order to other microservices
 const matchOrders = async () => {
    // create an interval to match new orders in the stockOrdersQueue
    matchOrdersInterval = setInterval(async () => {
       const matchedOrders = stockExchange.matchOrders();
-      console.log(matchedOrders);
+      // console.log(matchedOrders);
       if (matchedOrders && matchedOrders.length > 0) {
          //loop over the matchedOrders array
          while (matchedOrders.length > 0) {
@@ -86,24 +82,25 @@ const matchOrders = async () => {
 };
 matchOrders();
 
-// receive canceled trade orders from
+// recieve canceled stock order from stock ordering microservice using rabbitMQ
 const receiveCanceledOrder = async () => {
-   const canceledOrder = await receiveFromQueue(canceledOrdersQueue);
-   // console.log(
-   //    "order received to index.js from canceled orders que: ",
-   //    canceledOrder
-   // );
-   // remove order from buyOrders or sellOrders array in stock exchange
+   await receiveFromQueue(canceledOrdersQueue, removeOrder);
+};
+// callback to remove order from buyOrders or sellOrders array in stock exchange
+const removeOrder = async (canceledOrder) => {
    await stockExchange.removeOrder(
       canceledOrder.orderID,
       canceledOrder.orderType
    );
+   // console.log(
+   //    "order received to index.js from canceled orders que: ",
+   //    canceledOrder
+   // );
    // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
    await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
    // console.log("sent confirmation of canceled order");
 };
-
-setInterval(receiveCanceledOrder, 500);
+receiveCanceledOrder();
 
 app.listen(
    orderMatchingPORT,
