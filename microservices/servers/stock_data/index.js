@@ -38,10 +38,10 @@ const receiveMatchedOrder = async () => {
 // callback function used to update stock data and send to ui
 const updateStockData = (matchedOrder) => {
    service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
+   // console.log(
+   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
+   //    matchedOrder
+   // );
 };
 receiveMatchedOrder();
 

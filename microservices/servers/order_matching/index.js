@@ -92,13 +92,13 @@ const removeOrder = async (canceledOrder) => {
       canceledOrder.orderID,
       canceledOrder.orderType
    );
-   console.log(
-      "order received to index.js from canceled orders que: ",
-      canceledOrder
-   );
+   // console.log(
+   //    "order received to index.js from canceled orders que: ",
+   //    canceledOrder
+   // );
    // send canceled order confirmation to canceledOrdersConfirmation queue, to be received by stock ordering microservice
    await sendToQueue(canceledOrdersConfirmationQueue, canceledOrder);
-   console.log("sent confirmation of canceled order");
+   // console.log("sent confirmation of canceled order");
 };
 receiveCanceledOrder();
 

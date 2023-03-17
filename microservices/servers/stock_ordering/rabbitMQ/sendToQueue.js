@@ -25,7 +25,7 @@ const sendToQueue = async (queueName, message) => {
             queueName,
             Buffer.from(JSON.stringify(message))
          );
-         console.log(`message sent to ${queueName} queue, message: `, message);
+         // console.log(`message sent to ${queueName} queue, message: `, message);
 
          resolve();
 
