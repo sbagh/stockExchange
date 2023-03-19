@@ -1,4 +1,17 @@
 import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
+
+// stock data url
+const stockDataURL = "http://localhost:4002";
+
+// setup websocket connectoin
+let socket = null;
+if (!socket) {
+   socket = io.connect(stockDataURL, {
+      origin: "http://localhost:3000",
+      transports: ["websocket"],
+   });
+}
 
 const StockPrices = ({
    stockData,
@@ -6,21 +19,19 @@ const StockPrices = ({
    stockDataIsLoading,
    setStockDataIsLoading,
 }) => {
-   //useEffect for rendering and fetching stock data (current price, ticker..etc)
+   // useEfect to get stock data
    useEffect(() => {
-      const fetchData = () => {
-         fetch("http://localhost:4002/getStockData")
-            .then((res) => res.json())
-            .then((data) => {
-               setStockData(data);
-               setStockDataIsLoading(false);
-            })
-            .catch((err) => console.log(err.message));
+      const getStockData = async () => {
+         // // listen to stockData event from backend
+         await socket.on("stockData", (data) => {
+            // console.log('stock data: ',data);
+            setStockData(data);
+            setStockDataIsLoading(false);
+         });
+         // // remove the event listener before adding it again
+         // socket.off("stockData");
       };
-
-      fetchData();
-      const interval = setInterval(fetchData, 5000);
-      return () => clearInterval(interval);
+      getStockData();
    }, []);
 
    return (
