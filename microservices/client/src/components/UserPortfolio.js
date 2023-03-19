@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 
+// user portfolio microservice url
 const userPortfolioURL = "http://localhost:4001";
 
 //connect to websocket

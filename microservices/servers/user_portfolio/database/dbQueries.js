@@ -50,18 +50,18 @@ const updateUserCashHoldingsAfterMatch = async (
    price,
    quantity
 ) => {
-   // first get the total cost of the buy/sell order
+   // 1- first get the total cost of the buy/sell order
    let totalCost = price * quantity;
    // console.log("total cost is:  ", totalCost);
 
    try {
-      // update buyers cash holdings
+      // 2- update buyers cash holdings
       const buyerQueryString =
          "UPDATE cash_holdings SET cash = cash - $1 WHERE user_id = $2";
       const buyerQueryParameter = [totalCost, buyerID];
       await pool.query(buyerQueryString, buyerQueryParameter);
 
-      // update sellers cash holdings
+      // 3- update sellers cash holdings
       const sellerQueryString =
          "UPDATE cash_holdings SET cash = cash + $1 WHERE user_id = $2";
       const sellerQueryParameter = [totalCost, sellerID];
@@ -78,7 +78,7 @@ const updateUserStockHoldingsAfterMatch = async (
    ticker,
    quantity
 ) => {
-   // update buyer's stock_holdings by adding the stock
+   // 1- update buyer's stock_holdings by adding the stock
    // first get buyer's old quantity then add the new quantity to it
    const buyersOldQuantityRow = await pool.query(
       "SELECT quantity FROM stock_holdings where (user_id = $1 and ticker = $2)",
@@ -99,7 +99,7 @@ const updateUserStockHoldingsAfterMatch = async (
       );
    }
 
-   // update sellers's stock_holdings by adding the stock
+   // 2- update sellers's stock_holdings by adding the stock
    // first get sellers's old quantity then subtract the new quantity from it
    const sellersOldQuantityRow = await pool.query(
       "SELECT quantity FROM stock_holdings where (user_id = $1 and ticker = $2)",
