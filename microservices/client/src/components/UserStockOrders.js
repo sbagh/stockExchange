@@ -1,7 +1,17 @@
 import React, { useEffect } from "react";
+import io from "socket.io-client";
 
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
+
+// setup websocket
+let socket = null;
+if (!socket) {
+   socket = io.connect(stockOrderingURL, {
+      origin: "http://localhost:3000",
+      transports: ["websocket"],
+   });
+}
 
 const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
    //use effect to fetch the specific user's stock orders
@@ -24,9 +34,19 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
          }
       };
       fetchUserOrders();
-      const interval = setInterval(fetchUserOrders, 5000);
-      return () => clearInterval(interval);
    }, [userID]);
+
+   // Websocket listener to get updated order status
+   useEffect(() => {
+      const getUpdatedOrderStatus = async () => {
+         // remove the event listener before adding it again
+         socket.off("updatedOrderStatus");
+         await socket.on("updatedOrderStatus", (updatedOrder) => {
+            console.log("updated order status from socket: ", updatedOrder);
+         });
+      };
+      getUpdatedOrderStatus();
+   }, []);
 
    // Send a cancel order PUT request to server.js
    const cancelOrder = async (orderID, orderType, orderStatus) => {
