@@ -16,37 +16,31 @@ if (!socket) {
 const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
    //use effect to fetch the specific user's stock orders
    useEffect(() => {
-      const fetchUserOrders = async () => {
-         try {
-            const response = await fetch(
-               `${stockOrderingURL}/getUserStockOrders?userID=${userID}`
-            );
-            if (!response.ok) {
-               console.log("network error");
-            }
-
-            let userOrders = await response.json();
-            // console.log(userOrders);
-            setUserOrderHistory(userOrders);
-         } catch (error) {
-            console.log(error);
-            throw error;
-         }
-      };
-      fetchUserOrders();
-   }, [userID]);
-
-   // Websocket listener to get updated order status
-   useEffect(() => {
-      const getUpdatedOrderStatus = async () => {
+      const getUserOrders = async () => {
+         // emit current userID to back end
+         await socket.emit("currentUserID", userID);
          // remove the event listener before adding it again
-         socket.off("updatedOrderStatus");
-         await socket.on("updatedOrderStatus", (updatedOrder) => {
-            console.log("updated order status from socket: ", updatedOrder);
+         socket.off("userOrderHistory");
+         // get user's order history from back end
+         await socket.on("userOrderHistory", (userOrderHistory) => {
+            console.log(userOrderHistory);
+            setUserOrderHistory(userOrderHistory);
          });
       };
-      getUpdatedOrderStatus();
-   }, []);
+      getUserOrders();
+   }, [userID]);
+
+   // // Websocket listener to get updated order status
+   // useEffect(() => {
+   //    const getUpdatedOrderStatus = async () => {
+   //       // remove the event listener before adding it again
+   //       socket.off("updatedOrderStatus");
+   //       await socket.on("updatedOrderStatus", (updatedOrder) => {
+   //          console.log("updated order status from socket: ", updatedOrder);
+   //       });
+   //    };
+   //    getUpdatedOrderStatus();
+   // }, []);
 
    // Send a cancel order PUT request to server.js
    const cancelOrder = async (orderID, orderType, orderStatus) => {

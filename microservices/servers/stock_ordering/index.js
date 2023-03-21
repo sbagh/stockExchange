@@ -1,11 +1,22 @@
+//1- receive request from ui to get a user's stock orders, and send them
+//2- receive a stock trade order from ui, then send it to a rabbitMQ queue, which is received at the order matching microservice
+//3- receive a matched order from a rabbitMQ fan out exchange, coming from order matching microservice
+//4- update the order status of the buy/sell orders that matched to 'closed'
+//5- send the updated order to ui via a websocket
+//6- receive a cancel stock order request from ui, then send it to a rabbitMQ queue, which is received at the order matching microservice
+//7- receive a canceled stock order confirmation from a rabbitMQ queue, coming form order matching microservice
+//8- update order status of canceled order to 'canceled'
+
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
-// setup websocker/socket.io
+//websocket/socket.io reqiurements
 const http = require("http");
 const server = http.createServer(app);
 const io = require("socket.io")(server);
+// setting socket.io as an app object, to access io in different parts of code
+app.set("socketio", io);
 
 // require db connection and queries:
 const service = require("./database/dbQueries");
@@ -29,41 +40,37 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
 const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 
-// get a specifc user's trade orders from stock_orders db, requested from UI
-app.get("/getUserStockOrders", async (req, res) => {
-   const orders = await service.getUserStockOrders(req.query.userID);
-   // console.log(orders);
-   res.send(orders);
+// setup a websocket
+io.on("connection", (socket) => {
+   console.log("client is connected, id: ", socket.id);
+   //get user ID from UI then emit their oder history
+   socket.on("currentUserID", async (userID) => {
+      await emitUserOrderHistory(socket, userID);
+   });
 });
 
-// receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
+const emitUserOrderHistory = async (socket, userID) => {
+   // first get user's order history
+   const userOrderHistory = await service.getUserStockOrders(userID);
+   // emit user order history to UI (component UserStockOrders)
+   socket.emit("userOrderHistory", userOrderHistory);
+};
+
+// 2- receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", async (req, res) => {
    const orderDetails = req.body.orderDetails;
-   // console.log("received order from UI: ", orderDetails);
+   console.log("received order from UI: ", orderDetails);
    // set order_status to open
    orderDetails.orderStatus = "Open";
    // add trade order to stock_orders db
    service.addStockOrder(orderDetails);
    // send order to stockOrdersQueue, which will send to order matching microservice
    await sendToQueue(stockOrdersQueue, orderDetails);
-   res.send("order received");
+   const socket = req.app.get("socketio");
+   await emitUserOrderHistory(socket, orderDetails.userID);
 });
 
-// setup a websocket
-io.on("connection", (socket) => {
-   console.log("client is connected, id: ", socket.id);
-});
-
-// using websocket, emit the updated order status and ID to UI (UserStockOrders component) given an orderID
-const emitOrderStatus = async (socket, orderID) => {
-   // get order status
-   const orderStatus = await service.getOrderStatus(orderID);
-   const updatedOrder = { orderID, orderStatus };
-   // emit updated order's id and status
-   socket.emit("updatedOrderStatus", updatedOrder);
-};
-
-// receive matched orders from order matching microservice using rabbitMQ
+// 3- receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrder = async (io) => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
@@ -72,7 +79,7 @@ const receiveMatchedOrder = async (io) => {
    );
 };
 
-// callback function used to update order status and send to ui
+// 4- callback function used to update order status and send to ui
 const updateOrderStatus = (io, matchedOrder) => {
    service.updateOrderStatusToClosed(
       matchedOrder.buyOrderID,
@@ -82,12 +89,12 @@ const updateOrderStatus = (io, matchedOrder) => {
    //    `matched order received from ${matchedOrdersQueue} queue, order: `,
    //    matchedOrder
    // );
-   emitOrderStatus(io, matchedOrder.buyOrderID);
-   emitOrderStatus(io, matchedOrder.sellOrderID);
+   emitUserOrderHistory(io, matchedOrder.buyOrderID);
+   emitUserOrderHistory(io, matchedOrder.sellOrderID);
 };
 receiveMatchedOrder(io);
 
-// cancel a trade order if request from UI
+// 6- cancel a trade order if request from UI
 app.put("/cancelTradeOrder", async (req, res) => {
    // deconstruct req qeuries and place in a canceledOrder object
    const canceledOrder = {
@@ -102,12 +109,12 @@ app.put("/cancelTradeOrder", async (req, res) => {
    res.send("order canceled");
 });
 
-// recieve order cancel confirmation from order matching microservice using rabbitMQ
+// 7- recieve order cancel confirmation from order matching microservice using rabbitMQ
 const receiveCanceledOrderConfirmation = async () => {
    await receiveFromQueue(canceledOrdersConfirmationQueue, cancelOrder);
 };
 
-// callback function used to update order status and send to ui
+// 8- callback function used to update order status and send to ui
 const cancelOrder = (canceledOrder) => {
    service.updateOrderStatusToCanceled(canceledOrder);
    // console.log("received canceled order confirmation");
