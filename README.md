@@ -2,36 +2,37 @@
 
 Stock exchange full-stack app.
 
-Tech stack so far in local build: Node/Express, React, PostgreSQL, RabbitMQ, Socket.io
+## Tech stack used in the local build:
+- Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
 
+## Running the project
 To run project:
+-  Install react and node modules
+-  Start each microservice's index.js and start react
+-  Create DBs locally and add records to user_accounts, user_portfolio, stock_data
+-  Current local build uses rabbitMQ, download and install it
+-  In the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that have a status of "Open".
 
--  install react and node.js modules
--  start each microservice index.js
--  start react
--  create DBs locally and add records to user_accounts, user_portfolio, stock_data
--  current local build uses rabbitMQ, download and install it
--  on the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that have a status of "Open".
+## Completed Functionalities:
+Functional requirements completed:
+   -  Switch between users and view each user's portfolio and trade history
+   -  See the latest stock prices
+   -  Set buy and sell orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
+   -  See the order status of a trade (Pending, Open, Closed, Canceled) and cancel 'Open' trade orders
 
-Completed:
-
--  Functionalities:
-   -  Switch between users, and see each user's portfolio and their trade history
-   -  See latest stock prices
-   -  Set buy and sell orders which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
-   -  See the order-status of a trade (Pending, Open, Closed, Canceled) and cancel 'Open' trade orders
--  Migrated data storage from local JSON files to a PostgreSQL database, then to separate DBs per microservice
+Non functional requirements completed:
+-  Migrated data storage from local JSON files to a PostgreSQL database
 -  Refactored application from a monolith to a microservices architecture:
-   -  the 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
-   -  Communication between microservices is done through RabbitMQ using the AMQP protocol
-- Implemented websockets using socket.io to volunteer data to the browser in realtime, data sent includes stock prices, order status, and user portfolio updates
+-  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
+-  Implemented communication between microservices through RabbitMQ using the AMQP protocol
+-  Implemented websockets using socket.io to provide real-time updates to the browser, including stock prices, order status, and user portfolio updates
 
-Next steps:
+## Next steps:
 
--  Host serverlessly on AWS, replacing rabbitMQ in the local build with Amazon SNS and SQS
--  Implement sound solution architecture principles for performance, security and reliabilit, not limited to caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
--  Simulate a high load of trade orders to test and improve the systems capabilities
--  Develop a live paper-trading feature by connecting to real-time stock data API such as polygon.io, and re-using code from the original stock exchange app
+-  Hosting the appserverlessly on AWS and replacing rabbitMQ in the local build with Amazon SNS and SQS
+-  Implementing sound solution architecture principles for performance, security and reliabilit, not limited to caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
+-  Simulating a high load of trade orders to test and improve the systems capabilities
+-  Developing a live paper-trading feature by connecting to real-time stock data API such as polygon.io, and re-using code from the original stock exchange app
 
 
 High level system design:
