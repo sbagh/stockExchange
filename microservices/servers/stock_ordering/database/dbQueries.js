@@ -62,7 +62,7 @@ const addStockOrder = async (orderDetails) => {
 };
 
 // update order_status for both buy and sell orders to "Closed" in stock_orders table after matching
-const updateOrderStatusStockOrdersTable = async (buyOrderID, sellOrderID) => {
+const updateOrderStatusToClosed = async (buyOrderID, sellOrderID) => {
    try {
       const queryString =
          "UPDATE stock_orders SET order_status =$1 WHERE order_id = $2 OR order_id = $3";
@@ -88,9 +88,28 @@ const updateOrderStatusToCanceled = async (canceledOrder) => {
    }
 };
 
+const getOrderStatus = async (orderID) => {
+   try {
+      const queryString =
+         "SELECT order_status FROM stock_orders WHERE order_id = $1";
+      const queryParameter = [orderID];
+      const results = await pool.query(queryString, queryParameter);
+
+      // convert to camel case
+      const camelCaseResults = results.rows.map((result) => {
+         return { orderStatus: result.order_status };
+      });
+      return camelCaseResults[0].orderStatus;
+   } catch (error) {
+      console.log("error in getting order status, ", error);
+      throw error;
+   }
+};
+
 module.exports = {
    getUserStockOrders,
    addStockOrder,
-   updateOrderStatusStockOrdersTable,
+   updateOrderStatusToClosed,
    updateOrderStatusToCanceled,
+   getOrderStatus,
 };

@@ -1,38 +1,40 @@
 import React, { useEffect } from "react";
+import io from "socket.io-client";
 
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
 
+// setup websocket
+let socket = null;
+if (!socket) {
+   socket = io.connect(stockOrderingURL, {
+      origin: "http://localhost:3000",
+      transports: ["websocket"],
+   });
+}
+
 const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
    //use effect to fetch the specific user's stock orders
    useEffect(() => {
-      const fetchUserOrders = async () => {
-         try {
-            const response = await fetch(
-               `${stockOrderingURL}/getUserStockOrders?userID=${userID}`
-            );
-            if (!response.ok) {
-               console.log("network error");
-            }
-
-            let userOrders = await response.json();
-            // console.log(userOrders);
-            setUserOrderHistory(userOrders);
-         } catch (error) {
-            console.log(error);
-            throw error;
-         }
+      const getUserOrders = async () => {
+         // emit current userID to back end
+         await socket.emit("currentUserID", userID);
+         // remove the event listener before adding it again
+         socket.off("userOrderHistory");
+         // get user's order history from back end
+         await socket.on("userOrderHistory", (userOrderHistory) => {
+            console.log(userOrderHistory);
+            setUserOrderHistory(userOrderHistory);
+         });
       };
-      fetchUserOrders();
-      const interval = setInterval(fetchUserOrders, 5000);
-      return () => clearInterval(interval);
+      getUserOrders();
    }, [userID]);
 
    // Send a cancel order PUT request to server.js
-   const cancelOrder = async (orderID, orderType, orderStatus) => {
+   const cancelOrder = async (orderID, orderType, orderStatus, userID) => {
       try {
          const response = await fetch(
-            `${stockOrderingURL}/cancelTradeOrder?orderID=${orderID}&orderType=${orderType}&orderStatus=${orderStatus}`,
+            `${stockOrderingURL}/cancelTradeOrder?orderID=${orderID}&orderType=${orderType}&orderStatus=${orderStatus}&userID=${userID}`,
             { method: "PUT" }
          );
 
@@ -80,7 +82,8 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
                                     cancelOrder(
                                        order.orderID,
                                        order.orderType,
-                                       order.orderStatus
+                                       order.orderStatus,
+                                       userID
                                     )
                                  }
                               >
