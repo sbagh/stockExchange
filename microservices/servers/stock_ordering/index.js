@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
 const emitUserOrderHistory = async (socket, userID) => {
    // first get user's order history
    const userOrderHistory = await service.getUserStockOrders(userID);
-   // console.log("got order history to emit function: ", userOrderHistory);
+   // console.log("userOrderHistory: ", userOrderHistory);
    // emit user order history to UI (component UserStockOrders)
    socket.emit("userOrderHistory", userOrderHistory);
    return;
@@ -90,7 +90,7 @@ const updateOrderStatus = async (matchedOrder) => {
 };
 receiveMatchedOrder();
 
-// 6- cancel a trade order if request from UI
+// cancel a trade order if request from UI
 app.put("/cancelTradeOrder", async (req, res) => {
    // deconstruct req qeuries and place in a canceledOrder object
    const canceledOrder = {
@@ -99,18 +99,18 @@ app.put("/cancelTradeOrder", async (req, res) => {
       orderStatus: req.query.orderStatus,
       userID: req.query.userID,
    };
-   // console.log("canceled order from ui: ", canceledOrder);
+   // console.log("canceled order request received from ui: ", canceledOrder);
 
    //send canceledOrder object to order matching service via
    await sendToQueue(canceledOrdersQueue, canceledOrder);
    res.send("order canceled");
 });
 
-// 7- recieve order cancel confirmation from order matching microservice using rabbitMQ
+// recieve order cancel confirmation from order matching microservice using rabbitMQ
 const receiveCanceledOrderConfirmation = async () => {
    await receiveFromQueue(canceledOrdersConfirmationQueue, cancelOrder);
 };
-// 8- callback function used to update order status and send to ui
+// callback function used to update order status and send to ui
 const cancelOrder = async (canceledOrder) => {
    await service.updateOrderStatusToCanceled(canceledOrder);
    // console.log("canceled order: ", canceledOrder);
