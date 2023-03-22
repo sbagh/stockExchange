@@ -16,7 +16,6 @@ const service = require("./database/dbQueries");
 const { sendToQueue } = require("./rabbitMQ/sendToQueue");
 const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
-const { userInfo } = require("os");
 
 app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
@@ -41,17 +40,17 @@ io.on("connection", (socket) => {
    });
 });
 
+// Emit a specific user's order history
 const emitUserOrderHistory = async (socket, userID) => {
-   console.log("received user id in emit function: ", userID);
    // first get user's order history
    const userOrderHistory = await service.getUserStockOrders(userID);
-   console.log("got order history to emit function: ", userOrderHistory);
+   // console.log("got order history to emit function: ", userOrderHistory);
    // emit user order history to UI (component UserStockOrders)
    socket.emit("userOrderHistory", userOrderHistory);
    return;
 };
 
-// 2- receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
+// receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", async (req, res) => {
    const orderDetails = req.body.orderDetails;
    // console.log("received order from UI: ", orderDetails);
@@ -66,7 +65,7 @@ app.post("/startTradeOrder", async (req, res) => {
    await emitUserOrderHistory(socket, orderDetails.userID);
 });
 
-// 3- receive matched orders from order matching microservice using rabbitMQ
+// receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrder = async () => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
@@ -75,16 +74,16 @@ const receiveMatchedOrder = async () => {
    );
 };
 
-// 4- callback function used to update order status and send to ui
+// callback function used to update order status and send to ui
 const updateOrderStatus = async (matchedOrder) => {
    await service.updateOrderStatusToClosed(
       matchedOrder.buyOrderID,
       matchedOrder.sellOrderID
    );
-   console.log(
-      `matched order received from ${matchedOrdersQueue} queue, order: `,
-      matchedOrder
-   );
+   // console.log(
+   //    `matched order received from ${matchedOrdersQueue} queue, order: `,
+   //    matchedOrder
+   // );
    const socket = app.get("socketio");
    await emitUserOrderHistory(socket, matchedOrder.buyerID);
    await emitUserOrderHistory(socket, matchedOrder.sellerID);
@@ -98,6 +97,7 @@ app.put("/cancelTradeOrder", async (req, res) => {
       orderID: req.query.orderID,
       orderType: req.query.orderType,
       orderStatus: req.query.orderStatus,
+      userID: req.query.userID,
    };
    // console.log("canceled order from ui: ", canceledOrder);
 
@@ -110,13 +110,13 @@ app.put("/cancelTradeOrder", async (req, res) => {
 const receiveCanceledOrderConfirmation = async () => {
    await receiveFromQueue(canceledOrdersConfirmationQueue, cancelOrder);
 };
-
 // 8- callback function used to update order status and send to ui
-const cancelOrder = (canceledOrder) => {
-   service.updateOrderStatusToCanceled(canceledOrder);
-   // console.log("received canceled order confirmation");
+const cancelOrder = async (canceledOrder) => {
+   await service.updateOrderStatusToCanceled(canceledOrder);
+   // console.log("canceled order: ", canceledOrder);
+   const socket = app.get("socketio");
+   await emitUserOrderHistory(socket, canceledOrder.userID);
 };
-
 receiveCanceledOrderConfirmation();
 
 server.listen(

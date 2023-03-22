@@ -30,23 +30,11 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
       getUserOrders();
    }, [userID]);
 
-   // // Websocket listener to get updated order status
-   // useEffect(() => {
-   //    const getUpdatedOrderStatus = async () => {
-   //       // remove the event listener before adding it again
-   //       socket.off("updatedOrderStatus");
-   //       await socket.on("updatedOrderStatus", (updatedOrder) => {
-   //          console.log("updated order status from socket: ", updatedOrder);
-   //       });
-   //    };
-   //    getUpdatedOrderStatus();
-   // }, []);
-
    // Send a cancel order PUT request to server.js
-   const cancelOrder = async (orderID, orderType, orderStatus) => {
+   const cancelOrder = async (orderID, orderType, orderStatus, userID) => {
       try {
          const response = await fetch(
-            `${stockOrderingURL}/cancelTradeOrder?orderID=${orderID}&orderType=${orderType}&orderStatus=${orderStatus}`,
+            `${stockOrderingURL}/cancelTradeOrder?orderID=${orderID}&orderType=${orderType}&orderStatus=${orderStatus}&userID=${userID}`,
             { method: "PUT" }
          );
 
@@ -94,7 +82,8 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
                                     cancelOrder(
                                        order.orderID,
                                        order.orderType,
-                                       order.orderStatus
+                                       order.orderStatus,
+                                       userID
                                     )
                                  }
                               >
