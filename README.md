@@ -2,25 +2,33 @@
 
 Stock exchange full-stack app.
 
-## Tech stack used in the local build:
-- Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
+## Tech stack:
+
+# Tech stack used in local build:
+
+-  Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
 
 ## Running the project
-To run project:
+
+# To run project:
+
 -  Install react and node modules
 -  Start each microservice's index.js and start react
 -  Create DBs locally and add records to user_accounts, user_portfolio, stock_data
--  Current local build uses rabbitMQ, download and install it
+-  Current local build uses rabbitMQ, download, install, and start it
 -  In the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that have a status of "Open".
 
 ## Completed Functionalities:
-Functional requirements completed:
-   -  Switch between users and view each user's portfolio and trade history
-   -  See the latest stock prices
-   -  Set buy and sell orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
-   -  See the order status of a trade (Pending, Open, Closed, Canceled) and cancel 'Open' trade orders
 
-Non functional requirements completed:
+# Functional requirements:
+
+-  Switch between users and view each user's portfolio and trade history
+-  See the latest stock prices
+-  Set buy and sell orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
+-  See the order status of a trade (Pending, Open, Closed, Canceled) and cancel 'Open' trade orders
+
+# Non functional requirements:
+
 -  Migrated data storage from local JSON files to a PostgreSQL database
 -  Refactored application from a monolith to a microservices architecture:
 -  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
@@ -34,6 +42,8 @@ Non functional requirements completed:
 -  Simulating a high load of trade orders to test and improve the systems capabilities
 -  Developing a live paper-trading feature by connecting to real-time stock data API such as polygon.io, and re-using code from the original stock exchange app
 
+## System Diagram
 
-High level system design:
+# High level system design for AWS build:
+
 <img width="1245" alt="Screen Shot 2023-03-02 at 6 59 01 AM" src="https://user-images.githubusercontent.com/52921619/222810242-33159bfc-c21d-4a5b-b285-f711f8527d66.png">
