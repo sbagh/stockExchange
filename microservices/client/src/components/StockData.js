@@ -32,7 +32,7 @@ const StockPrices = ({
          // socket.off("stockData");
       };
       getStockData();
-   }, []);
+   }, [setStockData, setStockDataIsLoading]);
 
    return (
       <div className="stock-prices">

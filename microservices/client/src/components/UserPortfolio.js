@@ -34,7 +34,7 @@ const UserPortfolio = ({
          });
       };
       getUserPortfolio();
-   }, [user.userID]);
+   }, [user.userID, setUserCashHoldings, setUserStockHoldings]);
 
    // //useEffect to fetch user's cash and stock holdings from cash_holdings and stock_holdings tables
    // useEffect(() => {

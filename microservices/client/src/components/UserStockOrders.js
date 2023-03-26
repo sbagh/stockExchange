@@ -28,7 +28,7 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
          });
       };
       getUserOrders();
-   }, [userID]);
+   }, [userID, setUserOrderHistory]);
 
    // Send a cancel order PUT request to server.js
    const cancelOrder = async (orderID, orderType, orderStatus, userID) => {

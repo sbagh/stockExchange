@@ -24,7 +24,7 @@ const SelectUser = ({ users, setUsers, setUser }) => {
          }
       };
       fetchUsers();
-   }, []);
+   }, [setUsers, setUser]);
 
    // handle change when selecting a new user from drop-down list
    const handleChange = (e) => {

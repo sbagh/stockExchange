@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
       await emitUserPortfolio(socket, userID);
    });
 });
+
 // get and emit user portfolio (cash and stock holdings)
 const emitUserPortfolio = async (socket, userID) => {
    // get user cash and stock holdings from db tables
@@ -46,6 +47,7 @@ const emitUserPortfolio = async (socket, userID) => {
       userStockHoldings: userStockHoldings,
    });
 };
+
 // receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrders = async (io) => {
    await receiveFanOutExchange(
