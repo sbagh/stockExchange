@@ -31,7 +31,7 @@ class orderMatchingClass {
    removeOrder(orderID, orderType) {
       if (orderType === "buy") {
          const index = this.buyOrders.findIndex(
-            (order) => (order.orderID = orderID)
+            (order) => order.orderID === orderID
          );
          if (index !== -1) {
             this.buyOrders.splice(index, 1);
@@ -39,7 +39,7 @@ class orderMatchingClass {
          }
       } else if (orderType === "sell") {
          const index = this.sellOrders.findIndex(
-            (order) => (order.orderID = orderID)
+            (order) => order.orderID === orderID
          );
          if (index !== -1) {
             this.sellOrders.splice(index, 1);
@@ -90,12 +90,12 @@ class orderMatchingClass {
             if (trade_quantity > 0) {
                this.matchedOrders.push({
                   buyOrderID: this.buyOrders[i].orderID,
-                  sellOrderID: this.sellOrders[i].orderID,
+                  sellOrderID: this.sellOrders[j].orderID,
                   buyerID: this.buyOrders[i].buyer,
-                  sellerID: this.sellOrders[i].seller,
-                  price: this.sellOrders[i].price,
+                  sellerID: this.sellOrders[j].seller,
+                  price: this.sellOrders[j].price,
                   time: new Date(),
-                  ticker: this.sellOrders[i].ticker,
+                  ticker: this.sellOrders[j].ticker,
                   quantity: trade_quantity,
                });
             }
