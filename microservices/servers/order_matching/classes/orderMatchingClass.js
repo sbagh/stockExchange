@@ -67,8 +67,6 @@ class orderMatchingClass {
          }
       });
 
-      // let matchedOrders = [];
-
       //loop through the buyOrders and sellOrders arrays, if buyOrders price > sellOrders price, execute a trade, else increment the sell order
       let i = 0,
          j = 0;
@@ -118,7 +116,7 @@ class orderMatchingClass {
       this.sellOrders = this.sellOrders.filter((order) => order.quantity > 0);
 
       // return matchedOrders array
-      return this.matchedOrders.length > 0 ? this.matchedOrders : null;
+      return this.matchedOrders.length ? this.matchedOrders : null;
    }
 }
 

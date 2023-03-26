@@ -62,11 +62,11 @@ const addStockOrder = async (orderDetails) => {
 };
 
 // update order_status for both buy and sell orders to "Closed" in stock_orders table after matching
-const updateOrderStatusToClosed = async (buyOrderID, sellOrderID) => {
+const updateOrderStatusToFilled = async (buyOrderID, sellOrderID) => {
    try {
       const queryString =
          "UPDATE stock_orders SET order_status =$1 WHERE order_id = $2 OR order_id = $3";
-      const queryParameter = ["Closed", buyOrderID, sellOrderID];
+      const queryParameter = ["Filled", buyOrderID, sellOrderID];
 
       await pool.query(queryString, queryParameter);
    } catch (error) {
@@ -109,7 +109,7 @@ const getOrderStatus = async (orderID) => {
 module.exports = {
    getUserStockOrders,
    addStockOrder,
-   updateOrderStatusToClosed,
+   updateOrderStatusToFilled,
    updateOrderStatusToCanceled,
    getOrderStatus,
 };

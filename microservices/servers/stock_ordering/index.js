@@ -76,7 +76,7 @@ const receiveMatchedOrder = async () => {
 
 // callback function used to update order status and send to ui
 const updateOrderStatus = async (matchedOrder) => {
-   await service.updateOrderStatusToClosed(
+   await service.updateOrderStatusToFilled(
       matchedOrder.buyOrderID,
       matchedOrder.sellOrderID
    );
