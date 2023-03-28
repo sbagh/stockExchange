@@ -1,9 +1,6 @@
 const express = require("express");
-
 const app = express();
 app.use(express.json());
-
-const userAccountsPORT = 4000;
 
 // require db connection and queries:
 const service = require("./database/dbQueries");
