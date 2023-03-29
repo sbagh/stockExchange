@@ -1,6 +1,6 @@
 const Pool = require("pg").Pool;
 
-// require .env file for db connection
+// require .env file for db connection, not used in aws lambda
 require("dotenv").config();
 
 // connect to db:
