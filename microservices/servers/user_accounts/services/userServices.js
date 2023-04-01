@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const db = require("../database/dbQueries.js");
 const { mysecretKey } = require("../config.js");
 
+// create a user
 const createUser = async (username, password, firstName, lastName) => {
    try {
       // hash password
@@ -20,6 +21,20 @@ const createUser = async (username, password, firstName, lastName) => {
    }
 };
 
+// get all users
+const getAllUsers = async (req, res) => {
+   try {
+      // query db for all users
+      const users = await db.getAllUsers();
+      // return users
+      return users;
+   } catch (error) {
+      console.log("error in getting all users", error);
+      throw error;
+   }
+};
+
 module.exports = {
    createUser,
+   getAllUsers,
 };

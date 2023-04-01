@@ -9,17 +9,14 @@ app.use(express.json());
 
 const userAccountsPORT = 4000;
 
-// require db connection and queries:
-const db = require("./database/dbQueries");
-
-// query db for all users (db: user_accounts, table: users)
-app.get("/getAllUsers", (req, res) => {
-   db.getAllUsers(req, res).then((users) => {
-      // console.log(users);
-      res.send(users);
-   });
+// get all users
+app.get("/getAllUsers", async (req, res) => {
+   const users = await userService.getAllUsers();
+   // console.log(users);
+   res.send(users);
 });
 
+// create a user
 app.post("/createUser", async (req, res) => {
    // destructure username and password from req.body
    const { username, password, firstName, lastName } = req.body;
