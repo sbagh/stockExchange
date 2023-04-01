@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const generateSecretKey = () => {
    return crypto.randomBytes(64).toString("hex");
 };
-// get secret key
+// generate a secret key and assign to a variable
 const mysecretKey = generateSecretKey();
 
 module.exports = { mysecretKey };

@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { UsersClass } = require("./classes/userClass.js");
+const userService = require("./services/userServices.js");
 
 const app = express();
 app.use(cors());
@@ -11,9 +11,6 @@ const userAccountsPORT = 4000;
 
 // require db connection and queries:
 const db = require("./database/dbQueries");
-
-// instantiate a new instance of the UsersClass
-const userService = new UsersClass();
 
 // query db for all users (db: user_accounts, table: users)
 app.get("/getAllUsers", (req, res) => {
