@@ -4,7 +4,8 @@ Stock exchange full-stack app.
 
 
 ### Tech stack in local build:
--  Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
+Local Build:  Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
+Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, CodeCommit + local build
 
 ### Running the project locally
 -  Install react and node modules
@@ -17,21 +18,28 @@ Stock exchange full-stack app.
 Functional Requirements:
 -  Switch between users and view each user's portfolio and trade history
 -  See the latest stock prices
--  Set buy and sell orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
--  See the order status of a trade (Pending, Open, Closed, Canceled) and cancel 'Open' trade orders
+-  Set buy and sell limit orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
+-  See the order status of a trade (Pending, Open, Filled, Canceled) and cancel 'Open' trade orders
 
 Infrastructure and non functional reqiurements:
 -  Migrated data storage from local JSON files to a PostgreSQL database
 -  Refactored application from a monolith to a microservices architecture
 -  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
 -  Implemented communication between microservices through RabbitMQ using the AMQP protocol
--  Implemented websockets using socket.io to provide real-time updates to the browser, including stock prices, order status, and user portfolio updates
+-  Implemented websockets using socket.io to provide real-time updates to the browser
 
 ### Next steps:
--  Hosting the appserverlessly on AWS and replacing rabbitMQ in the local build with Amazon SNS and SQS:
+-  Currently Hosting serverlessly on AWS using:
+    - S3 for hosting the react app
+    - Lambda for back-end files
+    - RDS (postgreSQL) for data storage
+    - SQS and SNS for messaging between microservices, replacing RabbitMQ in the local build
+    - API gateway as a layer between S3 and lambdas
+    - Replacing rabbitMQ in the local build with Amazon SNS and SQS:
+- Currently implementing an improved user account system to create, login, and authenticate users using a JWT
 -  Implementing sound solution architecture principles for performance, security and reliabilit, not limited to caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
 -  Simulating a high load of trade orders to test and improve the systems capabilities
--  Developing a live paper-trading feature by connecting to real-time stock data API such as polygon.io, and re-using code from the original stock exchange app
+- Build next features
 
 ### High level system design for AWS build:
 
