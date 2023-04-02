@@ -19,9 +19,12 @@ app.get("/getAllUsers", (req, res) => {
       });
 });
 
-// aws hanlder function
+// aws lambda hanlder function
 module.exports.handler = async (event, context) => {
+   //import aws-serverless-express library
    const awsServerlessExpress = require("aws-serverless-express");
+   // create instance of aws-serverless-express with app object
    const server = awsServerlessExpress.createServer(app);
+   // return the proxy function with the server, event, context and "PROMISE" as arguments 
    return awsServerlessExpress.proxy(server, event, context, "PROMISE").promise;
 };
