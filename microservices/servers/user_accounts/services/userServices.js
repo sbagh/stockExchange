@@ -10,7 +10,9 @@ const createUser = async (username, password, firstName, lastName) => {
       const hashedPassword = await argon2.hash(password);
       // save user to db
       await db.createUser(username, hashedPassword, firstName, lastName);
-      const userID = await db.getUserID(username);
+      // get userID
+      const user = await getUserByUsername(username);
+      const userID = user.userID;
       // create token
       const token = jwt.sign({ userID }, mysecretKey);
       // return user and token
@@ -34,7 +36,31 @@ const getAllUsers = async (req, res) => {
    }
 };
 
+// authenticate and login user
+const loginUser = async (username, password) => {
+   //1- retrieve user from db
+   const user = await getUserByUsername(username);
+   // console.log(user);
+   //2- validate if user exists
+   if (!user) return { success: fail, message: "Invalid username of password" };
+   //3- validate password
+   const passwordValid = await argon2.verify(user.password, password);
+   // console.log(passwordValid);
+   if (!passwordValid)
+      return { success: fail, message: "Invalid username of password" };
+   //4- create token
+   const token = await jwt.sign({ userID: user.userID }, mysecretKey);
+   //5- return signed token with userID
+   return { userID: user.userID, token };
+};
+
+//get user by username
+const getUserByUsername = async (username) => {
+   return (user = await db.getUserByUsername(username));
+};
+
 module.exports = {
    createUser,
    getAllUsers,
+   loginUser,
 };

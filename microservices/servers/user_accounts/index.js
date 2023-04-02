@@ -30,6 +30,20 @@ app.post("/createUser", async (req, res) => {
    res.json(newUser);
 });
 
+// authenticate and login a user
+app.post("/login", async (req, res) => {
+   //desctructure username and password from req.body
+   const { username, password } = req.body;
+   //get login reponse from user service
+   const loginRepsonse = await userService.loginUser(username, password);
+   // send back login success (userid, token) or fail
+   if (loginRepsonse) {
+      res.json(loginRepsonse);
+   } else {
+      res.status(400).json(loginRepsonse);
+   }
+});
+
 app.listen(
    userAccountsPORT,
    console.log("user accounts microservice running on port  ", userAccountsPORT)

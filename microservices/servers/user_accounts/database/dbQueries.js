@@ -31,6 +31,7 @@ const getAllUsers = async (req, res) => {
    }
 };
 
+//create a user in db
 const createUser = async (username, password, firstName, lastName) => {
    try {
       const queryString =
@@ -43,14 +44,24 @@ const createUser = async (username, password, firstName, lastName) => {
    }
 };
 
-const getUserID = async (username) => {
+// get user by their username
+const getUserByUsername = async (username) => {
    try {
-      const queryString = "SELECT user_id FROM users WHERE username = $1";
+      const queryString = "SELECT * FROM users WHERE username = $1";
       const queryParameters = [username];
       const result = await pool.query(queryString, queryParameters);
-      return result.rows[0].user_id;
+      const camelCaseResult = result.rows.map((user) => {
+         return {
+            userID: user.user_id,
+            username: user.username,
+            password: user.password,
+            fistName: user.first_name,
+            lastName: user.last_name,
+         };
+      });
+      return camelCaseResult[0];
    } catch (error) {
-      console.log("error in getting user id", error);
+      console.log("error in getting user", error);
       throw error;
    }
 };
@@ -58,5 +69,5 @@ const getUserID = async (username) => {
 module.exports = {
    getAllUsers,
    createUser,
-   getUserID,
+   getUserByUsername,
 };
