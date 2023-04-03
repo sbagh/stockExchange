@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import LandingPage from "./components/LandingPage";
 import UserPortfolio from "./components/UserPortfolio";
 import StockOrdering from "./components/StockOrdering";
 import SelectUser from "./components/SelectUser";
@@ -7,6 +8,9 @@ import StockData from "./components/StockData";
 import UserStockOrders from "./components/UserStockOrders";
 
 const App = () => {
+   // state for seeing if user is signed in or not
+   const [loggedIn, setLoggedIn] = useState(false);
+
    // state for redering all users from the db user_accounts table users
    const [users, setUsers] = useState([]);
 
@@ -30,41 +34,48 @@ const App = () => {
    //     useState(true);
 
    return (
-      <div>
-         <SelectUser users={users} setUsers={setUsers} setUser={setUser} />
-
-         <div className="main-container">
-            {user.userID && (
-               <UserPortfolio
-                  className="user-portfolio"
-                  user={user}
-                  userCashHoldings={userCashHoldings}
-                  setUserCashHoldings={setUserCashHoldings}
-                  userStockHoldings={userStockHoldings}
-                  setUserStockHoldings={setUserStockHoldings}
+      <div className="App">
+         {loggedIn ? (
+            <div className="main-container">
+               <SelectUser
+                  users={users}
+                  setUsers={setUsers}
+                  setUser={setUser}
                />
-            )}
-            <StockOrdering className="stock-market" user={user} />
-            {user.userID && (
-               <UserStockOrders
-                  userID={user.userID}
-                  userOrderHistory={userOrderHistory}
-                  setUserOrderHistory={setUserOrderHistory}
+               {user.userID && (
+                  <UserPortfolio
+                     className="user-portfolio"
+                     user={user}
+                     userCashHoldings={userCashHoldings}
+                     setUserCashHoldings={setUserCashHoldings}
+                     userStockHoldings={userStockHoldings}
+                     setUserStockHoldings={setUserStockHoldings}
+                  />
+               )}
+               <StockOrdering className="stock-market" user={user} />
+               {user.userID && (
+                  <UserStockOrders
+                     userID={user.userID}
+                     userOrderHistory={userOrderHistory}
+                     setUserOrderHistory={setUserOrderHistory}
+                  />
+               )}
+               <StockData
+                  stockData={stockData}
+                  stockDataIsLoading={stockDataIsLoading}
+                  setStockData={setStockData}
+                  setStockDataIsLoading={setStockDataIsLoading}
                />
-            )}
-            <StockData
-               stockData={stockData}
-               stockDataIsLoading={stockDataIsLoading}
-               setStockData={setStockData}
-               setStockDataIsLoading={setStockDataIsLoading}
-            />
-            {/* <TradeHistory
-               tradeHistoryData={tradeHistoryData}
-               setTradeHistoryData={setTradeHistoryData}
-               tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
-               setTradeHistoryDataIsLoading={setTradeHistoryDataIsLoading}
-            /> */}
-         </div>
+               {/* <TradeHistory
+                     tradeHistoryData={tradeHistoryData}
+                     setTradeHistoryData={setTradeHistoryData}
+                     tradeHistoryDataIsLoading={tradeHistoryDataIsLoading}
+                     setTradeHistoryDataIsLoading={setTradeHistoryDataIsLoading}
+                     /> */}
+            </div>
+         ) : (
+            <LandingPage setLoggedIn={setLoggedIn} />
+         )}
       </div>
    );
 };
