@@ -3,7 +3,8 @@
 Stock exchange full-stack app.
 
 ### Tech stack in local build:
-Local Build:  Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
+Local Build:  Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io.
+
 Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, CodeCommit + local build
 
 ### Running the project locally
