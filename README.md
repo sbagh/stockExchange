@@ -5,6 +5,7 @@ Stock exchange full-stack app.
 ### Tech stack in local build:
 
 Local Build: Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io.
+
 Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, CodeCommit + local build
 
 ### Running the project locally
@@ -22,7 +23,7 @@ Functional Requirements:
 -  Switch between users and view each user's portfolio and trade history
 -  See the latest stock prices
 -  Set buy and sell orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
--  See the order status of a trade (Pending, Open, Closed, Canceled) and cancel 'Open' trade orders
+-  See the order status of a trade (Pending, Open, Filled, Canceled) and cancel 'Open' trade orders
 
 Infrastructure and non functional reqiurements:
 
@@ -30,7 +31,7 @@ Infrastructure and non functional reqiurements:
 -  Refactored application from a monolith to a microservices architecture
 -  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
 -  Implemented communication between microservices through RabbitMQ using the AMQP protocol
--  Implemented websockets using socket.io to provide real-time updates to the browser, including stock prices, order status, and user portfolio updates
+-  Implemented websockets using socket.io to provide real-time updates to the browser
 
 ### Next steps:
 
