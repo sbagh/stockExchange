@@ -20,10 +20,8 @@ app.get("/getAllUsers", async (req, res) => {
 app.post("/login", async (req, res) => {
    //desctructure username and password from req.body
    const { username, password } = req.body;
-   console.log(username, password);
    //get login reponse from user service
    const loginRepsonse = await userService.loginUser(username, password);
-   console.log(loginRepsonse);
    // send back login success (userid, token) or fail
    if (loginRepsonse) {
       res.json(loginRepsonse);

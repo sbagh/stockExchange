@@ -42,7 +42,9 @@ const SignupForm = ({ setLoggedIn }) => {
          localStorage.setItem("token", token);
          localStorage.setItem("userID", userID);
       } catch (error) {
-         console.log("error in sending userCredentials to backend in signup");
+         console.log(
+            "error in sending userCredentials to backend during signup"
+         );
          throw error;
       }
    };

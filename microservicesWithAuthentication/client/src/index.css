@@ -1,149 +1,114 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,500&display=swap");
 
+/* General */
+
+body {
+   margin: 0;
+   padding: 0;
+   font-family: "Open Sans", sans-serif;
+   font-size: 16px;
+   line-height: 1.5;
+   color: #333;
+   background-color: #f5f5f5;
+}
+
 /* LandingPage */
 
 .Landing-page {
    height: 100vh;
-   background-image: url(./assets/images/moneyFish2.png);
-   background-size: cover;
-   background-position: center;
-
    display: flex;
    justify-content: center;
    align-items: center;
    flex-direction: column;
-
-   font-family: "Open Sans", sans-serif;
+   background: url(./assets/images/moneyFish2.png) no-repeat center/cover;
 }
 
 .Landing-page-title {
-   font-size: 32px;
+   font-size: 2.5rem;
    font-weight: 400;
-   color: #000000;
-   font-style: normal;
    text-align: center;
-   line-height: 32px;
-   height: 82px;
-   left: 633px;
-   top: 144px;
+   line-height: 1.2;
+   margin: 0;
+   padding: 0;
+   color: #fff;
+   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
 }
 
 .login-signup-message {
-   color: black;
+   font-size: 1rem;
    text-align: center;
-   margin-bottom: 1rem;
-   font-size: 18px;
+   margin: 1rem 0;
+   color: #333;
 }
 
 .Form-toggle-button {
-   color: black;
+   font-size: 1rem;
+   color: #333;
    background: none;
    border: none;
    cursor: pointer;
    text-decoration: underline;
-   font-size: 18px;
 }
 
 /* LoginForm */
 
-.login-form {
-   width: 30rem;
-   background-color: transparent;
-   border-radius: 0.5rem;
-   padding: 1rem;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-}
-
-.login-form form {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   width: 70%;
-}
-
-.login-form label {
-   margin-bottom: 0.5rem;
-   font-size: 18px;
-}
-
-.login-form input {
-   width: 100%;
-   padding: 0.35rem;
-   font-size: 1.2rem;
-   border-radius: 10px;
-   border: 1px solid #515151;
-   margin-top: 0.5rem;
-   margin-bottom: 0.5rem;
-   font-family: "Open Sans";
-   padding-left: 10px;
-}
-
-.login-form button {
-   font-family: "Open Sans";
-   font-style: normal;
-   font-weight: 400;
-   font-size: 26px;
-   line-height: 35px;
-   text-align: right;
-   width: 100%;
-   background-color: transparent;
-   color: black;
-   font-size: 1.2rem;
-   border: none;
-   cursor: pointer;
-}
-
-/* Singup Form */
-
+.login-form,
 .signup-form {
-   width: 30rem;
-   background-color: transparent;
-   border-radius: 0.5rem;
+   width: 20rem;
+   margin: 1rem auto;
    padding: 1rem;
    display: flex;
    flex-direction: column;
    align-items: center;
 }
 
-.signup-form form {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   width: 70%;
-}
-
+.login-form label,
 .signup-form label {
+   font-size: 1.2rem;
    margin-bottom: 0.5rem;
-   font-size: 18px;
+   color: #333;
 }
 
+.login-form input,
 .signup-form input {
    width: 100%;
-   padding: 0.35rem;
+   padding: 0.5rem;
    font-size: 1.2rem;
    border-radius: 10px;
    border: 1px solid #515151;
-   margin-top: 0.5rem;
-   margin-bottom: 0.5rem;
+   height: 1.3rem;
+   margin-top: 0.3rem;
+   margin-bottom: 1rem;
    font-family: "Open Sans";
-   padding-left: 10px;
+   transition: border-color 0.3s ease-in-out;
 }
 
+.login-form input:focus,
+.signup-form input:focus {
+   outline: none;
+   border-color: #333;
+}
+
+.login-form button,
 .signup-form button {
-   font-family: "Open Sans";
-   font-style: normal;
-   font-weight: 400;
-   font-size: 26px;
-   line-height: 35px;
-   text-align: right;
-   width: 100%;
-   background-color: transparent;
-   color: black;
+   display: block;
+   margin: 0 auto;
    font-size: 1.2rem;
+   font-weight: 400;
+   text-align: center;
+   width: 100%;
+   padding: 0.5rem;
+   background-color: #333;
+   color: #fff;
    border: none;
+   border-radius: 10px;
    cursor: pointer;
+   transition: background-color 0.3s ease-in-out;
+}
+
+.login-form button:hover,
+.signup-form button:hover {
+   background-color: #565555;
 }
 
 /* Application page */
