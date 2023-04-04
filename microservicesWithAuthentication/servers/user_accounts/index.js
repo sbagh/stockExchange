@@ -17,9 +17,10 @@ app.get("/getAllUsers", async (req, res) => {
 });
 
 // create a user
-app.post("/createUser", async (req, res) => {
+app.post("/signup", async (req, res) => {
    // destructure username and password from req.body
    const { username, password, firstName, lastName } = req.body;
+   console.log(username, password, firstName, lastName);
    // create user using UserService
    const newUser = await userService.createUser(
       username,

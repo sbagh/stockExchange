@@ -95,6 +95,57 @@
    cursor: pointer;
 }
 
+/* Singup Form */
+
+.signup-form {
+   width: 30rem;
+   background-color: transparent;
+   border-radius: 0.5rem;
+   padding: 1rem;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.signup-form form {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 70%;
+}
+
+.signup-form label {
+   margin-bottom: 0.5rem;
+   font-size: 18px;
+}
+
+.signup-form input {
+   width: 100%;
+   padding: 0.35rem;
+   font-size: 1.2rem;
+   border-radius: 10px;
+   border: 1px solid #515151;
+   margin-top: 0.5rem;
+   margin-bottom: 0.5rem;
+   font-family: "Open Sans";
+   padding-left: 10px;
+}
+
+.signup-form button {
+   font-family: "Open Sans";
+   font-style: normal;
+   font-weight: 400;
+   font-size: 26px;
+   line-height: 35px;
+   text-align: right;
+   width: 100%;
+   background-color: transparent;
+   color: black;
+   font-size: 1.2rem;
+   border: none;
+   cursor: pointer;
+}
+
 /* Application page */
 
 .main-container {
