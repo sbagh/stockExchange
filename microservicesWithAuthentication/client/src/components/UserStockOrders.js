@@ -1,35 +1,47 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
 
 const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
-   //use effect to fetch the specific user's stock orders
+   // store websocket connection in a state
+   const [socket, setSocket] = useState(null);
 
+   //use effect to fetch the specific user's stock orders
    useEffect(() => {
-      // setup websocket
-      let socket = null;
-      if (!socket) {
-         socket = io.connect(stockOrderingURL, {
-            origin: "http://localhost:3000",
-            transports: ["websocket"],
-         });
-      }
-      //get user's stock orders
+      // 1- setup websocket
+      const setupSocket = () => {
+         if (!socket) {
+            setSocket(
+               io.connect(stockOrderingURL, {
+                  origin: "http://localhost:3000",
+                  transports: ["websocket"],
+               })
+            );
+         }
+      };
+
+      //2- get user's stock orders
       const getUserOrders = async () => {
          // emit current userID to back end
          await socket.emit("currentUserID", userID);
-         // remove the event listener before adding it again
-         socket.off("userOrderHistory");
          // get user's order history from back end
          await socket.on("userOrderHistory", (userOrderHistory) => {
-            console.log(userOrderHistory);
+            console.log("user stock order's:", userOrderHistory);
             setUserOrderHistory(userOrderHistory);
          });
       };
+      setupSocket();
       getUserOrders();
-   }, [userID, setUserOrderHistory]);
+
+      //3- cleanup socket connection on unmount
+      return () => {
+         if (socket) {
+            socket.off("userOrderHistory");
+         }
+      };
+   }, [socket, userID, setUserOrderHistory]);
 
    // Send a cancel order PUT request to server.js
    const cancelOrder = async (orderID, orderType, orderStatus, userID) => {
