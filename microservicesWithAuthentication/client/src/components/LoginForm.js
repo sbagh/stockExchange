@@ -10,7 +10,7 @@ const LoginForm = ({ setLoggedIn }) => {
       username: "",
       password: "",
    });
-   const [feedbackMessage, setFeedbackMessage] = useState("");
+   const [loginFeedbackMessage, setLoginFeedbackMessage] = useState("");
 
    // handle change in form and save changes to userCredentials
    const handleChange = (event) => {
@@ -21,7 +21,7 @@ const LoginForm = ({ setLoggedIn }) => {
    //handle submit to send credentials to back end, and receive JWT and feedback message
    const handleSubmit = (event) => {
       event.preventDefault();
-      console.log(userCredentials);
+      // console.log(userCredentials);
       startLogin(userCredentials);
    };
 
@@ -33,6 +33,8 @@ const LoginForm = ({ setLoggedIn }) => {
             `${userAccoutnsURL}/login`,
             userCredentials
          );
+         //set feedback message
+         setLoginFeedbackMessage("signing in...");
          // get the userID and JWT token returned from the back-end
          const { userID, token } = response.data;
          // save the token and UserID in the local storage
@@ -71,6 +73,7 @@ const LoginForm = ({ setLoggedIn }) => {
                Log in
             </button>
          </form>
+         <p>{loginFeedbackMessage}</p>
       </div>
    );
 };

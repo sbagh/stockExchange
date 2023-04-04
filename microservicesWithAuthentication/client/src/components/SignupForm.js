@@ -12,6 +12,8 @@ const SignupForm = ({ setLoggedIn }) => {
       lastName: "",
    });
 
+   const [signUpFeedback, setSignUpFeedback] = useState("");
+
    //handle change in form when user inputs username and password
    const handleChange = (event) => {
       const { name, value } = event.target;
@@ -33,6 +35,7 @@ const SignupForm = ({ setLoggedIn }) => {
             `${userAccountsURL}/signup`,
             userCredentials
          );
+         setSignUpFeedback("congratulations, your are now signed up!");
          //get userID and JWT token from respone sent from back-end
          const { userID, token } = response.data;
          // store userID and token in browser local storage
@@ -82,7 +85,8 @@ const SignupForm = ({ setLoggedIn }) => {
                onChange={handleChange}
             />
          </label>
-         <button onClick={handleSubmit}>Sign Up!</button>
+         <button onClick={handleSubmit}>Sign Up</button>
+         <pr>{signUpFeedback}</pr>
       </div>
    );
 };
