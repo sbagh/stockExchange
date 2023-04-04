@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 // URL to user accounts micorservice, index.js
 const userAccountsURL = "http://localhost:4000";
 
-const SelectUser = ({ users, setUsers, setUser }) => {
+const SelectUser = ({ users, setUsers, setUser, setLoggedIn }) => {
    // useEffect to fetch all the users from the db:user_accounts, table:users
    // returned is an array of objects in this form: [{user_id:1, first_name: "jon", last_name: "smith"}]
 
@@ -34,6 +34,11 @@ const SelectUser = ({ users, setUsers, setUser }) => {
       setUser(selectedUser);
    };
 
+   const logOut = (e) => {
+      localStorage.removeItem("token");
+      setLoggedIn(false);
+   };
+
    return (
       <div className="select-user">
          <label>Select user:</label>
@@ -45,6 +50,7 @@ const SelectUser = ({ users, setUsers, setUser }) => {
                </option>
             ))}
          </select>
+         <button onClick={logOut}>Log Out</button>
       </div>
    );
 };

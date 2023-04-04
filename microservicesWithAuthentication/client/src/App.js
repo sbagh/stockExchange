@@ -41,6 +41,7 @@ const App = () => {
                   users={users}
                   setUsers={setUsers}
                   setUser={setUser}
+                  setLoggedIn={setLoggedIn}
                />
                {user.userID && (
                   <UserPortfolio
