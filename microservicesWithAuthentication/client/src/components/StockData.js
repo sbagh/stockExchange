@@ -1,17 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
 // stock data url
 const stockDataURL = "http://localhost:4002";
-
-// setup websocket connectoin
-let socket = null;
-if (!socket) {
-   socket = io.connect(stockDataURL, {
-      origin: "http://localhost:3000",
-      transports: ["websocket"],
-   });
-}
 
 const StockPrices = ({
    stockData,
@@ -19,20 +10,43 @@ const StockPrices = ({
    stockDataIsLoading,
    setStockDataIsLoading,
 }) => {
+   //state to hold socket connection
+   const [socket, setSocket] = useState(null);
+
    // useEfect to get stock data
    useEffect(() => {
-      const getStockData = async () => {
-         // // listen to stockData event from backend
-         await socket.on("stockData", (data) => {
-            console.log("stock data: ", data);
-            setStockData(data);
-            setStockDataIsLoading(false);
-         });
-         // // remove the event listener before adding it again
-         // socket.off("stockData");
+      // 1- setup websocket connectoin
+      const setupSocket = () => {
+         if (!socket) {
+            setSocket(
+               io.connect(stockDataURL, {
+                  origin: "http://localhost:3000",
+                  transports: ["websocket"],
+               })
+            );
+         }
       };
+      // 2- get stock data
+      const getStockData = async () => {
+         if (socket) {
+            // // listen to stockData event from backend
+            socket.on("stockData", (data) => {
+               console.log("stock data: ", data);
+               setStockData(data);
+               setStockDataIsLoading(false);
+            });
+         }
+      };
+      setupSocket();
       getStockData();
-   }, [setStockData, setStockDataIsLoading]);
+
+      //3- cleanup socket connection on unmount
+      return () => {
+         if (socket) {
+            socket.off("stockData");
+         }
+      };
+   }, [socket, setStockData, setStockDataIsLoading]);
 
    return (
       <div className="stock-prices">
@@ -51,9 +65,9 @@ const StockPrices = ({
                <tbody className="tb">
                   {stockData.map((stock) => (
                      <tr key={stock.ticker}>
-                        <th>{stock.ticker}</th>
-                        <th>{stock.price}</th>
-                        <th>{stock.lastUpdate}</th>
+                        <td>{stock.ticker}</td>
+                        <td>{stock.price}</td>
+                        <td>{stock.lastUpdate}</td>
                      </tr>
                   ))}
                </tbody>

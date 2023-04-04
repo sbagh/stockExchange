@@ -4,18 +4,19 @@ import io from "socket.io-client";
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
 
-// setup websocket
-let socket = null;
-if (!socket) {
-   socket = io.connect(stockOrderingURL, {
-      origin: "http://localhost:3000",
-      transports: ["websocket"],
-   });
-}
-
 const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
    //use effect to fetch the specific user's stock orders
+
    useEffect(() => {
+      // setup websocket
+      let socket = null;
+      if (!socket) {
+         socket = io.connect(stockOrderingURL, {
+            origin: "http://localhost:3000",
+            transports: ["websocket"],
+         });
+      }
+      //get user's stock orders
       const getUserOrders = async () => {
          // emit current userID to back end
          await socket.emit("currentUserID", userID);

@@ -91,8 +91,6 @@ body {
 
 .login-form button,
 .signup-form button {
-   display: block;
-   margin: 0 auto;
    font-size: 1.2rem;
    font-weight: 400;
    text-align: center;
@@ -113,68 +111,111 @@ body {
 
 /* Application page */
 
-.main-container {
+body {
    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+   margin: 0;
+}
+
+.main-container {
    display: flex;
    flex-wrap: wrap;
 }
 
 /* Styles for the Select User component */
+
 .select-user {
-   font-family: "Open Sans";
    flex-basis: 40%;
    padding: 20px;
    border-radius: 10px;
    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-   margin-right: 10px;
+   margin-right: 20px;
+   margin-bottom: 20px;
 }
 
 /* Styles for the user portfolio component */
+
 .user-portfolio {
    flex-basis: 40%;
    padding: 20px;
    border-radius: 10px;
    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-   margin-right: 10px;
+   margin-right: 20px;
+   margin-bottom: 20px;
 }
 
 /* Styles for the stock market component */
+
 .stock-market {
    flex-basis: 40%;
    padding: 20px;
    border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-bottom: 20px;
 }
 
 /* Styles for the stock prices component */
+
 .stock-prices {
-   flex-basis: 100%;
-   margin-top: 10px;
    border-radius: 10px;
    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
    padding: 20px;
+   margin-bottom: 20px;
 }
 
 /* Styles for the table inside the stock prices component */
+
 .stock-prices table {
    width: 100%;
    border-collapse: collapse;
+   min-width: 50rem;
 }
 
 /* Styles for the table headers inside the trade history component */
+
 .stock-prices th {
    text-align: left;
    padding: 10px;
    background-color: #f2f2f2;
+   font-weight: bold;
 }
 
 /* Styles for the table cells inside the trade history component */
+
 .stock-prices td {
    padding: 10px;
+   font-size: 15px;
 }
 
 .stock-prices tbody th {
    font-size: 15px;
-   font-weight: 400;
+   font-weight: bold;
+}
+
+/* Styles for the table cells inside the userStockOrders component */
+
+.userStockOrdersTable {
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+   margin-bottom: 20px;
+}
+
+.userStockOrdersTable table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.userStockOrdersTable th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+   font-weight: bold;
+}
+
+.userStockOrdersTable td {
+   padding: 10px;
+   font-size: 15px;
+   background-color: #f2f2f2;
 }
 
 /* Styles for the trade history component */
@@ -207,32 +248,4 @@ body {
 .trade-history tbody th {
    font-size: 15px;
    font-weight: 400;
-}
-
-/* Styles for the table cells inside the userStockOrders component */
-
-.userStockOrdersTable {
-   flex-basis: 100%;
-   margin-top: 10px;
-   border-radius: 10px;
-   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-   padding: 20px;
-}
-
-.userStockOrdersTable table {
-   width: 100%;
-   border-collapse: collapse;
-}
-
-.userStockOrdersTable th {
-   text-align: left;
-   padding: 10px;
-   background-color: #f2f2f2;
-}
-
-.userStockOrdersTable td {
-   padding: 10px;
-   font-size: 15px;
-   font-weight: 400;
-   background-color: #f2f2f2;
 }
