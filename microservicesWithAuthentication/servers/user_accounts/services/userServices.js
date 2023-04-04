@@ -14,12 +14,13 @@ const loginUser = async (username, password) => {
    const user = await getUserByUsername(username);
    // console.log(user);
    //2- validate if user exists
-   if (!user) return { success: fail, message: "Invalid username of password" };
+   if (!user)
+      return { success: false, message: "Invalid username of password" };
    //3- validate password
    const isPasswordValid = await argon2.verify(user.password, password);
    // console.log(passwordValid);
    if (!isPasswordValid)
-      return { success: fail, message: "Invalid username of password" };
+      return { success: false, message: "Invalid username of password" };
    //4- create token
    const token = await jwt.sign({ userID: user.userID }, mysecretKey);
    //5- return signed token with userID

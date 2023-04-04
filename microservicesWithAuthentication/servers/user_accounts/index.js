@@ -23,6 +23,7 @@ app.post("/login", async (req, res) => {
    console.log(username, password);
    //get login reponse from user service
    const loginRepsonse = await userService.loginUser(username, password);
+   console.log(loginRepsonse);
    // send back login success (userid, token) or fail
    if (loginRepsonse) {
       res.json(loginRepsonse);
@@ -45,7 +46,6 @@ app.post("/signup", async (req, res) => {
    );
    res.json(newUser);
 });
-
 
 app.listen(
    userAccountsPORT,

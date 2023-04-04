@@ -33,15 +33,21 @@ const LoginForm = ({ setLoggedIn }) => {
             `${userAccoutnsURL}/login`,
             userCredentials
          );
-         //set feedback message
-         setLoginFeedbackMessage("signing in...");
-         // get the userID and JWT token returned from the back-end
-         const { userID, token } = response.data;
-         // save the token and UserID in the local storage
-         localStorage.setItem("token", token);
-         localStorage.setItem("userID", userID);
-         // set loggedIn state to true in App.js
-         setLoggedIn(true);
+         console.log(response);
+
+         if (!response.data.success) {
+            setLoginFeedbackMessage(response.data.message);
+         } else {
+            //set feedback message
+            setLoginFeedbackMessage("signing in...");
+            // get the userID and JWT token returned from the back-end
+            const { userID, token } = response.data;
+            // save the token and UserID in the local storage
+            localStorage.setItem("token", token);
+            localStorage.setItem("userID", userID);
+            // set loggedIn state to true in App.js
+            setLoggedIn(true);
+         }
       } catch (error) {
          console.log("error in sending login credentials to backend");
          throw error;
