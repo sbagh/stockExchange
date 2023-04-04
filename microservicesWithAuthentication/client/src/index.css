@@ -3,7 +3,7 @@
 .Landing-page {
    background-image: url(./assets/images/moneyFish2.png);
    background-repeat: no-repeat;
-   background-size: contain;
+   background-size: cover;
    background-position: center;
    height: 100vh;
    display: flex;

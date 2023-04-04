@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 const stockOrderingURL = "http://localhost:4003";
 
 const StockOrdering = ({ user }) => {
-   //state about order details when buying/selling a stock
+   //state for setting order details when buying/selling a stock
    const [orderDetails, setOrderDetails] = useState({
       orderID: "",
       userID: "",
