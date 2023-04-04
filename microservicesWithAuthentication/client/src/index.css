@@ -1,5 +1,153 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,500&display=swap");
 
+/* LandingPage */
+
+.Landing-page {
+   height: 100vh;
+   background-image: url(./assets/images/moneyFish2.png);
+   background-size: cover;
+   background-position: center;
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+
+   font-family: "Open Sans", sans-serif;
+}
+
+.Landing-page-title {
+   font-size: 32px;
+   font-weight: 400;
+   color: #000000;
+   font-style: normal;
+   text-align: center;
+   line-height: 32px;
+   height: 82px;
+   left: 633px;
+   top: 144px;
+}
+
+.login-signup-message {
+   color: black;
+   text-align: center;
+   margin-bottom: 1rem;
+   font-size: 18px;
+}
+
+.Form-toggle-button {
+   color: black;
+   background: none;
+   border: none;
+   cursor: pointer;
+   text-decoration: underline;
+   font-size: 18px;
+}
+
+/* LoginForm */
+
+.login-form {
+   width: 30rem;
+   background-color: transparent;
+   border-radius: 0.5rem;
+   padding: 1rem;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.login-form form {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 70%;
+}
+
+.login-form label {
+   margin-bottom: 0.5rem;
+   font-size: 18px;
+}
+
+.login-form input {
+   width: 100%;
+   padding: 0.35rem;
+   font-size: 1.2rem;
+   border-radius: 10px;
+   border: 1px solid #515151;
+   margin-top: 0.5rem;
+   margin-bottom: 0.5rem;
+   font-family: "Open Sans";
+   padding-left: 10px;
+}
+
+.login-form button {
+   font-family: "Open Sans";
+   font-style: normal;
+   font-weight: 400;
+   font-size: 26px;
+   line-height: 35px;
+   text-align: right;
+   width: 100%;
+   background-color: transparent;
+   color: black;
+   font-size: 1.2rem;
+   border: none;
+   cursor: pointer;
+}
+
+/* Singup Form */
+
+.signup-form {
+   width: 30rem;
+   background-color: transparent;
+   border-radius: 0.5rem;
+   padding: 1rem;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.signup-form form {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 70%;
+}
+
+.signup-form label {
+   margin-bottom: 0.5rem;
+   font-size: 18px;
+}
+
+.signup-form input {
+   width: 100%;
+   padding: 0.35rem;
+   font-size: 1.2rem;
+   border-radius: 10px;
+   border: 1px solid #515151;
+   margin-top: 0.5rem;
+   margin-bottom: 0.5rem;
+   font-family: "Open Sans";
+   padding-left: 10px;
+}
+
+.signup-form button {
+   font-family: "Open Sans";
+   font-style: normal;
+   font-weight: 400;
+   font-size: 26px;
+   line-height: 35px;
+   text-align: right;
+   width: 100%;
+   background-color: transparent;
+   color: black;
+   font-size: 1.2rem;
+   border: none;
+   cursor: pointer;
+}
+
+/* Application page */
+
 .main-container {
    font-family: "Open Sans", Arial, Helvetica, sans-serif;
    display: flex;

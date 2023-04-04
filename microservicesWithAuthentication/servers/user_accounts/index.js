@@ -17,9 +17,10 @@ app.get("/getAllUsers", async (req, res) => {
 });
 
 // create a user
-app.post("/createUser", async (req, res) => {
+app.post("/signup", async (req, res) => {
    // destructure username and password from req.body
    const { username, password, firstName, lastName } = req.body;
+   console.log(username, password, firstName, lastName);
    // create user using UserService
    const newUser = await userService.createUser(
       username,
@@ -34,6 +35,7 @@ app.post("/createUser", async (req, res) => {
 app.post("/login", async (req, res) => {
    //desctructure username and password from req.body
    const { username, password } = req.body;
+   console.log(username, password);
    //get login reponse from user service
    const loginRepsonse = await userService.loginUser(username, password);
    // send back login success (userid, token) or fail
