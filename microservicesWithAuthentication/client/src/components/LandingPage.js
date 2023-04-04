@@ -15,7 +15,8 @@ const LandingPage = ({ setLoggedIn }) => {
       <div className="Landing-page">
          <div className="Landing-page-content">
             <div className="Landing-page-title">
-               Stock Exchange & Investments
+               Stock Exchange
+               <br /> & Investments
             </div>
 
             {isLoginForm ? (
