@@ -3,6 +3,28 @@ const jwt = require("jsonwebtoken");
 const db = require("../database/dbQueries.js");
 const { mysecretKey } = require("../config.js");
 
+//get user by username
+const getUserByUsername = async (username) => {
+   return (user = await db.getUserByUsername(username));
+};
+
+// authenticate and login user
+const loginUser = async (username, password) => {
+   //1- retrieve user from db
+   const user = await getUserByUsername(username);
+   // console.log(user);
+   //2- validate if user exists
+   if (!user) return { success: fail, message: "Invalid username of password" };
+   //3- validate password
+   const isPasswordValid = await argon2.verify(user.password, password);
+   // console.log(passwordValid);
+   if (!isPasswordValid)
+      return { success: fail, message: "Invalid username of password" };
+   //4- create token
+   const token = await jwt.sign({ userID: user.userID }, mysecretKey);
+   //5- return signed token with userID
+   return { userID: user.userID, token };
+};
 // create a user
 const createUser = async (username, password, firstName, lastName) => {
    try {
@@ -34,29 +56,6 @@ const getAllUsers = async (req, res) => {
       console.log("error in getting all users", error);
       throw error;
    }
-};
-
-// authenticate and login user
-const loginUser = async (username, password) => {
-   //1- retrieve user from db
-   const user = await getUserByUsername(username);
-   // console.log(user);
-   //2- validate if user exists
-   if (!user) return { success: fail, message: "Invalid username of password" };
-   //3- validate password
-   const passwordValid = await argon2.verify(user.password, password);
-   // console.log(passwordValid);
-   if (!passwordValid)
-      return { success: fail, message: "Invalid username of password" };
-   //4- create token
-   const token = await jwt.sign({ userID: user.userID }, mysecretKey);
-   //5- return signed token with userID
-   return { userID: user.userID, token };
-};
-
-//get user by username
-const getUserByUsername = async (username) => {
-   return (user = await db.getUserByUsername(username));
 };
 
 module.exports = {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
@@ -10,6 +10,18 @@ const LandingPage = ({ setLoggedIn }) => {
    const handleFormToggle = () => {
       setIsLoginForm(!isLoginForm);
    };
+
+   //check if a JWT exists for user, that way they will not login again
+   useEffect(() => {
+      const checkJWT = async () => {
+         // get token from local storage (originally stored using LoginForm or SignupForm)
+         const token = await localStorage.getItem("token");
+         if (token) {
+            setLoggedIn(true);
+         }
+      };
+      checkJWT();
+   }, [setLoggedIn]);
 
    return (
       <div className="Landing-page">

@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = require("socket.io")(server);
 
 // require db connection and queries:
-const service = require("./database/dbQueries");
+const db = require("./database/dbQueries");
 
 // require functions to send and receive messages using amqp/rabbitMQ
 const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
@@ -17,7 +17,7 @@ app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
-// stock data microservice PORT
+// stock data microdb PORT
 const stockDataPORT = 4002;
 
 // Queues and Exchange names used
@@ -33,11 +33,12 @@ io.on("connection", async (socket) => {
 
 const emitStockData = async (socket) => {
    // get stock data from db
-   const stockData = await service.getStockData();
+   const stockData = await db.getStockData();
+   console.log(stockData);
    socket.emit("stockData", stockData);
 };
 
-// receive matched orders from order matching microservice using rabbitMQ
+// receive matched orders from order matching microdb using rabbitMQ
 const receiveMatchedOrder = async (io) => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
@@ -47,7 +48,7 @@ const receiveMatchedOrder = async (io) => {
 };
 // callback function used to update stock data and send to ui
 const updateStockData = async (io, matchedOrder) => {
-   service.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
+   db.updateStockDataAfterMatch(matchedOrder.price, matchedOrder.ticker);
    // console.log(
    //    `matched order received from ${matchedOrdersQueue} queue, order: `,
    //    matchedOrder
@@ -58,5 +59,5 @@ receiveMatchedOrder(io);
 
 server.listen(
    stockDataPORT,
-   console.log("stock data microservice running on port  ", stockDataPORT)
+   console.log("stock data microdb running on port  ", stockDataPORT)
 );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import io from "socket.io-client";
 
 // stock data url
@@ -24,7 +24,7 @@ const StockPrices = ({
       const getStockData = async () => {
          // // listen to stockData event from backend
          await socket.on("stockData", (data) => {
-            // console.log('stock data: ',data);
+            console.log("stock data: ", data);
             setStockData(data);
             setStockDataIsLoading(false);
          });
