@@ -34,7 +34,7 @@ io.on("connection", async (socket) => {
 const emitStockData = async (socket) => {
    // get stock data from db
    const stockData = await db.getStockData();
-   console.log(stockData);
+   // console.log(stockData);
    socket.emit("stockData", stockData);
 };
 

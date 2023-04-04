@@ -4,7 +4,7 @@ Stock exchange full-stack app.
 
 ### Tech stack in local build:
 
-Local Build: Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io.
+Local Build: Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
 
 Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, CodeCommit + local build
 
@@ -32,6 +32,7 @@ Infrastructure and non functional reqiurements:
 -  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
 -  Implemented communication between microservices through RabbitMQ using the AMQP protocol
 -  Implemented websockets using socket.io to provide real-time updates to the browser
+-  Implemented a user signup and login authentication system using a JWT, libraries used are jsonwebtoken for sgining, argon2 for hashing and verifying passwords, and crypto for secret key generatoin
 
 ### Next steps:
 
@@ -42,8 +43,7 @@ Infrastructure and non functional reqiurements:
    -  SQS and SNS for messaging between microservices, replacing RabbitMQ in the local build
    -  API gateway as a layer between S3 and lambdas
    -  Replacing rabbitMQ in the local build with Amazon SNS and SQS:
--  Currently implementing an improved user account system to create, login, and authenticate users using a JWT
--  Implementing sound solution architecture principles for performance, security and reliability, not limited to caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
+-  Implementing caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
 -  Simulating a high load of trade orders to test and improve the systems capabilities
 -  Build next features
 
