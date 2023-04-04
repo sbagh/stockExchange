@@ -4,15 +4,6 @@ import io from "socket.io-client";
 // user portfolio microservice url
 const userPortfolioURL = "http://localhost:4001";
 
-//connect to websocket
-let socket = null;
-if (!socket) {
-   socket = io.connect(userPortfolioURL, {
-      origin: "http://localhost:3000",
-      transports: ["websocket"],
-   });
-}
-
 const UserPortfolio = ({
    userCashHoldings,
    setUserCashHoldings,
@@ -20,21 +11,43 @@ const UserPortfolio = ({
    setUserStockHoldings,
    user,
 }) => {
+   const [socket, setSocket] = useState(null);
+
    useEffect(() => {
+      //1- setup websocket
+      const setupSocket = () => {
+         if (!socket) {
+            setSocket(
+               io.connect(userPortfolioURL, {
+                  origin: "http://localhost:3000",
+                  transports: ["websocket"],
+               })
+            );
+         }
+      };
+
+      //2 - get user portfolio
       const getUserPortfolio = async () => {
+         //emit user id
          await socket.emit("currentUserID", user.userID);
-
-         // remove the event listener before adding it again
-         socket.off("userPortfolio");
-
+         // get portfolio
          await socket.on("userPortfolio", (userPortfolio) => {
             console.log("user portfolio: ", userPortfolio);
             setUserCashHoldings(userPortfolio.userCashHoldings);
             setUserStockHoldings(userPortfolio.userStockHoldings);
          });
       };
+
+      setupSocket();
       getUserPortfolio();
-   }, [user.userID, setUserCashHoldings, setUserStockHoldings]);
+
+      //3- cleanup socket connection on unmount
+      return () => {
+         if (socket) {
+            socket.off("userPortfolio");
+         }
+      };
+   }, [socket, user.userID, setUserCashHoldings, setUserStockHoldings]);
 
    // //useEffect to fetch user's cash and stock holdings from cash_holdings and stock_holdings tables
    // useEffect(() => {
