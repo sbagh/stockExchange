@@ -24,7 +24,7 @@ const loginUser = async (username, password) => {
    //4- create token
    const token = await jwt.sign({ userID: user.userID }, mysecretKey);
    //5- return signed token with userID
-   return { userID: user.userID, token };
+   return { userID: user.userID, token, success: true };
 };
 // create a user
 const createUser = async (username, password, firstName, lastName) => {
