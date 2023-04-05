@@ -40,7 +40,7 @@ const StockPrices = ({
       setupSocket();
       getStockData();
 
-      //3- cleanup socket connection on unmount
+      // 3- cleanup socket connection on unmount
       return () => {
          if (socket) {
             socket.off("stockData");
