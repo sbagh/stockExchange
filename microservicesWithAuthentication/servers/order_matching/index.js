@@ -4,7 +4,7 @@ const axios = require("axios");
 const { orderMatchingClass } = require("./classes/orderMatchingClass");
 
 // require db connection and queries:
-const service = require("./database/dbQueries");
+const db = require("./database/dbQueries");
 
 // require functions to send and receive messages using amqp/rabbitMQ
 const { sendToQueue } = require("./rabbitMQ/sendToQueue");
@@ -73,7 +73,7 @@ const matchOrders = async () => {
             let matchedOrder = matchedOrders.shift();
             // console.log("matched order: ", matchedOrder);
             //update matched_orders db after matching a trade
-            service.updateMatchedOrdersTable(matchedOrder);
+            db.updateMatchedOrdersTable(matchedOrder);
             // send matched order to the fanout exchange called matchedOrdersExchange
             await publishFanOutExchange(matchedOrdersExchange, matchedOrder);
          }

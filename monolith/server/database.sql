@@ -36,7 +36,6 @@ CREATE TABLE trade_history (
   matched_time TIMESTAMP NOT NULL
 );
 
-
 CREATE TABLE stock_orders (
     trade_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES user_portfolio(user_id),

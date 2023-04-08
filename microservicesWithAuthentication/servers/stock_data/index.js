@@ -17,7 +17,7 @@ app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
-// stock data microdb PORT
+// stock data microservice PORT
 const stockDataPORT = 4002;
 
 // Queues and Exchange names used
@@ -38,7 +38,7 @@ const emitStockData = async (socket) => {
    socket.emit("stockData", stockData);
 };
 
-// receive matched orders from order matching microdb using rabbitMQ
+// receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrder = async (io) => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
@@ -60,5 +60,5 @@ receiveMatchedOrder(io);
 
 server.listen(
    stockDataPORT,
-   console.log("stock data microdb running on port  ", stockDataPORT)
+   console.log("stock data microservice running on port  ", stockDataPORT)
 );

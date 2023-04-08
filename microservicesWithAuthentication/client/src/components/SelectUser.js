@@ -5,8 +5,6 @@ const userAccountsURL = "http://localhost:4000";
 
 const SelectUser = ({ users, setUsers, setUser, setLoggedIn }) => {
    // useEffect to fetch all the users from the db:user_accounts, table:users
-   // returned is an array of objects in this form: [{user_id:1, first_name: "jon", last_name: "smith"}]
-
    useEffect(() => {
       const fetchUsers = async () => {
          try {

@@ -1,9 +1,6 @@
 //class that matches highest buy order to highest sell order
 
 class orderMatchingClass {
-   //buy and sellOrders are arrays of objects containing trade info such as buyer/seller, qty, price, time, type, status..etc
-   //e.g: buyOrders = [{buyer: {id: 1, name: "user1"}, symbol: "TSLA", quantity: 10, price:100, time: 18:00 EST, type:buy, status:open}]
-
    constructor() {
       (this.buyOrders = []), (this.sellOrders = []), (this.matchedOrders = []);
    }
@@ -49,6 +46,7 @@ class orderMatchingClass {
       return false;
    }
 
+   // match buy and sell orders and add to matchedOrders array
    matchOrders() {
       //first sort buy and sell orders in descending order to get highest value of each, if prices are equal, sort by time (oldest first)
       this.buyOrders.sort((a, b) => {
