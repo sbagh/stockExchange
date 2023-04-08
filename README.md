@@ -20,6 +20,7 @@ Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, CodeCommit 
 
 Functional Requirements:
 
+-  Signup and login to the application
 -  Switch between users and view each user's portfolio and trade history
 -  See the latest stock prices
 -  Set buy and sell orders, which are matched by highest buy to highest sell order and drive the price of a stock similar to a real stock exchange
@@ -30,13 +31,13 @@ Infrastructure and non functional reqiurements:
 -  Migrated data storage from local JSON files to a PostgreSQL database
 -  Refactored application from a monolith to a microservices architecture
 -  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
--  Implemented communication between microservices through RabbitMQ using the AMQP protocol
+-  Implemented communication between microservices using RabbitMQ through the AMQP protocol
 -  Implemented websockets using socket.io to provide real-time updates to the browser
--  Implemented a user signup and login authentication system using a JWT, libraries used are jsonwebtoken for sgining, argon2 for hashing and verifying passwords, and crypto for secret key generatoin
+-  Implemented a user signup and login authentication system using a JWT, libraries used are jsonwebtoken for signing, argon2 for hashing and verifying passwords, and crypto for secret key generation
 
 ### Next steps:
 
--  Currently Hosting serverlessly on AWS using:
+-  Currently attempting to host serverlessly on AWS using:
    -  S3 for hosting the react app
    -  Lambda for back-end files
    -  RDS (postgreSQL) for data storage
