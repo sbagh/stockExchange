@@ -57,7 +57,7 @@ app.post("/startTradeOrder", async (req, res) => {
    // set order_status to open
    orderDetails.orderStatus = "Open";
    // add trade order to stock_orders db
-   db.addStockOrder(orderDetails);
+   await db.addStockOrder(orderDetails);
    // send order to stockOrdersQueue, which will send to order matching micromicroservice
    await sendToQueue(stockOrdersQueue, orderDetails);
    // get socket from app definition, and emit user order history to UI
