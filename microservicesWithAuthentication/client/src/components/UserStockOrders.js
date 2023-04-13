@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { formatDate } from "../utils/dateUtils";
 import io from "socket.io-client";
 
 // stock ordering microservice URL
@@ -86,7 +87,7 @@ const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
                         <td>{order.ticker}</td>
                         <td>{order.quantity}</td>
                         <td>{order.price}</td>
-                        <td>{order.orderTime}</td>
+                        <td>{formatDate(order.orderTime)}</td>
                         <td>{order.orderStatus}</td>
                         <td>
                            {order.orderStatus === "Open" && (

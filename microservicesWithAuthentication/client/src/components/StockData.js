@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { formatDate } from "../utils/dateUtils";
+
 import io from "socket.io-client";
 
 // stock data url
@@ -67,7 +69,7 @@ const StockPrices = ({
                      <tr key={stock.ticker}>
                         <td>{stock.ticker}</td>
                         <td>{stock.price}</td>
-                        <td>{stock.lastUpdate}</td>
+                        <td>{formatDate(stock.lastUpdate)}</td>
                      </tr>
                   ))}
                </tbody>
