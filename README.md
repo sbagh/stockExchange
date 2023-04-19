@@ -2,18 +2,20 @@
 
 Stock exchange full-stack app.
 
+Watch the demo here: https://www.youtube.com/watch?v=fi1zDjc1_h8 
+
 ### Tech stack in local build:
 
 Local Build: Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
 
-Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, CodeCommit + local build
+Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, Docker, ECS + local build
 
 ### Running the project locally
 
 -  Install react and node modules
 -  Start each microservice's index.js and start react
 -  Create DBs locally and add records to user_accounts, user_portfolio, stock_data
--  Current local build uses rabbitMQ, download, install and start it
+-  Local build uses rabbitMQ, download, install and start it
 -  In the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that have a status of "Open".
 
 ### Completed work:
@@ -30,7 +32,7 @@ Infrastructure and non functional reqiurements:
 
 -  Migrated data storage from local JSON files to a PostgreSQL database
 -  Refactored application from a monolith to a microservices architecture
--  Created 5 microservices are: user accounts, user portfolio, stock data, stock ordering, and order matching
+-  Created 5 microservices: user accounts, user portfolio, stock data, stock ordering, and order matching
 -  Implemented communication between microservices using RabbitMQ through the AMQP protocol
 -  Implemented websockets using socket.io to provide real-time updates to the browser
 -  Implemented a user signup and login authentication system using a JWT, libraries used are jsonwebtoken for signing, argon2 for hashing and verifying passwords, and crypto for secret key generation
@@ -43,7 +45,7 @@ Infrastructure and non functional reqiurements:
    -  RDS (postgreSQL) for data storage
    -  SQS and SNS for messaging between microservices, replacing RabbitMQ in the local build
    -  API gateway as a layer between S3 and lambdas
-   -  Replacing rabbitMQ in the local build with Amazon SNS and SQS:
+   -  Replacing rabbitMQ in the local build with Amazon SNS and SQS
 -  Implementing caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
 -  Simulating a high load of trade orders to test and improve the systems capabilities
 -  Build next features
