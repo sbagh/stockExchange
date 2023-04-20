@@ -23,11 +23,12 @@ app.post("/login", async (req, res) => {
    //get login reponse from user service
    const loginRepsonse = await userService.loginUser(username, password);
    // send back login success (userid, token) or fail
-   if (loginRepsonse) {
-      res.json(loginRepsonse);
-   } else {
-      res.status(400).json(loginRepsonse);
-   }
+   // if (loginRepsonse) {
+   //    res.json(loginRepsonse);
+   // } else {
+   //    res.status(400).json(loginRepsonse);
+   // }
+   res.json(loginRepsonse);
 });
 
 // create a user
@@ -36,13 +37,14 @@ app.post("/signup", async (req, res) => {
    const { username, password, firstName, lastName } = req.body;
    console.log(username, password, firstName, lastName);
    // create user using UserService
-   const newUser = await userService.createUser(
+   const signupResponse = await userService.createUser(
       username,
       password,
       firstName,
       lastName
    );
-   res.json(newUser);
+   // response includes {userID, token, success: true, and a message } or success: false and a message
+   res.json(signupResponse);
 });
 
 app.listen(userAccountsPORT, () =>

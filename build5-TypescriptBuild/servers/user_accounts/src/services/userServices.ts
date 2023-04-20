@@ -66,7 +66,6 @@ const createUser = async (
       await db.createUser(username, hashedPassword, firstName, lastName);
       // get userID
       const user = await getUserByUsername(username);
-
       if (!user) {
          return {
             success: false,
@@ -76,8 +75,13 @@ const createUser = async (
       const userID = user.userID;
       // create token
       const token = jwt.sign({ userID }, mysecretKey);
-      // return user and token
-      return { userID, token };
+      // return user, token, and success, message
+      return {
+         userID,
+         token,
+         success: true,
+         message: "sign up successful, now logging in..",
+      };
    } catch (error) {
       console.log("error in createing user at userClass", error);
       throw error;
@@ -89,6 +93,9 @@ const getAllUsers = async () => {
    try {
       // query db for all users
       const users = await db.getAllUsers();
+      if (!users) {
+         return null;
+      }
       // return users
       return users;
    } catch (error) {
