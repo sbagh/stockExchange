@@ -66,6 +66,7 @@ const getUserByUsername = async (username: string): Promise<User | null> => {
          queryString,
          queryParameters
       );
+      //convert result to camel case
       const camelCaseResult = result.rows.map((user) => {
          return {
             userID: user.user_id,

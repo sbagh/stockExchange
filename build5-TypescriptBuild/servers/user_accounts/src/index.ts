@@ -17,32 +17,34 @@ app.get("/getAllUsers", async (req, res) => {
 
 // authenticate and login a user
 app.post("/login", async (req, res) => {
-   //desctructure username and password from req.body
+   //1- desctructure username and password from req.body
    const { username, password } = req.body;
-   //get login reponse from user service
+   //2- get login reponse from user service
    const loginRepsonse = await userService.loginUser(username, password);
-   // send back login success (userid, token) or fail
+   //3- send back login success (userid, token) or fail
+   res.json(loginRepsonse);
+
+   // test if neccessary:
    // if (loginRepsonse) {
    //    res.json(loginRepsonse);
    // } else {
    //    res.status(400).json(loginRepsonse);
    // }
-   res.json(loginRepsonse);
 });
 
 // create a user
 app.post("/signup", async (req, res) => {
-   // destructure username and password from req.body
+   //1- destructure username and password from req.body
    const { username, password, firstName, lastName } = req.body;
    console.log(username, password, firstName, lastName);
-   // create user using UserService
+   //2- create user using UserService
    const signupResponse = await userService.createUser(
       username,
       password,
       firstName,
       lastName
    );
-   // response includes {userID, token, success: true, and a message } or success: false and a message
+   //3- send response: {userID:, token:, success: true, message:"" } or {success: false, message:""}
    res.json(signupResponse);
 });
 

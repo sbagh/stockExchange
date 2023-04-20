@@ -60,11 +60,11 @@ const createUser = async (
    message?: string;
 }> => {
    try {
-      // hash password
+      //1- hash password
       const hashedPassword = await argon2.hash(password);
-      // save user to db
+      //2- save user to db
       await db.createUser(username, hashedPassword, firstName, lastName);
-      // get userID
+      //3- get userID
       const user = await getUserByUsername(username);
       if (!user) {
          return {
@@ -73,9 +73,9 @@ const createUser = async (
          };
       }
       const userID = user.userID;
-      // create token
+      //4- create token
       const token = jwt.sign({ userID }, mysecretKey);
-      // return user, token, and success, message
+      //5- return user, token, and success, message
       return {
          userID,
          token,
@@ -91,12 +91,12 @@ const createUser = async (
 // get all users
 const getAllUsers = async () => {
    try {
-      // query db for all users
+      //1- query db for all users
       const users = await db.getAllUsers();
       if (!users) {
          return null;
       }
-      // return users
+      //2- return users
       return users;
    } catch (error) {
       console.log("error in getting all users", error);
