@@ -1,6 +1,6 @@
-const express = require("express");
-const cors = require("cors");
-const userService = require("./services/userServices.js");
+import express from "express";
+import cors from "cors";
+import * as userService from "./services/userServices.js";
 
 const app = express();
 app.use(cors());
@@ -45,7 +45,6 @@ app.post("/signup", async (req, res) => {
    res.json(newUser);
 });
 
-app.listen(
-   userAccountsPORT,
+app.listen(userAccountsPORT, () =>
    console.log("user accounts microservice running on port  ", userAccountsPORT)
 );
