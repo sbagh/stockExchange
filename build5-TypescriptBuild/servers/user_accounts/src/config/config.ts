@@ -1,4 +1,4 @@
-const crypto = require("crypto");
+import crypto from "crypto";
 
 // generate secret key using randomBytes
 const generateSecretKey = () => {
@@ -7,4 +7,4 @@ const generateSecretKey = () => {
 // generate a secret key and assign to a variable
 const mysecretKey = generateSecretKey();
 
-module.exports = { mysecretKey };
+export { mysecretKey };
