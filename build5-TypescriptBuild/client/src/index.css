@@ -1,0 +1,251 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,500&display=swap");
+
+/* General */
+
+body {
+   margin: 0;
+   padding: 0;
+   font-family: "Open Sans", sans-serif;
+   font-size: 16px;
+   line-height: 1.5;
+   color: #333;
+   background-color: #ffffff;
+}
+
+/* LandingPage */
+
+.Landing-page {
+   height: 100vh;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   background: url(./assets/images/moneyFish2.png) no-repeat center/cover;
+}
+
+.Landing-page-title {
+   font-size: 2.5rem;
+   font-weight: 400;
+   text-align: center;
+   line-height: 1.2;
+   margin: 0;
+   padding: 0;
+   color: #f3f3f3;
+   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.login-signup-message {
+   font-size: 1rem;
+   text-align: center;
+   margin: 1rem 0;
+   color: #333;
+}
+
+.Form-toggle-button {
+   font-size: 1rem;
+   color: #333;
+   background: none;
+   border: none;
+   cursor: pointer;
+   text-decoration: underline;
+}
+
+/* LoginForm */
+
+.login-form,
+.signup-form {
+   width: 20rem;
+   margin: 1rem auto;
+   padding: 1rem;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.login-form label,
+.signup-form label {
+   font-size: 1.2rem;
+   margin-bottom: 0.5rem;
+   color: #333;
+}
+
+.login-form input,
+.signup-form input {
+   width: 100%;
+   padding: 0.5rem;
+   font-size: 1.2rem;
+   border-radius: 10px;
+   border: 1px solid #515151;
+   height: 1.3rem;
+   margin-top: 0.3rem;
+   margin-bottom: 1rem;
+   font-family: "Open Sans";
+   transition: border-color 0.3s ease-in-out;
+}
+
+.login-form input:focus,
+.signup-form input:focus {
+   outline: none;
+   border-color: #333;
+}
+
+.login-form button,
+.signup-form button {
+   font-size: 1.2rem;
+   font-weight: 400;
+   text-align: center;
+   width: 100%;
+   padding: 0.5rem;
+   background-color: #333;
+   color: #fff;
+   border: none;
+   border-radius: 10px;
+   cursor: pointer;
+   transition: background-color 0.3s ease-in-out;
+}
+
+.login-form button:hover,
+.signup-form button:hover {
+   background-color: #565555;
+}
+
+/* Application page */
+
+body {
+   font-family: "Open Sans", Arial, Helvetica, sans-serif;
+   margin: 0;
+}
+
+.main-container {
+   display: flex;
+   flex-wrap: wrap;
+}
+
+/* Styles for the Select User component */
+
+.select-user {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-right: 20px;
+   margin-bottom: 20px;
+}
+
+/* Styles for the user portfolio component */
+
+.user-portfolio {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-right: 20px;
+   margin-bottom: 20px;
+}
+
+/* Styles for the stock market component */
+
+.stock-market {
+   flex-basis: 40%;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   margin-bottom: 20px;
+}
+
+/* Styles for the stock prices component */
+
+.stock-prices {
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+   margin-bottom: 20px;
+}
+
+/* Styles for the table inside the stock prices component */
+
+.stock-prices table {
+   width: 100%;
+   border-collapse: collapse;
+   min-width: 50rem;
+}
+
+/* Styles for the table headers inside the trade history component */
+
+.stock-prices th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+   font-weight: bold;
+}
+
+/* Styles for the table cells inside the trade history component */
+
+.stock-prices td {
+   padding: 10px;
+   font-size: 15px;
+}
+
+.stock-prices tbody th {
+   font-size: 15px;
+   font-weight: bold;
+}
+
+/* Styles for the table cells inside the userStockOrders component */
+
+.userStockOrdersTable {
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+   margin-bottom: 20px;
+}
+
+.userStockOrdersTable table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.userStockOrdersTable th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+   font-weight: bold;
+}
+
+.userStockOrdersTable td {
+   padding: 10px;
+   font-size: 15px;
+   background-color: #f2f2f2;
+}
+
+/* Styles for the trade history component */
+.trade-history {
+   flex-basis: 100%;
+   margin-top: 10px;
+   border-radius: 10px;
+   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+   padding: 20px;
+}
+
+/* Styles for the table inside the trade history component */
+.trade-history table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+/* Styles for the table headers inside the trade history component */
+.trade-history th {
+   text-align: left;
+   padding: 10px;
+   background-color: #f2f2f2;
+}
+
+/* Styles for the table cells inside the trade history component */
+.trade-history td {
+   padding: 10px;
+}
+
+.trade-history tbody th {
+   font-size: 15px;
+   font-weight: 400;
+}
