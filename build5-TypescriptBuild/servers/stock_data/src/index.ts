@@ -1,28 +1,30 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+import http from "http";
+// import socket.io requirements
+import { Server } from "socket.io";
+// import db functions
+import * as db from "./database/dbQueries";
+// import rabbitMQ functions used here
+import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
+// import socket.io functoin:
+
 const app = express();
-
-//websocket/socket.io reqiurements
-const http = require("http");
-const server = http.createServer(app);
-const io = require("socket.io")(server);
-
-// require db connection and queries:
-const db = require("./database/dbQueries");
-
-// require functions to send and receive messages using amqp/rabbitMQ
-const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
-
-app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
+//websocket/socket.io setup
+const server = http.createServer(app);
+const io: Server = new Server(server);
 
 // stock data microservice PORT
 const stockDataPORT = 4002;
 
-// Queues and Exchange names used
+// Queues and Exchange names used by rabbitMQ
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockDataQueue";
+
+// --------------------- Code Starts Here --------------------- //
 
 // create websocket
 io.on("connection", async (socket) => {
@@ -31,15 +33,15 @@ io.on("connection", async (socket) => {
    await emitStockData(socket);
 });
 
-const emitStockData = async (socket) => {
+const emitStockData = async (socket: any) => {
    // get stock data from db
    const stockData = await db.getStockData();
    // console.log(stockData);
    socket.emit("stockData", stockData);
 };
 
-// receive matched orders from order matching microservice using rabbitMQ
-const receiveMatchedOrder = async (io) => {
+// receive matched orders from order matching microservice using rabbitMQ, then run the updateStockData as a callback function
+const receiveMatchedOrder = async (io: Server) => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue,
@@ -48,7 +50,10 @@ const receiveMatchedOrder = async (io) => {
 };
 
 // callback function used to update stock data and send to ui
-const updateStockData = async (io, matchedOrder) => {
+const updateStockData = async (
+   io: Server,
+   matchedOrder: { price: Number; time: Date; ticker: String }
+) => {
    await db.updateStockDataAfterMatch(
       matchedOrder.price,
       matchedOrder.time,
@@ -62,7 +67,6 @@ const updateStockData = async (io, matchedOrder) => {
 };
 receiveMatchedOrder(io);
 
-server.listen(
-   stockDataPORT,
+server.listen(stockDataPORT, () =>
    console.log("stock data microservice running on port  ", stockDataPORT)
 );

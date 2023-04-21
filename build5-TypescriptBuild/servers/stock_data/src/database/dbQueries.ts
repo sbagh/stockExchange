@@ -1,6 +1,4 @@
-const { query } = require("express");
-
-const Pool = require("pg").Pool;
+import { Pool } from "pg";
 
 // connect to db:
 const pool = new Pool({
@@ -11,14 +9,20 @@ const pool = new Pool({
    port: 5432,
 });
 
+interface Stock {
+   ticker: string;
+   price: number;
+   lastUpdate: Date;
+}
+
 // get stock data
-const getStockData = async (req, res) => {
+const getStockData = async (): Promise<Stock[]> => {
    try {
       const queryString = "SELECT ticker, price, last_update FROM stock_data";
       const results = await pool.query(queryString);
 
       //convert results to camel case:
-      const camelCaseResults = results.rows.map((stock) => {
+      const camelCaseResults: Stock[] = results.rows.map((stock: any) => {
          return {
             ticker: stock.ticker,
             price: stock.price,
@@ -45,7 +49,4 @@ const updateStockDataAfterMatch = async (price, time, ticker) => {
    }
 };
 
-module.exports = {
-   getStockData,
-   updateStockDataAfterMatch,
-};
+export { getStockData, updateStockDataAfterMatch };
