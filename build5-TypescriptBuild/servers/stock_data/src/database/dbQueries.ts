@@ -10,9 +10,9 @@ const pool = new Pool({
 });
 
 interface Stock {
-   ticker: string;
-   price: number;
-   lastUpdate: Date;
+   ticker?: string;
+   price?: number;
+   lastUpdate?: Date;
 }
 
 // get stock data
@@ -32,12 +32,16 @@ const getStockData = async (): Promise<Stock[]> => {
       return camelCaseResults;
    } catch (error) {
       console.log("error in getting Stock Data ", error);
-      console.log(error);
+      return [];
    }
 };
 
 //update stock price after maching an order is matched
-const updateStockDataAfterMatch = async (price, time, ticker) => {
+const updateStockDataAfterMatch = async (
+   price: Number,
+   time: Date,
+   ticker: String
+): Promise<void> => {
    try {
       const queryString =
          "UPDATE stock_data SET price = $1, last_update=$2 WHERE ticker = $3";
