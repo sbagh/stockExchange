@@ -6,7 +6,7 @@ import cors from "cors";
 // import socket.io requirements
 import { Server } from "socket.io";
 // imoprt db connection and queries
-import db from "./database/dbQueries";
+import * as db from "./database/dbQueries";
 // require rabbitMQ functions used here
 import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
 
@@ -40,8 +40,8 @@ io.on("connection", (socket: any) => {
 // get and emit user portfolio (cash and stock holdings)
 const emitUserPortfolio = async (socket: any, userID: number) => {
    // get user cash and stock holdings from db tables
-   const userCashHoldings = await service.getUserCashHoldings(userID);
-   const userStockHoldings = await service.getUserStockHoldings(userID);
+   const userCashHoldings = await db.getUserCashHoldings(userID);
+   const userStockHoldings = await db.getUserStockHoldings(userID);
    // emit user cash and stock holdings back to UI (UserPortfolio component)
    socket.emit("userPortfolio", {
       userCashHoldings: userCashHoldings.cash,
@@ -64,18 +64,19 @@ const updateUserPortfolio = async (
       buyerID: number;
       sellerID: number;
       price: number;
+      ticker: string;
       quantity: number;
    }
 ) => {
    // update buyer and seller cash holdings after order is matched
-   await service.updateUserCashHoldingsAfterMatch(
+   await db.updateUserCashHoldingsAfterMatch(
       matchedOrder.buyerID,
       matchedOrder.sellerID,
       matchedOrder.price,
       matchedOrder.quantity
    );
    // update buyer and seller stock holdings after order is matched
-   await service.updateUserStockHoldingsAfterMatch(
+   await db.updateUserStockHoldingsAfterMatch(
       matchedOrder.buyerID,
       matchedOrder.sellerID,
       matchedOrder.ticker,

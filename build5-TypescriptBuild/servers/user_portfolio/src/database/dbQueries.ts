@@ -32,15 +32,23 @@ const getUserCashHoldings = async (
 
       const results = await pool.query(queryString, queryParameter);
       // console.log(results.rows);
-      return results.rows[0];
+      // const cash = results.rows[0].cash;
+      // return cash;
+      if (results.rowCount > 0) {
+         return results.rows[0];
+      } else {
+         return { userID, cash: 0 };
+      }
    } catch (error) {
       console.log("error in getting Cash Holdings", error);
-      throw error;
+      return { userID, cash: 0 };
    }
 };
 
 //get user stocks:
-const getUserStockHoldings = async (userID) => {
+const getUserStockHoldings = async (
+   userID: number
+): Promise<UserStockHoldings[]> => {
    try {
       const queryString =
          "SELECT ticker, quantity FROM stock_holdings WHERE user_id = $1";
@@ -50,17 +58,17 @@ const getUserStockHoldings = async (userID) => {
       return results.rows;
    } catch (error) {
       console.log("error in getting Stock Holdings", error);
-      throw error;
+      return [];
    }
 };
 
 // update buyer and seller's cash holdings after an order is matched
 const updateUserCashHoldingsAfterMatch = async (
-   buyerID,
-   sellerID,
-   price,
-   quantity
-) => {
+   buyerID: number,
+   sellerID: number,
+   price: number,
+   quantity: number
+): Promise<void> => {
    // 1- first get the total cost of the buy/sell order
    let totalCost = price * quantity;
    // console.log("total cost is:  ", totalCost);
@@ -84,11 +92,11 @@ const updateUserCashHoldingsAfterMatch = async (
 };
 
 const updateUserStockHoldingsAfterMatch = async (
-   buyerID,
-   sellerID,
-   ticker,
-   quantity
-) => {
+   buyerID: number,
+   sellerID: number,
+   ticker: string,
+   quantity: number
+): Promise<void> => {
    // 1- update buyer's stock_holdings by adding the stock
    // first get buyer's old quantity then add the new quantity to it
    const buyersOldQuantityRow = await pool.query(
@@ -126,7 +134,7 @@ const updateUserStockHoldingsAfterMatch = async (
    );
 };
 
-module.exports = {
+export {
    getUserCashHoldings,
    getUserStockHoldings,
    updateUserCashHoldingsAfterMatch,
