@@ -1,6 +1,6 @@
-const { query } = require("express");
+// !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 
-const Pool = require("pg").Pool;
+import { Pool } from "pg";
 
 // connect to db:
 const pool = new Pool({
@@ -11,10 +11,21 @@ const pool = new Pool({
    port: 5432,
 });
 
-// !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
+interface UserCashHoldings {
+   userID: number;
+   cash: number;
+}
+
+interface UserStockHoldings {
+   userID: number;
+   ticker: string;
+   quantity: number;
+}
 
 //get user cash:
-const getUserCashHoldings = async (userID) => {
+const getUserCashHoldings = async (
+   userID: number
+): Promise<UserCashHoldings> => {
    try {
       const queryString = "SELECT cash FROM cash_holdings WHERE user_id = $1";
       const queryParameter = [userID];

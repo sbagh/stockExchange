@@ -39,7 +39,7 @@ const receiveFanOutExchange_1 = require("./rabbitMQ/receiveFanOutExchange");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: "http://localhost:3000" }));
 app.use(express_1.default.json());
-//websocket/socket.io setup
+//socket.io setup
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server);
 // stock data microservice PORT

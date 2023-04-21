@@ -13,7 +13,7 @@ const app = express();
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
-//websocket/socket.io setup
+//socket.io setup
 const server = http.createServer(app);
 const io: Server = new Server(server);
 
@@ -27,7 +27,7 @@ const matchedOrdersQueue = "matchedOrdersStockDataQueue";
 // --------------------- Code Starts Here --------------------- //
 
 // create websocket
-io.on("connection", async (socket) => {
+io.on("connection", async (socket: any) => {
    console.log("client is connected, id: ", socket.id);
    //emite stock data to UI (StockData component)
    await emitStockData(socket);

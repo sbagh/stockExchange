@@ -1,33 +1,34 @@
-const express = require("express");
-const cors = require("cors");
+// !!!! curently 'user_id' in cash_holdings & stock_holdings tables is not referenced to 'user_id' in user accounts table, need to implement cross-microservice data replication or other data sync methods using rabbitMQ as a messanger
+
+import express from "express";
+import http from "http";
+import cors from "cors";
+// import socket.io requirements
+import { Server } from "socket.io";
+// imoprt db connection and queries
+import db from "./database/dbQueries";
+// require rabbitMQ functions used here
+import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
+
 const app = express();
-
-// websocket/socket.io requirements
-const http = require("http");
-const server = http.createServer(app);
-const io = require("socket.io")(server);
-
-// require db connection and queries
-const service = require("./database/dbQueries");
-
-// require functions to send and receive messages using amqp/rabbitMQ
-const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
-
-app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
+// socket.io setup
+const server = http.createServer(app);
+const io: Server = new Server(server);
 
 // user portfolio microservice PORT
 const userPortfolioPORT = 4001;
 
-// amqp Queues and Exchange names used
+// amqp Queues and Exchange names used by rabbitMQ
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
-// !!!! curently user_id in cash_holdings and stock_holdings tables is not linked to user_id in user accounts table, need to implement cross-microservice data replication or other data sync methods using rabbitMQ as a messanger
+// --------------------- Code Starts Here --------------------- //
 
 // use socket.io
-io.on("connection", (socket) => {
+io.on("connection", (socket: any) => {
    console.log("client is connected, id: ", socket.id);
 
    // receive userID from UI (UserPortfolio component)
@@ -37,7 +38,7 @@ io.on("connection", (socket) => {
 });
 
 // get and emit user portfolio (cash and stock holdings)
-const emitUserPortfolio = async (socket, userID) => {
+const emitUserPortfolio = async (socket: any, userID: number) => {
    // get user cash and stock holdings from db tables
    const userCashHoldings = await service.getUserCashHoldings(userID);
    const userStockHoldings = await service.getUserStockHoldings(userID);
@@ -49,7 +50,7 @@ const emitUserPortfolio = async (socket, userID) => {
 };
 
 // receive matched orders from order matching microservice using rabbitMQ
-const receiveMatchedOrders = async (io) => {
+const receiveMatchedOrders = async (io: Server) => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue,
@@ -57,7 +58,15 @@ const receiveMatchedOrders = async (io) => {
    );
 };
 // callback function used to update user portfolio and send to ui
-const updateUserPortfolio = async (io, matchedOrder) => {
+const updateUserPortfolio = async (
+   io: Server,
+   matchedOrder: {
+      buyerID: number;
+      sellerID: number;
+      price: number;
+      quantity: number;
+   }
+) => {
    // update buyer and seller cash holdings after order is matched
    await service.updateUserCashHoldingsAfterMatch(
       matchedOrder.buyerID,
@@ -82,8 +91,7 @@ const updateUserPortfolio = async (io, matchedOrder) => {
 
 receiveMatchedOrders(io);
 
-server.listen(
-   userPortfolioPORT,
+server.listen(userPortfolioPORT, () =>
    console.log(
       "user portfolio microservice running on port ",
       userPortfolioPORT
