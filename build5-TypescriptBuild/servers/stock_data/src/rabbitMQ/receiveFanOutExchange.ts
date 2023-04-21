@@ -1,4 +1,4 @@
-const amqp = require("amqplib");
+import amqp from "amqplib";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
 let subscriberConnection;
@@ -55,6 +55,4 @@ const receiveFanOutExchange = async (exchangeName, queueName, callback) => {
    }
 };
 
-module.exports = {
-   receiveFanOutExchange,
-};
+export { receiveFanOutExchange };
