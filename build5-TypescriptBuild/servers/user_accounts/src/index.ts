@@ -8,6 +8,8 @@ app.use(express.json());
 
 const userAccountsPORT = 4000;
 
+// --------------------- Code Starts Here --------------------- //
+
 // get all users
 app.get("/getAllUsers", async (req, res) => {
    const users = await userService.getAllUsers();
