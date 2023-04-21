@@ -52,7 +52,7 @@ const receiveMatchedOrder = async (io: Server) => {
 // callback function used to update stock data and send to ui
 const updateStockData = async (
    io: Server,
-   matchedOrder: { price: Number; time: Date; ticker: String }
+   matchedOrder: { price: number; time: Date; ticker: string }
 ) => {
    await db.updateStockDataAfterMatch(
       matchedOrder.price,

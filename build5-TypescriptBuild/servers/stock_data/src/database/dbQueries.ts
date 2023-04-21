@@ -10,9 +10,9 @@ const pool = new Pool({
 });
 
 interface Stock {
-   ticker?: string;
-   price?: number;
-   lastUpdate?: Date;
+   ticker: string;
+   price: number;
+   lastUpdate: Date;
 }
 
 // get stock data
@@ -38,9 +38,9 @@ const getStockData = async (): Promise<Stock[]> => {
 
 //update stock price after maching an order is matched
 const updateStockDataAfterMatch = async (
-   price: Number,
+   price: number,
    time: Date,
-   ticker: String
+   ticker: string
 ): Promise<void> => {
    try {
       const queryString =
