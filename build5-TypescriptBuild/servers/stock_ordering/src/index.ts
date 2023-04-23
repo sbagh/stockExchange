@@ -1,25 +1,24 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+import http from "http";
+// import socket.io requirements
+import { Server } from "socket.io";
+// import db connection and queries:
+import * as db from "./database/dbQueries";
+// import functions used by amqp/rabbitMQ
+import { sendToQueue } from "./rabbitMQ/sendToQueue";
+import { receiveFromQueue } from "./rabbitMQ/receiveFromQueue";
+import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
+
 const app = express();
-
-//websocket/socket.io reqiurements
-const http = require("http");
-const server = http.createServer(app);
-const io = require("socket.io")(server);
-// setting socket.io as an app object, to access io in different parts of code
-app.set("socketio", io);
-
-// require db connection and queries:
-const db = require("./database/dbQueries");
-
-// require functions to send and receive messages using amqp/rabbitMQ
-const { sendToQueue } = require("./rabbitMQ/sendToQueue");
-const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
-const { receiveFanOutExchange } = require("./rabbitMQ/receiveFanOutExchange");
-
-app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
+//socket.io setup
+const server = http.createServer(app);
+const io: Server = new Server(server);
+// setting socket.io as an app object, to access io in different parts of code
+app.set("socketio", io);
 
 // stock ordering microservice PORT
 const stockOrderingPORT = 4003;
@@ -31,17 +30,19 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
 const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 
+// --------------------- Code Starts Here --------------------- //
+
 // setup a websocket
-io.on("connection", (socket) => {
+io.on("connection", (socket: any) => {
    console.log("client is connected, id: ", socket.id);
    //get user ID from UI then emit their oder history
-   socket.on("currentUserID", async (userID) => {
+   socket.on("currentUserID", async (userID: number) => {
       await emitUserOrderHistory(socket, userID);
    });
 });
 
 // Emit a specific user's order history
-const emitUserOrderHistory = async (socket, userID) => {
+const emitUserOrderHistory = async (socket: any, userID: number) => {
    // first get user's order history
    const userOrderHistory = await db.getUserStockOrders(userID);
    // console.log("userOrderHistory: ", userOrderHistory);
