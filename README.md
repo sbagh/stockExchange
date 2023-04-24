@@ -39,7 +39,8 @@ Infrastructure and non functional reqiurements:
 
 ### Next steps:
 
--  Currently attempting to host serverlessly on AWS using:
+- Refactor to Typescript
+- Host serverlessly on AWS using:
    -  S3 for hosting the react app
    -  Lambda for back-end files
    -  RDS (postgreSQL) for data storage
@@ -47,9 +48,10 @@ Infrastructure and non functional reqiurements:
    -  API gateway as a layer between S3 and lambdas
    -  Replacing rabbitMQ in the local build with Amazon SNS and SQS
 -  Implementing caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
--  Simulating a high load of trade orders to test and improve the systems capabilities
 -  Build next features
 
 ### High level system design for AWS build:
+
+(local build uses rabbitMQ instead of SQS/SNS and does not include the API gateway)
 
 <img width="1245" alt="Screen Shot 2023-03-02 at 6 59 01 AM" src="https://user-images.githubusercontent.com/52921619/222810242-33159bfc-c21d-4a5b-b285-f711f8527d66.png">
