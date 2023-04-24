@@ -1,8 +1,8 @@
-const amqp = require("amqplib");
+import amqp, { Connection, Channel } from "amqplib";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-let senderConnection;
-let senderChannel;
+let senderConnection: Connection;
+let senderChannel: Channel;
 
 // send messages to a queue, given a queue name and a message
 const sendToQueue = async (queueName, message) => {

@@ -1,4 +1,4 @@
-const Pool = require("pg").Pool;
+import { Pool, QueryResult } from "pg";
 
 // connect to db:
 const pool = new Pool({
@@ -9,19 +9,51 @@ const pool = new Pool({
    port: 5432,
 });
 
+// interface:
+interface OrderDetails {
+   orderID: string;
+   userID: number;
+   orderType: string;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderStatus: string;
+   orderTime: Date;
+}
+
+interface StockOrder {
+   orderID: string;
+   orderType: string;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderStatus: string;
+   orderTime: Date;
+}
+
+interface CanceledOrder {
+   orderID: string;
+   orderType: string;
+   orderStatus: string;
+   userID: number;
+}
+
 // //get a user's trade orders
-const getUserStockOrders = async (userID) => {
+const getUserStockOrders = async (userID: number): Promise<StockOrder[]> => {
    try {
       const queryString =
          "SELECT order_type, ticker, quantity, price, order_status, order_time, order_id FROM stock_orders WHERE user_id = $1 ORDER BY order_time DESC ";
       const queryParameter = [userID];
 
-      const results = await pool.query(queryString, queryParameter);
+      const results: QueryResult = await pool.query(
+         queryString,
+         queryParameter
+      );
 
       // console.log(results.rows);
 
       // convert to camel case
-      const camelCaseResults = results.rows.map((result) => {
+      const camelCaseResults: StockOrder[] = results.rows.map((result) => {
          return {
             orderType: result.order_type,
             orderStatus: result.order_status,
@@ -34,13 +66,13 @@ const getUserStockOrders = async (userID) => {
       });
       return camelCaseResults;
    } catch (error) {
-      console.log(error);
-      throw error;
+      console.log("unable to query for user stock orders: ", error);
+      return [];
    }
 };
 
 // add a stock trade order
-const addStockOrder = async (orderDetails) => {
+const addStockOrder = async (orderDetails: OrderDetails): Promise<void> => {
    try {
       const queryString =
          "INSERT INTO stock_orders (order_id, user_id, order_type, ticker, quantity, price, order_time, order_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
@@ -62,7 +94,10 @@ const addStockOrder = async (orderDetails) => {
 };
 
 // update order_status for both buy and sell orders to "Closed" in stock_orders table after matching
-const updateOrderStatusToFilled = async (buyOrderID, sellOrderID) => {
+const updateOrderStatusToFilled = async (
+   buyOrderID: string,
+   sellOrderID: string
+): Promise<void> => {
    try {
       const queryString =
          "UPDATE stock_orders SET order_status =$1 WHERE order_id = $2 OR order_id = $3";
@@ -76,24 +111,29 @@ const updateOrderStatusToFilled = async (buyOrderID, sellOrderID) => {
 };
 
 // update order status to "Canceled" after received canceled order confirmation
-const updateOrderStatusToCanceled = async (canceledOrder) => {
+const updateOrderStatusToCanceled = async (
+   canceledOrder: CanceledOrder
+): Promise<void> => {
    try {
       const queryString =
          "UPDATE stock_orders SET order_status = $1 WHERE order_id = $2";
       const queryParameter = ["Canceled", canceledOrder.orderID];
       await pool.query(queryString, queryParameter);
    } catch (error) {
-      console.log(error);
+      console.log("unable to update canceled order in db: ", error);
       throw error;
    }
 };
 
-const getOrderStatus = async (orderID) => {
+const getOrderStatus = async (orderID: string): Promise<{ orderStatus }> => {
    try {
       const queryString =
          "SELECT order_status FROM stock_orders WHERE order_id = $1";
       const queryParameter = [orderID];
-      const results = await pool.query(queryString, queryParameter);
+      const results: QueryResult = await pool.query(
+         queryString,
+         queryParameter
+      );
 
       // convert to camel case
       const camelCaseResults = results.rows.map((result) => {
@@ -102,11 +142,11 @@ const getOrderStatus = async (orderID) => {
       return camelCaseResults[0].orderStatus;
    } catch (error) {
       console.log("error in getting order status, ", error);
-      throw error;
+      return { orderStatus: "unkown error" };
    }
 };
 
-module.exports = {
+export {
    getUserStockOrders,
    addStockOrder,
    updateOrderStatusToFilled,
