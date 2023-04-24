@@ -1,18 +1,55 @@
 //class that matches highest buy order to highest sell order
 
+//interface
+interface StockOrder {
+   buyer?: number;
+   seller?: number;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderID: string;
+   time: string;
+}
+interface MatchedOrder {
+   buyOrderID: string;
+   sellOrderID: string;
+   buyerID?: number;
+   sellerID?: number;
+   price: number;
+   time: Date;
+   ticker: string;
+   quantity: number;
+}
+
 class orderMatchingClass {
+   buyOrders: StockOrder[];
+   sellOrders: StockOrder[];
+   matchedOrders: MatchedOrder[];
+
    constructor() {
       (this.buyOrders = []), (this.sellOrders = []), (this.matchedOrders = []);
    }
 
    //add a buy order in buyOrders array
-   addBuyOrder(buyer, ticker, quantity, price, orderID) {
+   addBuyOrder(
+      buyer: number,
+      ticker: string,
+      quantity: number,
+      price: number,
+      orderID: string
+   ): void {
       const time = new Date().toString();
       this.buyOrders.push({ buyer, ticker, quantity, price, orderID, time });
    }
 
    //add a sell order in sellOrders array
-   addSellOrder(seller, ticker, quantity, price, orderID) {
+   addSellOrder(
+      seller: number,
+      ticker: string,
+      quantity: number,
+      price: number,
+      orderID: string
+   ): void {
       const time = new Date().toString();
       this.sellOrders.push({
          seller,
@@ -25,7 +62,7 @@ class orderMatchingClass {
    }
 
    //remove an order from buyOrders or sellOrders array, given an order id and type. (used if a user cancels their trade order)
-   removeOrder(orderID, orderType) {
+   removeOrder(orderID: string, orderType: "buy" | "sell"): boolean {
       if (orderType === "buy") {
          const index = this.buyOrders.findIndex(
             (order) => order.orderID === orderID
@@ -47,11 +84,11 @@ class orderMatchingClass {
    }
 
    // match buy and sell orders and add to matchedOrders array
-   matchOrders() {
+   matchOrders(): MatchedOrder[] | null {
       //first sort buy and sell orders in descending order to get highest value of each, if prices are equal, sort by time (oldest first)
       this.buyOrders.sort((a, b) => {
          if (b.price === a.price) {
-            return new Date(b.time) - new Date(a.time);
+            return new Date(b.time).getTime() - new Date(a.time).getTime();
          } else {
             return b.price - a.price;
          }
@@ -59,7 +96,7 @@ class orderMatchingClass {
 
       this.sellOrders.sort((a, b) => {
          if (b.price === a.price) {
-            return new Date(b.time) - new Date(a.time);
+            return new Date(b.time).getTime() - new Date(a.time).getTime();
          } else {
             return b.price - a.price;
          }
@@ -118,6 +155,4 @@ class orderMatchingClass {
    }
 }
 
-module.exports = {
-   orderMatchingClass,
-};
+export { orderMatchingClass };

@@ -1,12 +1,27 @@
-const amqp = require("amqplib");
+import amqp, { Connection, Channel } from "amqplib";
 
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-let publisherConnection;
-let publisherChannel;
+let publisherConnection: Connection;
+let publisherChannel: Channel;
+
+//interface
+interface MatchedOrder {
+   buyOrderID: string;
+   sellOrderID: string;
+   buyerID: number;
+   sellerID: number;
+   price: number;
+   time: Date;
+   ticker: string;
+   quantity: number;
+}
 
 // fan-out exchange to publish messages to any queue that subscribes
-const publishFanOutExchange = async (exchangeName, message) => {
+const publishFanOutExchange = async (
+   exchangeName: string,
+   message: MatchedOrder
+): Promise<void> => {
    return new Promise(async (resolve, reject) => {
       try {
          // 1- check if a connection exists, if not create one
@@ -45,6 +60,4 @@ const publishFanOutExchange = async (exchangeName, message) => {
    });
 };
 
-module.exports = {
-   publishFanOutExchange,
-};
+export { publishFanOutExchange };
