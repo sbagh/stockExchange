@@ -25,6 +25,24 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();
 
+//typescript interface:
+
+interface OrderDetails {
+   userID: number;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderID: string;
+   orderType: string;
+}
+
+interface CanceledOrderDetails {
+   orderID: string;
+   orderType: string;
+   orderStatus: string;
+   userID: number;
+}
+
 // --------------------- Code Starts Here --------------------- //
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
@@ -32,7 +50,7 @@ const receiveStockOrder = async () => {
    await receiveFromQueue(stockOrdersQueue, sendToExchange);
 };
 // when a stock order is recieved, send it to the stock exchange, to be placed in a buyOrders or sellOrders array then matched
-const sendToExchange = (orderDetails) => {
+const sendToExchange = (orderDetails: OrderDetails) => {
    // add to buy or sell orders array depending on order_type
    orderDetails.orderType === "buy"
       ? stockExchange.addBuyOrder(
@@ -57,6 +75,8 @@ const sendToExchange = (orderDetails) => {
    // console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
 receiveStockOrder();
+
+let matchOrdersInterval: NodeJS.Timeout;
 
 // match orders, then update matched_order db and send the matched order to other microservices
 const matchOrders = async () => {
@@ -86,7 +106,7 @@ const receiveCanceledOrder = async () => {
    await receiveFromQueue(canceledOrdersQueue, removeOrder);
 };
 // callback to remove order from buyOrders or sellOrders array in stock exchange
-const removeOrder = async (canceledOrder) => {
+const removeOrder = async (canceledOrder: CanceledOrderDetails) => {
    await stockExchange.removeOrder(
       canceledOrder.orderID,
       canceledOrder.orderType
@@ -101,8 +121,7 @@ const removeOrder = async (canceledOrder) => {
 };
 receiveCanceledOrder();
 
-app.listen(
-   orderMatchingPORT,
+app.listen(orderMatchingPORT, () =>
    console.log(
       "order matching microservice running on port ",
       orderMatchingPORT
