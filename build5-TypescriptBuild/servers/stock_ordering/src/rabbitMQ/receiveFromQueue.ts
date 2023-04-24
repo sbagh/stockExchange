@@ -1,11 +1,14 @@
-const amqp = require("amqplib");
+import amqp, { Connection, Channel } from "amqplib";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
-let recieverConnection;
-let recieverChannel;
+let recieverConnection: Connection;
+let recieverChannel: Channel;
+
+//interface
+
 
 // receive messages from a queue, given a queue name
-const receiveFromQueue = async (queueName, callback) => {
+const receiveFromQueue = async (queueName: string, callback: ) => {
    try {
       // 1- check if a connection exists, if not create one
       if (!recieverConnection) {

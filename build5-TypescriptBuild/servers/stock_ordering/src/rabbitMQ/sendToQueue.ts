@@ -5,7 +5,7 @@ let senderConnection: Connection;
 let senderChannel: Channel;
 
 // send messages to a queue, given a queue name and a message
-const sendToQueue = async (queueName, message) => {
+const sendToQueue = async (queueName: string, message: any): Promise<void> => {
    return new Promise(async (resolve, reject) => {
       try {
          // 1- check if a connection exists, if not create one
@@ -18,7 +18,7 @@ const sendToQueue = async (queueName, message) => {
          }
          // 3- assert Queue, set durability = true in case of server crash or restart
          await senderChannel.assertQueue(queueName, {
-            durability: true,
+            durable: true,
          });
          // 4- create and send the message to queue
          senderChannel.sendToQueue(
@@ -45,6 +45,4 @@ const sendToQueue = async (queueName, message) => {
    });
 };
 
-module.exports = {
-   sendToQueue,
-};
+export { sendToQueue };
