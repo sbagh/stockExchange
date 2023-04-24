@@ -4,11 +4,11 @@ const RabbitMqUrl = "amqp://127.0.0.1:5672";
 let recieverConnection: Connection;
 let recieverChannel: Channel;
 
-//interface
-
-
 // receive messages from a queue, given a queue name
-const receiveFromQueue = async (queueName: string, callback: ) => {
+const receiveFromQueue = async (
+   queueName: string,
+   callback: (message: any) => void
+): Promise<void> => {
    try {
       // 1- check if a connection exists, if not create one
       if (!recieverConnection) {
@@ -23,7 +23,7 @@ const receiveFromQueue = async (queueName: string, callback: ) => {
       //4- consume message from que
       await recieverChannel.consume(
          queueName,
-         (consumedMessage) => {
+         (consumedMessage: amqp.ConsumeMessage | null) => {
             if (consumedMessage) {
                // console.log("consumed message from queue: ", consumedMessage);
 
@@ -57,4 +57,4 @@ const receiveFromQueue = async (queueName: string, callback: ) => {
    }
 };
 
-module.exports = { receiveFromQueue };
+export { receiveFromQueue };
