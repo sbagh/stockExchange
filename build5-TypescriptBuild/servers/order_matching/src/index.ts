@@ -1,18 +1,15 @@
-const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
+import express from "express";
+import cors from "cors";
+//import order matching class from classes, used to match orders
 const { orderMatchingClass } = require("./classes/orderMatchingClass");
-
-// require db connection and queries:
-const db = require("./database/dbQueries");
-
-// require functions to send and receive messages using amqp/rabbitMQ
-const { sendToQueue } = require("./rabbitMQ/sendToQueue");
-const { receiveFromQueue } = require("./rabbitMQ/receiveFromQueue");
-const { publishFanOutExchange } = require("./rabbitMQ/publishFanOutExchange");
+// require db connection and queries
+import * as db from "./database/dbQueries";
+// import functions used by amqp/rabbitMQ
+import { sendToQueue } from "./rabbitMQ/sendToQueue";
+import { receiveFromQueue } from "./rabbitMQ/receiveFromQueue";
+import { publishFanOutExchange } from "./rabbitMQ/publishFanOutExchange";
 
 const app = express();
-app.use(cors());
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
@@ -27,6 +24,8 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();
+
+// --------------------- Code Starts Here --------------------- //
 
 //receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
 const receiveStockOrder = async () => {
