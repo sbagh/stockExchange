@@ -1,6 +1,4 @@
-const { query } = require("express");
-
-const Pool = require("pg").Pool;
+import { Pool, QueryResult } from "pg";
 
 // connect to db:
 const pool = new Pool({
@@ -11,8 +9,22 @@ const pool = new Pool({
    port: 5432,
 });
 
+//interface
+interface MatchedOrder {
+   buyOrderID: string;
+   sellOrderID: string;
+   buyerID: number;
+   sellerID: number;
+   price: number;
+   time: Date;
+   ticker: string;
+   quantity: number;
+}
+
 // update matched_orders table after matching an order
-const updateMatchedOrdersTable = async (matchedOrder) => {
+const updateMatchedOrdersTable = async (
+   matchedOrder: MatchedOrder
+): Promise<void> => {
    try {
       const queryString =
          "INSERT INTO matched_orders(buy_order_id, sell_order_id, matched_time) VALUES($1,$2,$3)";
@@ -29,6 +41,4 @@ const updateMatchedOrdersTable = async (matchedOrder) => {
    }
 };
 
-module.exports = {
-   updateMatchedOrdersTable,
-};
+export { updateMatchedOrdersTable };
