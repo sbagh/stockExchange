@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 //import order matching class from classes, used to match orders
-const { orderMatchingClass } = require("./classes/orderMatchingClass");
+import { orderMatchingClass } from "./classes/orderMatchingClass";
 // require db connection and queries
 import * as db from "./database/dbQueries";
 // import functions used by amqp/rabbitMQ
@@ -41,6 +41,18 @@ interface CanceledOrderDetails {
    orderType: string;
    orderStatus: string;
    userID: number;
+}
+
+//interface
+interface MatchedOrder {
+   buyOrderID: string;
+   sellOrderID: string;
+   buyerID: number;
+   sellerID: number;
+   price: number;
+   time: Date;
+   ticker: string;
+   quantity: number;
 }
 
 // --------------------- Code Starts Here --------------------- //
@@ -91,10 +103,13 @@ const matchOrders = async () => {
             // take out the first order in the matchedOrders array and process it
             let matchedOrder = matchedOrders.shift();
             // console.log("matched order: ", matchedOrder);
-            //update matched_orders db after matching a trade
-            db.updateMatchedOrdersTable(matchedOrder);
-            // send matched order to the fanout exchange called matchedOrdersExchange
-            await publishFanOutExchange(matchedOrdersExchange, matchedOrder);
+            // ensure matchedOrder is not undefined after .shift()
+            if (matchedOrder) {
+               //update matched_orders db after matching a trade
+               db.updateMatchedOrdersTable(matchedOrder);
+               // send matched order to the fanout exchange called matchedOrdersExchange
+               await publishFanOutExchange(matchedOrdersExchange, matchedOrder);
+            }
          }
       }
    }, 1000);

@@ -1,9 +1,16 @@
 //class that matches highest buy order to highest sell order
 
 //interface
-interface StockOrder {
-   buyer?: number;
-   seller?: number;
+interface BuyOrder {
+   buyer: number;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderID: string;
+   time: string;
+}
+interface SellOrder {
+   seller: number;
    ticker: string;
    quantity: number;
    price: number;
@@ -13,8 +20,8 @@ interface StockOrder {
 interface MatchedOrder {
    buyOrderID: string;
    sellOrderID: string;
-   buyerID?: number;
-   sellerID?: number;
+   buyerID: number;
+   sellerID: number;
    price: number;
    time: Date;
    ticker: string;
@@ -22,8 +29,8 @@ interface MatchedOrder {
 }
 
 class orderMatchingClass {
-   buyOrders: StockOrder[];
-   sellOrders: StockOrder[];
+   buyOrders: BuyOrder[];
+   sellOrders: SellOrder[];
    matchedOrders: MatchedOrder[];
 
    constructor() {
@@ -62,7 +69,7 @@ class orderMatchingClass {
    }
 
    //remove an order from buyOrders or sellOrders array, given an order id and type. (used if a user cancels their trade order)
-   removeOrder(orderID: string, orderType: "buy" | "sell"): boolean {
+   removeOrder(orderID: string, orderType: string): boolean {
       if (orderType === "buy") {
          const index = this.buyOrders.findIndex(
             (order) => order.orderID === orderID
