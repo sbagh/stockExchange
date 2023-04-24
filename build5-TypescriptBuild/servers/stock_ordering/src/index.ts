@@ -48,7 +48,6 @@ const emitUserOrderHistory = async (socket: any, userID: number) => {
    // console.log("userOrderHistory: ", userOrderHistory);
    // emit user order history to UI (component UserStockOrders)
    socket.emit("userOrderHistory", userOrderHistory);
-   return;
 };
 
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
