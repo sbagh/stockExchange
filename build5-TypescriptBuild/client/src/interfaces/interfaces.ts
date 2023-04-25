@@ -5,4 +5,15 @@ interface User {
    lastName: string;
 }
 
-export { User };
+interface CashHoldings {
+   userID: number;
+   cash?: number;
+}
+
+interface StockHoldings {
+   userID: number;
+   ticker: string;
+   quantity: number;
+}
+
+export { User, CashHoldings, StockHoldings };

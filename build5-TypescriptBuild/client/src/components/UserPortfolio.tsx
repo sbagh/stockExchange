@@ -1,26 +1,20 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
+import type {User, CashHoldings, StockHoldings } from "../interfaces/interfaces""
 
 // user portfolio microservice url
 const userPortfolioURL = "http://localhost:4001";
 
 //typescript interfaces:
-interface CashHoldings {
-   userID: number;
-   cash?: number;
+interface Props {
+  user: User;
 }
 
-interface StockHoldings {
-   userID: number;
-   ticker: string;
-   quantity: number;
-}
-
-const UserPortfolio = ({ user }) => {
+const UserPortfolio = ({ user }: Props) => {
    //state for rendering a users portfolio including stocks held and cash:
-   const [userCashHoldings, setUserCashHoldings] = useState([]);
-   const [userStockHoldings, setUserStockHoldings] = useState([]);
-   const [socket, setSocket] = useState(null);
+   const [userCashHoldings, setUserCashHoldings] = useState<CashHoldings>({userID: user.userID, cash:0});
+   const [userStockHoldings, setUserStockHoldings] = useState<StockHoldings[]>([]);
+   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(null);
 
    useEffect(() => {
       //1- setup websocket

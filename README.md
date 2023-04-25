@@ -2,15 +2,17 @@
 
 Stock exchange full-stack app.
 
+Stable build: build 4 - microservices with authentication
+
 Watch the demo here: https://www.youtube.com/watch?v=fi1zDjc1_h8 
 
-### Tech stack in local build:
+### 1 - Tech stack in local build:
 
 Local Build: Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
 
 Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, Docker, ECS + local build
 
-### Running the project locally
+### 2 - Running the project locally
 
 -  Install react and node modules
 -  Start each microservice's index.js and start react
@@ -18,7 +20,7 @@ Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, Docker, ECS
 -  Local build uses rabbitMQ, download, install and start it
 -  In the browser: select a user, see their portfololio, create buy/sell orders, cancel orders that have a status of "Open".
 
-### Completed work:
+### 3 - Completed work:
 
 Functional Requirements:
 
@@ -37,7 +39,7 @@ Infrastructure and non functional reqiurements:
 -  Implemented websockets using socket.io to provide real-time updates to the browser
 -  Implemented a user signup and login authentication system using a JWT, libraries used are jsonwebtoken for signing, argon2 for hashing and verifying passwords, and crypto for secret key generation
 
-### Next steps:
+### 4 - Next steps:
 
 - Refactor to Typescript
 - Host serverlessly on AWS using:
@@ -50,7 +52,7 @@ Infrastructure and non functional reqiurements:
 -  Implementing caching, deploying microservices in docker containers, ensuring stateless services, and creating circuit breakers
 -  Build next features
 
-### High level system design for AWS build:
+### 5 - High level system design for AWS build:
 
 (local build uses rabbitMQ instead of SQS/SNS and does not include the API gateway)
 
