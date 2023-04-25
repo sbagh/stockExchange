@@ -4,13 +4,22 @@ import io from "socket.io-client";
 // user portfolio microservice url
 const userPortfolioURL = "http://localhost:4001";
 
-const UserPortfolio = ({
-   userCashHoldings,
-   setUserCashHoldings,
-   userStockHoldings,
-   setUserStockHoldings,
-   user,
-}) => {
+//typescript interfaces:
+interface CashHoldings {
+   userID: number;
+   cash?: number;
+}
+
+interface StockHoldings {
+   userID: number;
+   ticker: string;
+   quantity: number;
+}
+
+const UserPortfolio = ({ user }) => {
+   //state for rendering a users portfolio including stocks held and cash:
+   const [userCashHoldings, setUserCashHoldings] = useState([]);
+   const [userStockHoldings, setUserStockHoldings] = useState([]);
    const [socket, setSocket] = useState(null);
 
    useEffect(() => {

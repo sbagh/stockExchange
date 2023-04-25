@@ -6,12 +6,11 @@ import io from "socket.io-client";
 // stock data url
 const stockDataURL = "http://localhost:4002";
 
-const StockPrices = ({
-   stockData,
-   setStockData,
-   stockDataIsLoading,
-   setStockDataIsLoading,
-}) => {
+const StockPrices = () => {
+   //  //state for rendering stock data (current price, ticker..etc)
+   const [stockData, setStockData] = useState({});
+   const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
+
    //state to hold socket connection
    const [socket, setSocket] = useState(null);
 

@@ -5,7 +5,10 @@ import io from "socket.io-client";
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
 
-const UserStockOrders = ({ userID, userOrderHistory, setUserOrderHistory }) => {
+const UserStockOrders = ({ userID }) => {
+   //  //state for rendering a user's stock orders
+   const [userOrderHistory, setUserOrderHistory] = useState([]);
+
    // store websocket connection in a state
    const [socket, setSocket] = useState(null);
 
