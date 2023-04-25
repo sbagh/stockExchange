@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import type { User } from "../interfaces/interfaces";
 
 // URL to user accounts micorservice, index.js
 const userAccountsURL = "http://localhost:4000";
 
-const SelectUser = ({ users, setUsers, setUser, setLoggedIn }) => {
-   // useEffect to fetch all the users from the db:user_accounts, table:users
+interface Props {
+   users: User[];
+   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+   setUser: React.Dispatch<React.SetStateAction<User>>;
+   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SelectUser = ({ users, setUsers, setUser, setLoggedIn }: Props) => {
+   // useEffect to fetch all the users from the user_accounts db
    useEffect(() => {
       const fetchUsers = async () => {
          try {
@@ -25,14 +33,14 @@ const SelectUser = ({ users, setUsers, setUser, setLoggedIn }) => {
    }, [setUsers, setUser]);
 
    // handle change when selecting a new user from drop-down list
-   const handleChange = (e) => {
+   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedUser = users.find(
          (user) => user.userID === parseInt(e.target.value)
       );
-      setUser(selectedUser);
+      if (selectedUser) setUser(selectedUser);
    };
 
-   const logOut = (e) => {
+   const logOut = () => {
       localStorage.removeItem("token");
       setLoggedIn(false);
    };

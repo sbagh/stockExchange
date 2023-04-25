@@ -4,15 +4,9 @@ import UserPortfolio from "./components/UserPortfolio";
 import StockOrdering from "./components/StockOrdering";
 import SelectUser from "./components/SelectUser";
 import StockData from "./components/StockData";
-// import TradeHistory from "./components/TradeHistory";
 import UserStockOrders from "./components/UserStockOrders";
-
-// typescript interfaces
-interface User {
-   userID: number;
-   firstName: string;
-   lastName: string;
-}
+// import interfaces
+import type { User } from "./interfaces/interfaces";
 
 const App = () => {
    // state to check if user is logged in or not
