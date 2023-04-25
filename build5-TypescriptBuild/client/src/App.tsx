@@ -7,6 +7,8 @@ import StockData from "./components/StockData";
 // import TradeHistory from "./components/TradeHistory";
 import UserStockOrders from "./components/UserStockOrders";
 
+
+
 const App = () => {
    // state for seeing if user is signed in or not
    const [loggedIn, setLoggedIn] = useState(false);
