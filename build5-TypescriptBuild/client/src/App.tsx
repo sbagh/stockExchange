@@ -15,7 +15,7 @@ interface User {
 }
 
 const App = () => {
-   // state for seeing if user is signed in or not
+   // state to check if user is logged in or not
    const [loggedIn, setLoggedIn] = useState<Boolean>(false);
 
    // state for redering all users from the db user_accounts table users
