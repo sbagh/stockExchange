@@ -29,12 +29,11 @@ const UserPortfolio = ({ user }: Props) => {
       //1- setup websocket
       const setupSocket = () => {
          if (!socket) {
-            setSocket(
-               io(userPortfolioURL, {
-                  // origin: "http://localhost:3000",
-                  transports: ["websocket"],
-               })
-            );
+            const options = {
+               origin: "http://localhost:3000",
+               transports: ["websocket"],
+            };
+            setSocket(io(userPortfolioURL, options));
          }
       };
 
