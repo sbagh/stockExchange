@@ -16,4 +16,10 @@ interface StockHoldings {
    quantity: number;
 }
 
-export { User, CashHoldings, StockHoldings };
+interface StockData {
+   ticker: string;
+   price: number;
+   lastUpdate: string;
+}
+
+export { User, CashHoldings, StockHoldings, StockData };

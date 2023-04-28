@@ -1,37 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { formatDate } from "../utils/dateUtils";
-
-import io from "socket.io-client";
+import type { StockData } from "../interfaces/interfaces";
+import io, { Socket } from "socket.io-client";
 
 // stock data url
 const stockDataURL = "http://localhost:4002";
 
 const StockPrices = () => {
    //  //state for rendering stock data (current price, ticker..etc)
-   const [stockData, setStockData] = useState({});
-   const [stockDataIsLoading, setStockDataIsLoading] = useState(true);
+   const [stockData, setStockData] = useState<StockData[]>([]);
+   const [stockDataIsLoading, setStockDataIsLoading] = useState<Boolean>(true);
 
    //state to hold socket connection
-   const [socket, setSocket] = useState(null);
+   const [socket, setSocket] = useState<Socket | null>(null);
 
    // useEfect to get stock data
    useEffect(() => {
       // 1- setup websocket connectoin
       const setupSocket = () => {
          if (!socket) {
-            setSocket(
-               io.connect(stockDataURL, {
-                  origin: "http://localhost:3000",
-                  transports: ["websocket"],
-               })
-            );
+            const options = {
+               origin: "http://localhost:3000",
+               transports: ["websocket"],
+            };
+            setSocket(io(stockDataURL, options));
          }
       };
       // 2- get stock data
       const getStockData = async () => {
          if (socket) {
             // // listen to stockData event from backend
-            socket.on("stockData", (data) => {
+            socket.on("stockData", (data: StockData[]) => {
                console.log("stock data: ", data);
                setStockData(data);
                setStockDataIsLoading(false);
@@ -45,6 +44,7 @@ const StockPrices = () => {
       return () => {
          if (socket) {
             socket.off("stockData");
+            socket.disconnect();
          }
       };
    }, [socket, setStockData, setStockDataIsLoading]);
