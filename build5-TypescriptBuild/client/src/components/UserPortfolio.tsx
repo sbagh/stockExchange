@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import type {
    User,
    CashHoldings,
@@ -14,11 +14,11 @@ interface Props {
    user: User;
 }
 
-const UserPortfolio: React.FC<Props> = ({ user }) => {
+const UserPortfolio = ({ user }: Props) => {
    //state for rendering a users portfolio including stocks held and cash:
    const [userCashHoldings, setUserCashHoldings] = useState<CashHoldings>({
-      userID: user.userID,
-      cash: 0,
+      // userID: user.userID,
+      cash: "0",
    });
    const [userStockHoldings, setUserStockHoldings] = useState<StockHoldings[]>(
       []
@@ -31,7 +31,7 @@ const UserPortfolio: React.FC<Props> = ({ user }) => {
          if (!socket) {
             setSocket(
                io(userPortfolioURL, {
-                  extraHeaders: { origin: "http://localhost:3000" },
+                  // origin: "http://localhost:3000",
                   transports: ["websocket"],
                })
             );
@@ -39,7 +39,7 @@ const UserPortfolio: React.FC<Props> = ({ user }) => {
       };
 
       //2 - get user portfolio
-      const getUserPortfolio = async () => {
+      const getUserPortfolio = () => {
          if (socket) {
             //emit user id
             socket.emit("currentUserID", user.userID);
@@ -61,6 +61,7 @@ const UserPortfolio: React.FC<Props> = ({ user }) => {
       return () => {
          if (socket) {
             socket.off("userPortfolio");
+            socket.disconnect();
          }
       };
    }, [socket, user.userID, setUserCashHoldings, setUserStockHoldings]);

@@ -24,12 +24,12 @@ const getUserCashHoldings = async (userID) => {
             return results.rows[0];
         }
         else {
-            return { userID, cash: 0 };
+            return { cash: "0" };
         }
     }
     catch (error) {
         console.log("error in getting Cash Holdings", error);
-        return { userID, cash: 0 };
+        return { cash: "0" };
     }
 };
 exports.getUserCashHoldings = getUserCashHoldings;

@@ -6,12 +6,12 @@ interface User {
 }
 
 interface CashHoldings {
-   userID: number;
-   cash?: number;
+   // userID: number;
+   cash: string;
 }
 
 interface StockHoldings {
-   userID: number;
+   // userID: number;
    ticker: string;
    quantity: number;
 }

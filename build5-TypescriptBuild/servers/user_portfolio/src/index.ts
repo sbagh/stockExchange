@@ -44,7 +44,7 @@ const emitUserPortfolio = async (socket: any, userID: number) => {
    const userStockHoldings = await db.getUserStockHoldings(userID);
    // emit user cash and stock holdings back to UI (UserPortfolio component)
    socket.emit("userPortfolio", {
-      userCashHoldings: userCashHoldings.cash,
+      userCashHoldings: userCashHoldings,
       userStockHoldings: userStockHoldings,
    });
 };
