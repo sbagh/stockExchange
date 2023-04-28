@@ -1,40 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { formatDate } from "../utils/dateUtils";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
+import type { User, UserOrderHistory } from "../interfaces/interfaces";
 
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
 
-const UserStockOrders = ({ userID }) => {
-   //  //state for rendering a user's stock orders
-   const [userOrderHistory, setUserOrderHistory] = useState([]);
+interface Props {
+   user: User;
+}
 
+const UserStockOrders = ({ user }: Props) => {
+   // state for rendering a user's stock orders
+   const [userOrderHistory, setUserOrderHistory] = useState<UserOrderHistory[]>(
+      []
+   );
    // store websocket connection in a state
-   const [socket, setSocket] = useState(null);
+   const [socket, setSocket] = useState<Socket | null>(null);
 
    //use effect to fetch the specific user's stock orders
    useEffect(() => {
       // 1- setup websocket
       const setupSocket = () => {
          if (!socket) {
-            setSocket(
-               io.connect(stockOrderingURL, {
-                  origin: "http://localhost:3000",
-                  transports: ["websocket"],
-               })
-            );
+            const options = {
+               origin: "http://localhost:3000",
+               transports: ["websocket"],
+            };
+            setSocket(io(stockOrderingURL, options));
          }
       };
 
       //2- get user's stock orders
-      const getUserOrders = async () => {
-         // emit current userID to back end
-         await socket.emit("currentUserID", userID);
-         // get user's order history from back end
-         await socket.on("userOrderHistory", (userOrderHistory) => {
-            console.log("user stock order's:", userOrderHistory);
-            setUserOrderHistory(userOrderHistory);
-         });
+      const getUserOrders = () => {
+         if (socket) {
+            // emit current userID to back end
+            socket.emit("currentUserID", user.userID);
+            // get user's order history from back end
+            socket.on("userOrderHistory", (userOrderHistory) => {
+               // console.log("user stock order's:", userOrderHistory);
+               setUserOrderHistory(userOrderHistory);
+            });
+         }
       };
       setupSocket();
       getUserOrders();
@@ -43,9 +50,10 @@ const UserStockOrders = ({ userID }) => {
       return () => {
          if (socket) {
             socket.off("userOrderHistory");
+            socket.disconnect();
          }
       };
-   }, [socket, userID, setUserOrderHistory]);
+   }, [socket, user.userID, setUserOrderHistory]);
 
    // Send a cancel order PUT request to server.js
    const cancelOrder = async (orderID, orderType, orderStatus, userID) => {
@@ -100,7 +108,7 @@ const UserStockOrders = ({ userID }) => {
                                        order.orderID,
                                        order.orderType,
                                        order.orderStatus,
-                                       userID
+                                       user.userID
                                     )
                                  }
                               >

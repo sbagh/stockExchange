@@ -44,7 +44,7 @@ const UserPortfolio = ({ user }: Props) => {
             socket.emit("currentUserID", user.userID);
             // get portfolio
             socket.on("userPortfolio", (userPortfolio) => {
-               console.log("user portfolio: ", userPortfolio);
+               // console.log("user portfolio: ", userPortfolio);
                setUserCashHoldings(userPortfolio.userCashHoldings);
                setUserStockHoldings(userPortfolio.userStockHoldings);
             });

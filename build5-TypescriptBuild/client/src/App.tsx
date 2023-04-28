@@ -36,7 +36,7 @@ const App = () => {
                   <UserPortfolio className="user-portfolio" user={user} />
                )}
                <StockOrdering className="stock-market" user={user} />
-               {user.userID && <UserStockOrders userID={user.userID} />}
+               {user.userID && <UserStockOrders user={user} />}
                <StockData />
             </div>
          ) : (

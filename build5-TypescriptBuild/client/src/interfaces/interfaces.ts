@@ -22,4 +22,14 @@ interface StockData {
    lastUpdate: string;
 }
 
-export { User, CashHoldings, StockHoldings, StockData };
+interface UserOrderHistory {
+   orderID: string;
+   orderType: string;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderTime: string;
+   orderStatus: string;
+}
+
+export { User, CashHoldings, StockHoldings, StockData, UserOrderHistory };

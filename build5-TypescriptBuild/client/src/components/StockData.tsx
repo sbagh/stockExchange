@@ -31,7 +31,7 @@ const StockPrices = () => {
          if (socket) {
             // // listen to stockData event from backend
             socket.on("stockData", (data: StockData[]) => {
-               console.log("stock data: ", data);
+               // console.log("stock data: ", data);
                setStockData(data);
                setStockDataIsLoading(false);
             });
