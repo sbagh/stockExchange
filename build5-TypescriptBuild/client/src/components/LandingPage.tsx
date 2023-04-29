@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
 const LandingPage = ({ setLoggedIn }) => {
-   const [isLoginForm, setIsLoginForm] = useState(true);
+   const [isLoginForm, setIsLoginForm] = useState<Boolean>(true);
 
    // toggle login or signup form on button click
    const handleFormToggle = () => {
@@ -13,9 +13,9 @@ const LandingPage = ({ setLoggedIn }) => {
 
    //check if a JWT exists for user, that way they will not login again
    useEffect(() => {
-      const checkJWT = async () => {
+      const checkJWT = async (): Promise<void> => {
          // get token from local storage (originally stored using LoginForm or SignupForm)
-         const token = await localStorage.getItem("token");
+         const token: string | null = await localStorage.getItem("token");
          if (token) {
             setLoggedIn(true);
          }
