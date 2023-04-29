@@ -32,7 +32,7 @@ interface UserOrderHistory {
    orderStatus: string;
 }
 
-interface StockOrder {
+interface StockOrderDetails {
    orderID: string;
    userID: number | null;
    orderType: string;
@@ -42,11 +42,12 @@ interface StockOrder {
    orderTime: Date | null;
    orderStatus: string;
 }
+
 export {
    User,
    CashHoldings,
    StockHoldings,
    StockData,
    UserOrderHistory,
-   StockOrder,
+   StockOrderDetails,
 };

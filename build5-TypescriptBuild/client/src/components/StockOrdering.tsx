@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import StockOrderForm from "./StockOrderForm";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import type { StockOrder, User } from "../interfaces/interfaces";
+import type { StockOrderDetails, User } from "../interfaces/interfaces";
 
 // stock ordering microservice URL
 const stockOrderingURL = "http://localhost:4003";
@@ -13,7 +13,7 @@ interface Props {
 
 const StockOrdering = ({ user }: Props) => {
    //state for setting order details when buying/selling a stock
-   const [orderDetails, setOrderDetails] = useState<StockOrder>({
+   const [orderDetails, setOrderDetails] = useState<StockOrderDetails>({
       orderID: "",
       userID: null,
       orderType: "buy",
@@ -26,7 +26,9 @@ const StockOrdering = ({ user }: Props) => {
    //  orderDetails object properties :
 
    //state for returning a message when a user starts a buy/sell order:
-   const [orderFeedback, setOrderFeedback] = useState<string | null>(null);
+   const [orderFeedback, setOrderFeedback] = useState<string>(
+      " Buy or sell a stock"
+   );
 
    // handle user input on the form when placing a buy/sell order, passed as props to the StockOrderForm.js
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,14 +58,9 @@ const StockOrdering = ({ user }: Props) => {
       console.log("order: ", orderDetails);
 
       try {
-         await axios
-            .post(`${stockOrderingURL}/startTradeOrder`, { orderDetails })
-            .then(() =>
-               // set order feedback message if order is successfuly sent to back end
-               setOrderFeedback(
-                  `${user.firstName}'s ${orderDetails.orderType} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-               )
-            );
+         await axios.post(`${stockOrderingURL}/startTradeOrder`, {
+            orderDetails,
+         });
       } catch (err) {
          console.log("did not send stock order: ", err);
          setOrderFeedback("you order was not sent");
@@ -78,7 +75,7 @@ const StockOrdering = ({ user }: Props) => {
             handleSubmit={handleSubmit}
          />
          <br></br>
-         <div>{orderFeedback}</div>
+         {orderFeedback}
       </div>
    );
 };
