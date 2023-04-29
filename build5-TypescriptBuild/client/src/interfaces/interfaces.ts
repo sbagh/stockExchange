@@ -48,6 +48,13 @@ interface UserLoginCredentials {
    password: string;
 }
 
+interface UserSignupCredentials {
+   username: string;
+   password: string;
+   firstName: string;
+   lastName: string;
+}
+
 export {
    User,
    CashHoldings,
@@ -56,4 +63,5 @@ export {
    UserOrderHistory,
    StockOrderDetails,
    UserLoginCredentials,
+   UserSignupCredentials,
 };

@@ -30,6 +30,7 @@ exports.loginUser = exports.getAllUsers = exports.createUser = void 0;
 const argon2_1 = __importDefault(require("argon2"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const db = __importStar(require("../database/dbQueries.js"));
+// import secret key generator
 const config_1 = require("../config/config");
 //get user by username
 const getUserByUsername = async (username) => {

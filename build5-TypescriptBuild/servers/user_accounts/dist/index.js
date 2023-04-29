@@ -28,10 +28,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+//import user service functions
 const userService = __importStar(require("./services/userServices.js"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: "http://localhost:3000" }));
 app.use(express_1.default.json());
+//user accounts microservice port
 const userAccountsPORT = 4000;
 // --------------------- Code Starts Here --------------------- //
 // get all users
@@ -59,7 +61,7 @@ app.post("/login", async (req, res) => {
 app.post("/signup", async (req, res) => {
     //1- destructure username and password from req.body
     const { username, password, firstName, lastName } = req.body;
-    console.log(username, password, firstName, lastName);
+    // console.log(username, password, firstName, lastName);
     //2- create user using UserService
     const signupResponse = await userService.createUser(username, password, firstName, lastName);
     //3- send response: {userID:, token:, success: true, message:"" } or {success: false, message:""}

@@ -1,7 +1,9 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import * as db from "../database/dbQueries.js";
+// import secret key generator
 import { mysecretKey } from "../config/config";
+//import typescript interfaces
 
 // typescript interface for User
 interface User {
