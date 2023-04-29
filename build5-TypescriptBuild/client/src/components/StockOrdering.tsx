@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import StockOrderForm from "./StockOrderForm";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
@@ -47,15 +47,13 @@ const StockOrdering = ({ user }: Props) => {
 
    // send trade order to back end via body of an axios request
    const startTradeOrder = async () => {
-      //set the remaining body of orderDetails:
+      //set the remaining body of orderDetails (ticker, price, quantity, orderType are alredy set in handleChange):
       orderDetails.orderID = uuidv4();
       orderDetails.userID = user.userID;
-      orderDetails.quantity = orderDetails.quantity;
-      orderDetails.price = orderDetails.price;
       orderDetails.orderTime = new Date();
       orderDetails.orderStatus = "Pending";
 
-      console.log("order: ", orderDetails);
+      // console.log("order: ", orderDetails);
 
       try {
          if (

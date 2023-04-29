@@ -10,7 +10,7 @@ import type { User } from "./interfaces/interfaces";
 
 const App = () => {
    // state to check if user is logged in or not
-   const [loggedIn, setLoggedIn] = useState<Boolean>(false);
+   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
    // state for redering all users from the db user_accounts table users
    const [users, setUsers] = useState<User[]>([]);
@@ -33,9 +33,13 @@ const App = () => {
                   setLoggedIn={setLoggedIn}
                />
                {user.userID && (
+                  // @ts-ignore
                   <UserPortfolio className="user-portfolio" user={user} />
                )}
-               <StockOrdering className="stock-market" user={user} />
+               {
+                  // @ts-ignore
+                  <StockOrdering className="stock-market" user={user} />
+               }
                {user.userID && <UserStockOrders user={user} />}
                <StockData />
             </div>
