@@ -32,4 +32,22 @@ interface UserOrderHistory {
    orderStatus: string;
 }
 
-export { User, CashHoldings, StockHoldings, StockData, UserOrderHistory };
+interface StockOrder {
+   orderID: string;
+   userID: number;
+   orderType: string;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderTime: Date;
+   orderStatus: string;
+}
+
+export {
+   User,
+   CashHoldings,
+   StockHoldings,
+   StockData,
+   UserOrderHistory,
+   StockOrder,
+};
