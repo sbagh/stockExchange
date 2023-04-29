@@ -31,7 +31,7 @@ const cors_1 = __importDefault(require("cors"));
 const http_1 = __importDefault(require("http"));
 // import socket.io requirements
 const socket_io_1 = require("socket.io");
-// import db connection and queries:
+// import db connection and queries
 const db = __importStar(require("./database/dbQueries"));
 // import functions used by amqp/rabbitMQ
 const sendToQueue_1 = require("./rabbitMQ/sendToQueue");
@@ -72,6 +72,7 @@ const emitUserOrderHistory = async (socket, userID) => {
 };
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", async (req, res) => {
+    // get orderDetails from req body
     const orderDetails = req.body.orderDetails;
     // console.log("received order from UI: ", orderDetails);
     // set order_status to open

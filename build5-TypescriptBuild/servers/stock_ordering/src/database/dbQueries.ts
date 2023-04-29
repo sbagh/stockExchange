@@ -1,4 +1,9 @@
 import { Pool, QueryResult } from "pg";
+import type {
+   StockOrderDetails,
+   UserStockOrders,
+   CanceledOrder,
+} from "../interface/interface";
 
 // connect to db:
 const pool = new Pool({
@@ -9,37 +14,10 @@ const pool = new Pool({
    port: 5432,
 });
 
-// interface:
-interface OrderDetails {
-   orderID: string;
-   userID: number;
-   orderType: string;
-   ticker: string;
-   quantity: number;
-   price: number;
-   orderStatus: string;
-   orderTime: Date;
-}
-
-interface StockOrder {
-   orderID: string;
-   orderType: string;
-   ticker: string;
-   quantity: number;
-   price: number;
-   orderStatus: string;
-   orderTime: Date;
-}
-
-interface CanceledOrder {
-   orderID: string;
-   orderType: string;
-   orderStatus: string;
-   userID: number;
-}
-
 // //get a user's trade orders
-const getUserStockOrders = async (userID: number): Promise<StockOrder[]> => {
+const getUserStockOrders = async (
+   userID: number
+): Promise<UserStockOrders[]> => {
    try {
       const queryString =
          "SELECT order_type, ticker, quantity, price, order_status, order_time, order_id FROM stock_orders WHERE user_id = $1 ORDER BY order_time DESC ";
@@ -53,7 +31,7 @@ const getUserStockOrders = async (userID: number): Promise<StockOrder[]> => {
       // console.log(results.rows);
 
       // convert to camel case
-      const camelCaseResults: StockOrder[] = results.rows.map((result) => {
+      const camelCaseResults: UserStockOrders[] = results.rows.map((result) => {
          return {
             orderType: result.order_type,
             orderStatus: result.order_status,
@@ -72,7 +50,9 @@ const getUserStockOrders = async (userID: number): Promise<StockOrder[]> => {
 };
 
 // add a stock trade order
-const addStockOrder = async (orderDetails: OrderDetails): Promise<void> => {
+const addStockOrder = async (
+   orderDetails: StockOrderDetails
+): Promise<void> => {
    try {
       const queryString =
          "INSERT INTO stock_orders (order_id, user_id, order_type, ticker, quantity, price, order_time, order_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";

@@ -3,12 +3,13 @@ import cors from "cors";
 import http from "http";
 // import socket.io requirements
 import { Server } from "socket.io";
-// import db connection and queries:
+// import db connection and queries
 import * as db from "./database/dbQueries";
 // import functions used by amqp/rabbitMQ
 import { sendToQueue } from "./rabbitMQ/sendToQueue";
 import { receiveFromQueue } from "./rabbitMQ/receiveFromQueue";
 import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
+// import typescript interfaces
 import type { StockOrderDetails } from "./interface/interface";
 
 const app: express.Application = express();
@@ -55,6 +56,7 @@ const emitUserOrderHistory = async (socket: any, userID: number) => {
 app.post(
    "/startTradeOrder",
    async (req: express.Request, res: express.Response) => {
+      // get orderDetails from req body
       const orderDetails: StockOrderDetails = req.body.orderDetails;
       // console.log("received order from UI: ", orderDetails);
       // set order_status to open

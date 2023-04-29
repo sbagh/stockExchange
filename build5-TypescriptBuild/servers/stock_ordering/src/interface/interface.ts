@@ -11,4 +11,21 @@ interface StockOrderDetails {
    orderStatus: string;
 }
 
-export { StockOrderDetails };
+interface UserStockOrders {
+   orderID: string;
+   orderType: string;
+   ticker: string;
+   quantity: number;
+   price: number;
+   orderStatus: string;
+   orderTime: Date;
+}
+
+interface CanceledOrder {
+   orderID: string;
+   orderType: string;
+   orderStatus: string;
+   userID: number;
+}
+
+export { StockOrderDetails, UserStockOrders, CanceledOrder };
