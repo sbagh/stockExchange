@@ -2,15 +2,15 @@
 
 Stock exchange full-stack app.
 
-Stable build: build 4 - microservices with authentication
+Latest / Stable build: build 4 and 5
 
-Watch the demo here: https://www.youtube.com/watch?v=fi1zDjc1_h8 
+Watch the demo here: https://www.youtube.com/watch?v=fi1zDjc1_h8
 
 ### 1 - Tech stack in local build:
 
-Local Build: Node.js/Express, React, PostgreSQL, RabbitMQ, Socket.io
+-  Local Build: Node.js/Express, React, Typescript, PostgreSQL, RabbitMQ, Socket.io
 
-Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, Docker, ECS + local build
+-  Cloud Build in progress: AWS S3, Lambda, RDS, SQS, SNS, API gateway, Docker, ECS + local build
 
 ### 2 - Running the project locally
 
@@ -38,11 +38,11 @@ Infrastructure and non functional reqiurements:
 -  Implemented communication between microservices using RabbitMQ through the AMQP protocol
 -  Implemented websockets using socket.io to provide real-time updates to the browser
 -  Implemented a user signup and login authentication system using a JWT, libraries used are jsonwebtoken for signing, argon2 for hashing and verifying passwords, and crypto for secret key generation
+-  Refactored back-end and front-end code to Typescript
 
 ### 4 - Next steps:
 
-- Refactor to Typescript
-- Host serverlessly on AWS using:
+-  Host serverlessly on AWS using:
    -  S3 for hosting the react app
    -  Lambda for back-end files
    -  RDS (postgreSQL) for data storage
@@ -54,6 +54,6 @@ Infrastructure and non functional reqiurements:
 
 ### 5 - High level system design for AWS build:
 
-(local build uses rabbitMQ instead of SQS/SNS and does not include the API gateway)
+-  local build uses rabbitMQ instead of SQS/SNS and does not include the API gateway
 
 <img width="1245" alt="Screen Shot 2023-03-02 at 6 59 01 AM" src="https://user-images.githubusercontent.com/52921619/222810242-33159bfc-c21d-4a5b-b285-f711f8527d66.png">
