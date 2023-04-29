@@ -105,6 +105,7 @@ const updateOrderStatusToCanceled = async (
    }
 };
 
+// get order status given orderID - not used for now
 const getOrderStatus = async (orderID: string): Promise<{ orderStatus }> => {
    try {
       const queryString =

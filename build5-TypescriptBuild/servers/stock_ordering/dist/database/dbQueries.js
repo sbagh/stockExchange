@@ -85,6 +85,7 @@ const updateOrderStatusToCanceled = async (canceledOrder) => {
     }
 };
 exports.updateOrderStatusToCanceled = updateOrderStatusToCanceled;
+// get order status given orderID - not used for now
 const getOrderStatus = async (orderID) => {
     try {
         const queryString = "SELECT order_status FROM stock_orders WHERE order_id = $1";

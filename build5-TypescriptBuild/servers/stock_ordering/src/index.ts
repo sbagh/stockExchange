@@ -10,7 +10,11 @@ import { sendToQueue } from "./rabbitMQ/sendToQueue";
 import { receiveFromQueue } from "./rabbitMQ/receiveFromQueue";
 import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
 // import typescript interfaces
-import type { StockOrderDetails } from "./interface/interface";
+import type {
+   StockOrderDetails,
+   UserStockOrders,
+   CanceledOrder,
+} from "./interface/interface";
 
 const app: express.Application = express();
 app.use(cors({ origin: "http://localhost:3000" }));
@@ -46,7 +50,9 @@ io.on("connection", (socket: any) => {
 // Emit a specific user's order history
 const emitUserOrderHistory = async (socket: any, userID: number) => {
    // first get user's order history
-   const userOrderHistory = await db.getUserStockOrders(userID);
+   const userOrderHistory: UserStockOrders[] = await db.getUserStockOrders(
+      userID
+   );
    // console.log("userOrderHistory: ", userOrderHistory);
    // emit user order history to UI (component UserStockOrders)
    socket.emit("userOrderHistory", userOrderHistory);
@@ -76,7 +82,7 @@ const receiveMatchedOrder = async () => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue,
-      (matchedOrder: any) => updateOrderStatus(matchedOrder)
+      (matchedOrder) => updateOrderStatus(matchedOrder)
    );
 };
 

@@ -58,9 +58,18 @@ const StockOrdering = ({ user }: Props) => {
       console.log("order: ", orderDetails);
 
       try {
+         // if (
+         //    orderDetails.userID &&
+         //    orderDetails.quantity &&
+         //    orderDetails.price &&
+         //    orderDetails.orderTime
+         // ) {
          await axios.post(`${stockOrderingURL}/startTradeOrder`, {
             orderDetails,
          });
+         // } else {
+         //    throw error;
+         // }
       } catch (err) {
          console.log("did not send stock order: ", err);
          setOrderFeedback("you order was not sent");
