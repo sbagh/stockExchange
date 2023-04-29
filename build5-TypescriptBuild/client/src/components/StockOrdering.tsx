@@ -15,24 +15,23 @@ const StockOrdering = ({ user }: Props) => {
    //state for setting order details when buying/selling a stock
    const [orderDetails, setOrderDetails] = useState<StockOrder>({
       orderID: "",
-      userID: 0,
+      userID: null,
       orderType: "buy",
       ticker: "",
-      quantity: 0,
-      price: 0,
-      orderTime: new Date(),
+      quantity: null,
+      price: null,
+      orderTime: null,
       orderStatus: "",
    });
+   //  orderDetails object properties :
 
    //state for returning a message when a user starts a buy/sell order:
-   const [orderFeedback, setOrderFeedback] = useState<string>(
-      "Place a Buy or Sell Limit order"
-   );
+   const [orderFeedback, setOrderFeedback] = useState<string | null>(null);
 
    // handle user input on the form when placing a buy/sell order, passed as props to the StockOrderForm.js
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      // Parse quantity and price to numbers
+      // convert user input for quantity and price from type string to number
       const parsedValue =
          name === "quantity" || name === "price" ? parseFloat(value) : value;
       setOrderDetails({ ...orderDetails, [name]: parsedValue });
@@ -57,13 +56,14 @@ const StockOrdering = ({ user }: Props) => {
       console.log("order: ", orderDetails);
 
       try {
-         await axios.post(`${stockOrderingURL}/startTradeOrder`, {
-            orderDetails,
-         });
-
-         setOrderFeedback(
-            `${user.firstName}'s ${orderDetails.orderType} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
-         );
+         await axios
+            .post(`${stockOrderingURL}/startTradeOrder`, { orderDetails })
+            .then(() =>
+               // set order feedback message if order is successfuly sent to back end
+               setOrderFeedback(
+                  `${user.firstName}'s ${orderDetails.orderType} order for ${orderDetails.quantity} shares of ${orderDetails.ticker} at ${orderDetails.price} $ was sent`
+               )
+            );
       } catch (err) {
          console.log("did not send stock order: ", err);
          setOrderFeedback("you order was not sent");

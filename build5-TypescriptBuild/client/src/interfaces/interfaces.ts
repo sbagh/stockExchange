@@ -34,15 +34,14 @@ interface UserOrderHistory {
 
 interface StockOrder {
    orderID: string;
-   userID: number;
+   userID: number | null;
    orderType: string;
    ticker: string;
-   quantity: number;
-   price: number;
-   orderTime: Date;
+   quantity: number | null;
+   price: number | null;
+   orderTime: Date | null;
    orderStatus: string;
 }
-
 export {
    User,
    CashHoldings,
