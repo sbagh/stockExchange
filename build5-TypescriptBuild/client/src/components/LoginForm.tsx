@@ -1,25 +1,28 @@
 import axios from "axios";
 import React from "react";
 import { useState } from "react";
+import type { UserLoginCredentials } from "../interfaces/interfaces";
 
 const userAccoutnsURL = "http://localhost:4000";
 
 const LoginForm = ({ setLoggedIn }) => {
    //state for setting user credentials when loging in
-   const [userCredentials, setUserCredentials] = useState({
-      username: "",
-      password: "",
-   });
-   const [loginFeedbackMessage, setLoginFeedbackMessage] = useState("");
+   const [userCredentials, setUserCredentials] = useState<UserLoginCredentials>(
+      {
+         username: "",
+         password: "",
+      }
+   );
+   const [loginFeedbackMessage, setLoginFeedbackMessage] = useState<string>("");
 
    // handle change in form and save changes to userCredentials
-   const handleChange = (event) => {
+   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
       const { name, value } = event.target;
       setUserCredentials({ ...userCredentials, [name]: value });
    };
 
    //handle submit to send credentials to back end, and receive JWT and feedback message
-   const handleSubmit = (event) => {
+   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       // console.log(userCredentials);
       startLogin(userCredentials);
@@ -33,7 +36,7 @@ const LoginForm = ({ setLoggedIn }) => {
             `${userAccoutnsURL}/login`,
             userCredentials
          );
-         console.log(response);
+         // console.log(response);
          //set feedback message
          setLoginFeedbackMessage("signing in...");
          // check if reponse is successful (i.e if login credentials are correct)
@@ -75,9 +78,7 @@ const LoginForm = ({ setLoggedIn }) => {
                   name="password"
                />
             </label>
-            <button type="submit" onClick={handleSubmit}>
-               Log in
-            </button>
+            <button type="submit">Log in</button>
          </form>
          <p>{loginFeedbackMessage}</p>
       </div>

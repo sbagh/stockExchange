@@ -43,6 +43,11 @@ interface StockOrderDetails {
    orderStatus: string;
 }
 
+interface UserLoginCredentials {
+   username: string;
+   password: string;
+}
+
 export {
    User,
    CashHoldings,
@@ -50,4 +55,5 @@ export {
    StockData,
    UserOrderHistory,
    StockOrderDetails,
+   UserLoginCredentials,
 };
