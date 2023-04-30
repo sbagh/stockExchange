@@ -23,4 +23,14 @@ interface CanceledOrder {
     orderStatus: string;
     userID: number;
 }
-export { StockOrderDetails, UserStockOrders, CanceledOrder };
+interface MatchedOrder {
+    buyOrderID: string;
+    sellOrderID: string;
+    buyerID: number;
+    sellerID: number;
+    price: number;
+    time: Date;
+    ticker: string;
+    quantity: number;
+}
+export { StockOrderDetails, UserStockOrders, CanceledOrder, MatchedOrder };

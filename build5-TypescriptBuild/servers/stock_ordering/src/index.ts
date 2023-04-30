@@ -14,6 +14,7 @@ import type {
    StockOrderDetails,
    UserStockOrders,
    CanceledOrder,
+   MatchedOrder,
 } from "./interface/interface";
 
 const app: express.Application = express();
@@ -36,7 +37,7 @@ const matchedOrdersExchange: string = "matchedOrdersExchange";
 const matchedOrdersQueue: string = "matchedOrdersStockOrderingQueue";
 const canceledOrdersConfirmationQueue: string = "canceledOrdersConfirmation";
 
-// --------------------- Code Starts Here --------------------- //
+// ------------------- Code Starts Here ------------------- //
 
 // setup a websocket
 io.on("connection", (socket: any) => {
@@ -58,6 +59,8 @@ const emitUserOrderHistory = async (socket: any, userID: number) => {
    socket.emit("userOrderHistory", userOrderHistory);
 };
 
+// ----- New Stock Order Functions ----- //
+
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post(
    "/startTradeOrder",
@@ -65,6 +68,7 @@ app.post(
       // get orderDetails from req body
       const orderDetails: StockOrderDetails = req.body.orderDetails;
       // console.log("received order from UI: ", orderDetails);
+
       // set order_status to open
       orderDetails.orderStatus = "Open";
       // add trade order to stock_orders db
@@ -77,6 +81,8 @@ app.post(
    }
 );
 
+// ----- Matched Order Functions ----- //
+
 // receive matched orders from order matching micromicroservice using rabbitMQ
 const receiveMatchedOrder = async () => {
    await receiveFanOutExchange(
@@ -86,8 +92,9 @@ const receiveMatchedOrder = async () => {
    );
 };
 
-// callback function used to update order status and send to ui
-const updateOrderStatus = async (matchedOrder: any) => {
+// callback function used to update order status and re-send user trade history to ui
+const updateOrderStatus = async (matchedOrder) => {
+   // update stock orders table
    await db.updateOrderStatusToFilled(
       matchedOrder.buyOrderID,
       matchedOrder.sellOrderID
@@ -96,11 +103,15 @@ const updateOrderStatus = async (matchedOrder: any) => {
    //    `matched order received from ${matchedOrdersQueue} queue, order: `,
    //    matchedOrder
    // );
+   //get stocket from app definition
    const socket = app.get("socketio");
+   //re-send order history to UI for both buyer and seller
    await emitUserOrderHistory(socket, matchedOrder.buyerID);
    await emitUserOrderHistory(socket, matchedOrder.sellerID);
 };
 receiveMatchedOrder();
+
+// ----- Canceled Order Functions ----- //
 
 // cancel a trade order if request from UI
 app.put(

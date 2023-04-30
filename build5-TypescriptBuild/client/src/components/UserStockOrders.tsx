@@ -34,15 +34,22 @@ const UserStockOrders = ({ user }: Props) => {
       //2- get user's stock orders
       const getUserOrders = () => {
          if (socket) {
+            // console.log(
+            //    "userID @UserStockOrders sent to backend: ",
+            //    user.userID
+            // );
+
             // emit current userID to back end
             socket.emit("currentUserID", user.userID);
             // get user's order history from back end
             socket.on("userOrderHistory", (userOrderHistory) => {
                // console.log("user stock order's:", userOrderHistory);
+
                setUserOrderHistory(userOrderHistory);
             });
          }
       };
+
       setupSocket();
       getUserOrders();
 
@@ -50,7 +57,8 @@ const UserStockOrders = ({ user }: Props) => {
       return () => {
          if (socket) {
             socket.off("userOrderHistory");
-            socket.disconnect();
+            //socket disconnect causing major issues, was not emit or listening to socket anymore
+            // socket.disconnect();
          }
       };
    }, [socket, user.userID, setUserOrderHistory]);

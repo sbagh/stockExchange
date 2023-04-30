@@ -53,7 +53,7 @@ const canceledOrdersQueue = "canceledOrdersQueue";
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersStockOrderingQueue";
 const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
-// --------------------- Code Starts Here --------------------- //
+// ------------------- Code Starts Here ------------------- //
 // setup a websocket
 io.on("connection", (socket) => {
     console.log("client is connected, id: ", socket.id);
@@ -70,6 +70,7 @@ const emitUserOrderHistory = async (socket, userID) => {
     // emit user order history to UI (component UserStockOrders)
     socket.emit("userOrderHistory", userOrderHistory);
 };
+// ----- New Stock Order Functions ----- //
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post("/startTradeOrder", async (req, res) => {
     // get orderDetails from req body
@@ -85,22 +86,27 @@ app.post("/startTradeOrder", async (req, res) => {
     const socket = app.get("socketio");
     await emitUserOrderHistory(socket, orderDetails.userID);
 });
+// ----- Matched Order Functions ----- //
 // receive matched orders from order matching micromicroservice using rabbitMQ
 const receiveMatchedOrder = async () => {
     await (0, receiveFanOutExchange_1.receiveFanOutExchange)(matchedOrdersExchange, matchedOrdersQueue, (matchedOrder) => updateOrderStatus(matchedOrder));
 };
-// callback function used to update order status and send to ui
+// callback function used to update order status and re-send user trade history to ui
 const updateOrderStatus = async (matchedOrder) => {
+    // update stock orders table
     await db.updateOrderStatusToFilled(matchedOrder.buyOrderID, matchedOrder.sellOrderID);
     // console.log(
     //    `matched order received from ${matchedOrdersQueue} queue, order: `,
     //    matchedOrder
     // );
+    //get stocket from app definition
     const socket = app.get("socketio");
+    //re-send order history to UI for both buyer and seller
     await emitUserOrderHistory(socket, matchedOrder.buyerID);
     await emitUserOrderHistory(socket, matchedOrder.sellerID);
 };
 receiveMatchedOrder();
+// ----- Canceled Order Functions ----- //
 // cancel a trade order if request from UI
 app.put("/cancelTradeOrder", async (req, res) => {
     // deconstruct req qeuries and place in a canceledOrder object
