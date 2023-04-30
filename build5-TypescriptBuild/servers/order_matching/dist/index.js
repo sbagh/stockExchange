@@ -49,8 +49,9 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass_1.orderMatchingClass();
 // --------------------- Code Starts Here --------------------- //
-//receive stock orders from stockOrderingQue, then add use sendToExhange callback to add order to buyOrders or sellOrders array in stock exchange
+//receive stock orders from stockOrderingQue, then add the order to buyOrders or sellOrders array in stock exchange
 const receiveStockOrder = async () => {
+    //receiveFromQueue rabbitmq function / sendToExchange callback function
     await (0, receiveFromQueue_1.receiveFromQueue)(stockOrdersQueue, sendToExchange);
 };
 // when a stock order is recieved, send it to the stock exchange, to be placed in a buyOrders or sellOrders array then matched

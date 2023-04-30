@@ -8,6 +8,12 @@ import * as db from "./database/dbQueries";
 import { sendToQueue } from "./rabbitMQ/sendToQueue";
 import { receiveFromQueue } from "./rabbitMQ/receiveFromQueue";
 import { publishFanOutExchange } from "./rabbitMQ/publishFanOutExchange";
+// import interfaces for typescript
+import type {
+   StockOrderDetails,
+   CanceledOrderDetails,
+   MatchedOrder,
+} from "./interfaces/interfaces";
 
 const app = express();
 app.use(cors({ origin: "http://localhost:3000" }));
@@ -25,44 +31,15 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();
 
-//typescript interface:
-
-interface OrderDetails {
-   userID: number;
-   ticker: string;
-   quantity: number;
-   price: number;
-   orderID: string;
-   orderType: string;
-}
-
-interface CanceledOrderDetails {
-   orderID: string;
-   orderType: string;
-   orderStatus: string;
-   userID: number;
-}
-
-//interface
-interface MatchedOrder {
-   buyOrderID: string;
-   sellOrderID: string;
-   buyerID: number;
-   sellerID: number;
-   price: number;
-   time: Date;
-   ticker: string;
-   quantity: number;
-}
-
 // --------------------- Code Starts Here --------------------- //
 
-//receive stock orders from stockOrderingQue, then add use sendToExhange callback to add order to buyOrders or sellOrders array in stock exchange
+//receive stock orders from stockOrderingQue, then add the order to buyOrders or sellOrders array in stock exchange
 const receiveStockOrder = async () => {
+   //receiveFromQueue rabbitmq function / sendToExchange callback function
    await receiveFromQueue(stockOrdersQueue, sendToExchange);
 };
 // when a stock order is recieved, send it to the stock exchange, to be placed in a buyOrders or sellOrders array then matched
-const sendToExchange = (orderDetails: OrderDetails) => {
+const sendToExchange = (orderDetails: StockOrderDetails) => {
    // add to buy or sell orders array depending on order_type
    orderDetails.orderType === "buy"
       ? stockExchange.addBuyOrder(

@@ -1,32 +1,11 @@
 //class that matches highest buy order to highest sell order
 
-//interface
-interface BuyOrder {
-   buyer: number;
-   ticker: string;
-   quantity: number;
-   price: number;
-   orderID: string;
-   time: string;
-}
-interface SellOrder {
-   seller: number;
-   ticker: string;
-   quantity: number;
-   price: number;
-   orderID: string;
-   time: string;
-}
-interface MatchedOrder {
-   buyOrderID: string;
-   sellOrderID: string;
-   buyerID: number;
-   sellerID: number;
-   price: number;
-   time: Date;
-   ticker: string;
-   quantity: number;
-}
+//import typescript interfaces
+import type {
+   BuyOrder,
+   SellOrder,
+   MatchedOrder,
+} from "../interfaces/interfaces";
 
 class orderMatchingClass {
    buyOrders: BuyOrder[];

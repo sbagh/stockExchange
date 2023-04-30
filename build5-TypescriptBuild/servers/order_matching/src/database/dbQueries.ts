@@ -1,4 +1,6 @@
 import { Pool, QueryResult } from "pg";
+//import typescript interface
+import type { MatchedOrder } from "../interfaces/interfaces";
 
 // connect to db:
 const pool = new Pool({
@@ -9,17 +11,6 @@ const pool = new Pool({
    port: 5432,
 });
 
-//interface
-interface MatchedOrder {
-   buyOrderID: string;
-   sellOrderID: string;
-   buyerID: number;
-   sellerID: number;
-   price: number;
-   time: Date;
-   ticker: string;
-   quantity: number;
-}
 
 // update matched_orders table after matching an order
 const updateMatchedOrdersTable = async (
