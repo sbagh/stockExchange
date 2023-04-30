@@ -8,4 +8,11 @@ interface UserSignupCredentials {
     firstName: string;
     lastName: string;
 }
-export { UserLoginCredentials, UserSignupCredentials };
+interface User {
+    userID: number;
+    username?: string;
+    password?: string;
+    firstName?: string;
+    lastName?: string;
+}
+export { UserLoginCredentials, UserSignupCredentials, User };

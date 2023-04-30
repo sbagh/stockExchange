@@ -29,6 +29,7 @@ const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 
 // --------------------- Code Starts Here --------------------- //
 
+// ----------- 1. Socket.io Functions ----------- //
 // use socket.io
 io.on("connection", (socket: any) => {
    console.log("client is connected, id: ", socket.id);
@@ -39,7 +40,7 @@ io.on("connection", (socket: any) => {
    });
 });
 
-// get and emit user portfolio (cash and stock holdings)
+// emit user portfolio to ui (both cash and stock holdings)
 const emitUserPortfolio = async (
    socket: any,
    userID: number
@@ -53,6 +54,8 @@ const emitUserPortfolio = async (
       userStockHoldings: userStockHoldings,
    });
 };
+
+// ----------- 2. Matched Order Functions ----------- //
 
 // receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrders = async (io: Server): Promise<void> => {

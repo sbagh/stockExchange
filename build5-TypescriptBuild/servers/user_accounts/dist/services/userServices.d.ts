@@ -1,4 +1,4 @@
-import * as db from "../database/dbQueries.js";
+import type { User } from "../interfaces/interfaces.js";
 declare const loginUser: (username: string, password: string) => Promise<{
     userID?: number | undefined;
     token?: string | undefined;
@@ -11,5 +11,5 @@ declare const createUser: (username: string, password: string, firstName: string
     success: boolean;
     message?: string;
 }>;
-declare const getAllUsers: () => Promise<db.User[] | null>;
+declare const getAllUsers: () => Promise<User[] | null>;
 export { createUser, getAllUsers, loginUser };

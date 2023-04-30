@@ -3,16 +3,8 @@ import jwt from "jsonwebtoken";
 import * as db from "../database/dbQueries.js";
 // import secret key generator
 import { mysecretKey } from "../config/config";
-//import typescript interfaces
-
 // typescript interface for User
-interface User {
-   userID: number;
-   username?: string;
-   password?: string;
-   firstName?: string;
-   lastName?: string;
-}
+import type { User } from "../interfaces/interfaces.js";
 
 //get user by username
 const getUserByUsername = async (username: string): Promise<User | null> => {

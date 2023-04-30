@@ -1,12 +1,6 @@
 import { Pool, QueryResult } from "pg";
-
-interface User {
-   userID: number;
-   username?: string;
-   password?: string;
-   firstName?: string;
-   lastName?: string;
-}
+// typescript interface for User
+import type { User } from "../interfaces/interfaces.js";
 
 // connect to db:
 const pool = new Pool({
@@ -83,4 +77,4 @@ const getUserByUsername = async (username: string): Promise<User | null> => {
    }
 };
 
-export { User, getAllUsers, createUser, getUserByUsername };
+export { getAllUsers, createUser, getUserByUsername };

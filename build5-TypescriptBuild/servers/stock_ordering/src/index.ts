@@ -13,7 +13,6 @@ import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
 import type {
    StockOrderDetails,
    UserStockOrders,
-   CanceledOrder,
    MatchedOrder,
 } from "./interface/interface";
 
@@ -39,6 +38,8 @@ const canceledOrdersConfirmationQueue: string = "canceledOrdersConfirmation";
 
 // ------------------- Code Starts Here ------------------- //
 
+// ----------- 1. Socket.io Functions ----------- //
+
 // setup a websocket
 io.on("connection", (socket: any) => {
    console.log("client is connected, id: ", socket.id);
@@ -59,7 +60,7 @@ const emitUserOrderHistory = async (socket: any, userID: number) => {
    socket.emit("userOrderHistory", userOrderHistory);
 };
 
-// ----- New Stock Order Functions ----- //
+// ----------- 2. New Stock Order Functions ----------- //
 
 // receive a trade order from ui, add it to stock_orders db and send it to the order_matching microservice
 app.post(
@@ -81,7 +82,7 @@ app.post(
    }
 );
 
-// ----- Matched Order Functions ----- //
+// ----------- 3. Matched Order Functions ----------- //
 
 // receive matched orders from order matching micromicroservice using rabbitMQ
 const receiveMatchedOrder = async () => {
@@ -93,7 +94,7 @@ const receiveMatchedOrder = async () => {
 };
 
 // callback function used to update order status and re-send user trade history to ui
-const updateOrderStatus = async (matchedOrder) => {
+const updateOrderStatus = async (matchedOrder: MatchedOrder) => {
    // update stock orders table
    await db.updateOrderStatusToFilled(
       matchedOrder.buyOrderID,
@@ -111,9 +112,9 @@ const updateOrderStatus = async (matchedOrder) => {
 };
 receiveMatchedOrder();
 
-// ----- Canceled Order Functions ----- //
+// ----------- 4. Canceled Order Functions ----------- //
 
-// cancel a trade order if request from UI
+// receive cancel a trade order if request from UI
 app.put(
    "/cancelTradeOrder",
    async (req: express.Request, res: express.Response) => {

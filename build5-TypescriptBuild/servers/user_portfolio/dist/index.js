@@ -48,6 +48,7 @@ const userPortfolioPORT = 4001;
 const matchedOrdersExchange = "matchedOrdersExchange";
 const matchedOrdersQueue = "matchedOrdersUserPortfolioQueue";
 // --------------------- Code Starts Here --------------------- //
+// ----------- 1. Socket.io Functions ----------- //
 // use socket.io
 io.on("connection", (socket) => {
     console.log("client is connected, id: ", socket.id);
@@ -56,7 +57,7 @@ io.on("connection", (socket) => {
         await emitUserPortfolio(socket, userID);
     });
 });
-// get and emit user portfolio (cash and stock holdings)
+// emit user portfolio to ui (both cash and stock holdings)
 const emitUserPortfolio = async (socket, userID) => {
     // get user cash and stock holdings from db tables
     const userCashHoldings = await db.getUserCashHoldings(userID);
@@ -67,6 +68,7 @@ const emitUserPortfolio = async (socket, userID) => {
         userStockHoldings: userStockHoldings,
     });
 };
+// ----------- 2. Matched Order Functions ----------- //
 // receive matched orders from order matching microservice using rabbitMQ
 const receiveMatchedOrders = async (io) => {
     await (0, receiveFanOutExchange_1.receiveFanOutExchange)(matchedOrdersExchange, matchedOrdersQueue, (matchedOrder) => updateUserPortfolio(io, matchedOrder));

@@ -48,7 +48,8 @@ const canceledOrdersConfirmationQueue = "canceledOrdersConfirmation";
 const matchedOrdersExchange = "matchedOrdersExchange";
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass_1.orderMatchingClass();
-// --------------------- Code Starts Here --------------------- //
+// ------------------- Code Starts Here ------------------- //
+// ----------- 1. Received Stock Order Functions ----------- //
 //receive stock orders from stockOrderingQue, then add the order to buyOrders or sellOrders array in stock exchange
 const receiveStockOrder = async () => {
     //receiveFromQueue rabbitmq function / sendToExchange callback function
@@ -68,6 +69,7 @@ const sendToExchange = (orderDetails) => {
     // console.log("sell orders array before match: ", stockExchange.sellOrders);
 };
 receiveStockOrder();
+// ----------- 2. Match Orders Functions ----------- //
 let matchOrdersInterval;
 // match orders, then update matched_order db and send the matched order to other microservices
 const matchOrders = async () => {
@@ -94,6 +96,7 @@ const matchOrders = async () => {
     }, 1000);
 };
 matchOrders();
+// ----------- 3. Cancel Orders Functions ----------- //
 // recieve canceled stock order from stock ordering microservice using rabbitMQ
 const receiveCanceledOrder = async () => {
     await (0, receiveFromQueue_1.receiveFromQueue)(canceledOrdersQueue, removeOrder);

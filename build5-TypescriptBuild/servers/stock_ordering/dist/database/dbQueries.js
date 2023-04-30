@@ -37,7 +37,7 @@ const getUserStockOrders = async (userID) => {
     }
 };
 exports.getUserStockOrders = getUserStockOrders;
-// add a stock trade order
+// add a stock trade order to db
 const addStockOrder = async (orderDetails) => {
     try {
         const queryString = "INSERT INTO stock_orders (order_id, user_id, order_type, ticker, quantity, price, order_time, order_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";

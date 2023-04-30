@@ -12,7 +12,6 @@ import { publishFanOutExchange } from "./rabbitMQ/publishFanOutExchange";
 import type {
    StockOrderDetails,
    CanceledOrderDetails,
-   MatchedOrder,
 } from "./interfaces/interfaces";
 
 const app = express();
@@ -31,7 +30,9 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass();
 
-// --------------------- Code Starts Here --------------------- //
+// ------------------- Code Starts Here ------------------- //
+
+// ----------- 1. Received Stock Order Functions ----------- //
 
 //receive stock orders from stockOrderingQue, then add the order to buyOrders or sellOrders array in stock exchange
 const receiveStockOrder = async () => {
@@ -65,6 +66,8 @@ const sendToExchange = (orderDetails: StockOrderDetails) => {
 };
 receiveStockOrder();
 
+// ----------- 2. Match Orders Functions ----------- //
+
 let matchOrdersInterval: NodeJS.Timeout;
 
 // match orders, then update matched_order db and send the matched order to other microservices
@@ -92,6 +95,8 @@ const matchOrders = async () => {
    }, 1000);
 };
 matchOrders();
+
+// ----------- 3. Cancel Orders Functions ----------- //
 
 // recieve canceled stock order from stock ordering microservice using rabbitMQ
 const receiveCanceledOrder = async () => {

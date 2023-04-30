@@ -1,4 +1,5 @@
 import { Pool, QueryResult } from "pg";
+// import typescript interfaces
 import type {
    StockOrderDetails,
    UserStockOrders,
@@ -49,7 +50,7 @@ const getUserStockOrders = async (
    }
 };
 
-// add a stock trade order
+// add a stock trade order to db
 const addStockOrder = async (
    orderDetails: StockOrderDetails
 ): Promise<void> => {
