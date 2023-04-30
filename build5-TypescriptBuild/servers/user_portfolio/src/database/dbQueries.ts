@@ -1,7 +1,10 @@
 // !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
-
-import { type } from "os";
 import { Pool } from "pg";
+//import typescript interfaces
+import type {
+   UserCashHoldings,
+   UserStockHoldings,
+} from "../interfaces/interfaces";
 
 // connect to db:
 const pool = new Pool({
@@ -11,17 +14,6 @@ const pool = new Pool({
    host: "localhost",
    port: 5432,
 });
-
-interface UserCashHoldings {
-   // userID: number;
-   cash: string;
-}
-
-interface UserStockHoldings {
-   // userID: number;
-   ticker: string;
-   quantity: number;
-}
 
 //get user cash:
 const getUserCashHoldings = async (

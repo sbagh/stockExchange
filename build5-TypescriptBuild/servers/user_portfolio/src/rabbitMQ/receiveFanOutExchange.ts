@@ -1,17 +1,10 @@
 import amqp, { Connection, Channel, ConsumeMessage } from "amqplib";
+//import typescript interface
+import type { MatchedOrder } from "../interfaces/interfaces";
 const RabbitMqUrl = "amqp://127.0.0.1:5672";
 
 let subscriberConnection: Connection;
 let subscriberChannel: Channel;
-
-// interface for message content
-interface MatchedOrder {
-   buyerID: number;
-   sellerID: number;
-   price: number;
-   ticker: string;
-   quantity: number;
-}
 
 // recieve messages from a fan out exchange, then run the callback function on each message
 const receiveFanOutExchange = async (

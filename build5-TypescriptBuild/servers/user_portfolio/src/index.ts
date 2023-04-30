@@ -9,6 +9,8 @@ import { Server } from "socket.io";
 import * as db from "./database/dbQueries";
 // require rabbitMQ functions used here
 import { receiveFanOutExchange } from "./rabbitMQ/receiveFanOutExchange";
+// import interfaces for typescript
+import type { MatchedOrder } from "./interfaces/interfaces";
 
 const app = express();
 app.use(cors({ origin: "http://localhost:3000" }));
@@ -38,7 +40,10 @@ io.on("connection", (socket: any) => {
 });
 
 // get and emit user portfolio (cash and stock holdings)
-const emitUserPortfolio = async (socket: any, userID: number) => {
+const emitUserPortfolio = async (
+   socket: any,
+   userID: number
+): Promise<void> => {
    // get user cash and stock holdings from db tables
    const userCashHoldings = await db.getUserCashHoldings(userID);
    const userStockHoldings = await db.getUserStockHoldings(userID);
@@ -50,7 +55,7 @@ const emitUserPortfolio = async (socket: any, userID: number) => {
 };
 
 // receive matched orders from order matching microservice using rabbitMQ
-const receiveMatchedOrders = async (io: Server) => {
+const receiveMatchedOrders = async (io: Server): Promise<void> => {
    await receiveFanOutExchange(
       matchedOrdersExchange,
       matchedOrdersQueue,
@@ -58,16 +63,7 @@ const receiveMatchedOrders = async (io: Server) => {
    );
 };
 // callback function used to update user portfolio and send to ui
-const updateUserPortfolio = async (
-   io: Server,
-   matchedOrder: {
-      buyerID: number;
-      sellerID: number;
-      price: number;
-      ticker: string;
-      quantity: number;
-   }
-) => {
+const updateUserPortfolio = async (io: Server, matchedOrder: MatchedOrder) => {
    // update buyer and seller cash holdings after order is matched
    await db.updateUserCashHoldingsAfterMatch(
       matchedOrder.buyerID,

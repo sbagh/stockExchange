@@ -1,7 +1,7 @@
 "use strict";
-// !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserStockHoldingsAfterMatch = exports.updateUserCashHoldingsAfterMatch = exports.getUserStockHoldings = exports.getUserCashHoldings = void 0;
+// !!!! curently user_id in cash_holdings and stock_holdings is not linked to user_id in user accounts, need to implement cross-microservice data replication using rabbitMQ as a messanger
 const pg_1 = require("pg");
 // connect to db:
 const pool = new pg_1.Pool({

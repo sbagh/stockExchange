@@ -1,10 +1,4 @@
-interface UserCashHoldings {
-    cash: string;
-}
-interface UserStockHoldings {
-    ticker: string;
-    quantity: number;
-}
+import type { UserCashHoldings, UserStockHoldings } from "../interfaces/interfaces";
 declare const getUserCashHoldings: (userID: number) => Promise<UserCashHoldings>;
 declare const getUserStockHoldings: (userID: number) => Promise<UserStockHoldings[]>;
 declare const updateUserCashHoldingsAfterMatch: (buyerID: number, sellerID: number, price: number, quantity: number) => Promise<void>;
