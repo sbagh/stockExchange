@@ -4,7 +4,11 @@ import type { UserSignupCredentials } from "../interfaces/interfaces";
 
 const userAccountsURL = "http://localhost:4000";
 
-const SignupForm = () => {
+interface Props {
+   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SignupForm = ({ setLoggedIn }: Props) => {
    //state to save user credentials
    const [userSignUpCredentials, setUserSignUpCredentials] =
       useState<UserSignupCredentials>({
@@ -43,6 +47,8 @@ const SignupForm = () => {
          // store userID and token in browser local storage
          localStorage.setItem("token", token);
          localStorage.setItem("userID", userID);
+         // log the user in
+         setLoggedIn(true);
       } catch (error) {
          console.log(
             "error in sending userCredentials to backend during signup"

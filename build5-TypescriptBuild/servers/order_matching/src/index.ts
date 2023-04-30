@@ -57,7 +57,7 @@ interface MatchedOrder {
 
 // --------------------- Code Starts Here --------------------- //
 
-//receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
+//receive stock orders from stockOrderingQue, then add use sendToExhange callback to add order to buyOrders or sellOrders array in stock exchange
 const receiveStockOrder = async () => {
    await receiveFromQueue(stockOrdersQueue, sendToExchange);
 };

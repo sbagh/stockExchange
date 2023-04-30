@@ -49,7 +49,7 @@ const matchedOrdersExchange = "matchedOrdersExchange";
 //instantiate a stock exchange from stockMatchingClass
 const stockExchange = new orderMatchingClass_1.orderMatchingClass();
 // --------------------- Code Starts Here --------------------- //
-//receive stock orders from stockOrderingQue, then add order to buyOrders or sellOrders array
+//receive stock orders from stockOrderingQue, then add use sendToExhange callback to add order to buyOrders or sellOrders array in stock exchange
 const receiveStockOrder = async () => {
     await (0, receiveFromQueue_1.receiveFromQueue)(stockOrdersQueue, sendToExchange);
 };
