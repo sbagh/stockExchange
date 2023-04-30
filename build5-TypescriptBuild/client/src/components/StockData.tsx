@@ -44,7 +44,8 @@ const StockPrices = () => {
       return () => {
          if (socket) {
             socket.off("stockData");
-            socket.disconnect();
+            //socket disconnect causing major issues, was not emit or listening to socket anymore
+            // socket.disconnect();
          }
       };
    }, [socket, setStockData, setStockDataIsLoading]);

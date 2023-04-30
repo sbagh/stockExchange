@@ -60,7 +60,8 @@ const UserPortfolio = ({ user }: Props) => {
       return () => {
          if (socket) {
             socket.off("userPortfolio");
-            socket.disconnect();
+            //socket disconnect causing major issues, was not emit or listening to socket anymore
+            // socket.disconnect();
          }
       };
    }, [socket, user.userID, setUserCashHoldings, setUserStockHoldings]);
