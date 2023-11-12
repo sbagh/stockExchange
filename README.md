@@ -47,6 +47,7 @@ Infrastructure and non functional reqiurements:
 
 ### 5 - High level system design for AWS build:
 
--  local build uses rabbitMQ instead of SQS/SNS and does not include the API gateway
+-  local build uses rabbitMQ's direct exchange and fan out exchange:
+![Screenshot 2023-11-12 at 12 28 32 PM](https://github.com/sbagh/stockExchange/assets/52921619/9f4b2cf8-e9bc-43ad-b143-2a315d3a42b4)
 
-<img width="1245" alt="Screen Shot 2023-03-02 at 6 59 01 AM" src="https://user-images.githubusercontent.com/52921619/222810242-33159bfc-c21d-4a5b-b285-f711f8527d66.png">
+
